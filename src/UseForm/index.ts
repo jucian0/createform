@@ -60,6 +60,7 @@ export function useForm<TInitial extends {}, TSchema = any>({
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
          setValues({ ...state.current.getState })
+
          Object.keys(listInputsRef.current).forEach(key => {
             inputsTouched.current = dot.set(inputsTouched.current, listInputsRef.current[key].name, true)
          })
@@ -67,6 +68,7 @@ export function useForm<TInitial extends {}, TSchema = any>({
          if ((validation as any)?.isValidSync(state.current.getState)) {
             fn(state.current.getState)
          }
+
       }
    }, [validation])
 
@@ -80,7 +82,8 @@ export function useForm<TInitial extends {}, TSchema = any>({
    }
 
    function resetField(fieldPath: string) {
-      const value = state.current.resetField(fieldPath)
+      state.current.resetField(fieldPath)
+      const value = state.current.getValue(fieldPath)
       if (listInputsRef.current[fieldPath]?.type === "custom") {
          setValues(dot.set(values, fieldPath, value))
       }

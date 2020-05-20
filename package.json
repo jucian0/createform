@@ -1,6 +1,6 @@
 {
   "name": "react-data-forms",
-  "version": "0.0.1",
+  "version": "0.0.5-beta",
   "description": "React hook for forms validations",
   "keywords": [],
   "main": "dist/index.js",
