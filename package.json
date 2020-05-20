@@ -1,5 +1,5 @@
 {
-  "name": "react-forms",
+  "name": "react-data-forms",
   "version": "0.0.1",
   "description": "React hook for forms validations",
   "keywords": [],
@@ -22,7 +22,7 @@
   "author": "Juciano de Carvalho Barbosa <>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/Jucian0/react-data-forms"
   },
   "license": "MIT",
   "engines": {
@@ -110,7 +110,7 @@
     "lodash.camelcase": "^4.3.0",
     "prettier": "^2.0.5",
     "prompt": "^1.0.0",
-    "react": "link:../node_modules/react",
+    "react": "^16.13.1",
     "replace-in-file": "^6.0.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.10.5",
