@@ -5,11 +5,13 @@ import dot from 'dot-prop-immutable'
 const useValidation = <TValues extends {}>(values: TValues, schema: Schema<TValues>) => {
    const [errors, setErrors] = useState<TValues>({} as TValues)
 
-   const validate = useCallback(async () => {
-      try {
-         setErrors({} as TValues)
-      } catch (e) {
-         if (e instanceof ValidationError) {
+   const validate = useCallback(() => {
+
+      schema.validate(values, { abortEarly: false })
+         .then(() => {
+            setErrors({} as TValues)
+         })
+         .catch((e: ValidationError) => {
             let errors = {}
             e.inner.forEach(key => {
                const path = key.path
@@ -20,9 +22,8 @@ const useValidation = <TValues extends {}>(values: TValues, schema: Schema<TValu
 
                errors = dot.set(errors, path, key.message)
             })
-            setErrors(errors as TValues)
-         }
-      }
+            setErrors({ ...errors } as TValues)
+         })
 
    }, [schema, values])
 
