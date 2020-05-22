@@ -2,13 +2,6 @@
   "name": "react-data-forms",
   "version": "0.0.5-beta",
   "description": "React hook for forms validations",
-  "keywords": [],
-  "main": "dist/index.js",
-  "module": "dist/index.es.js",
-  "jsnext:main": "dist/index.es.js",
-  "files": [
-    "dist"
-  ],
   "keywords": [
     "react",
     "hooks",
@@ -18,6 +11,12 @@
     "validation",
     "typescript",
     "react-hooks"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "jsnext:main": "dist/index.es.js",
+  "files": [
+    "dist"
   ],
   "author": "Juciano de Carvalho Barbosa <>",
   "repository": {
@@ -31,18 +30,14 @@
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
-    "semantic-release": "semantic-release",
-    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
-    "travis-deploy-once": "travis-deploy-once"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -120,15 +115,12 @@
     "rollup-plugin-peer-deps-external": "^2.2.2",
     "rollup-plugin-sourcemaps": "^0.6.2",
     "rollup-plugin-typescript2": "^0.27.1",
-    "semantic-release": "^17.0.7",
     "shelljs": "^0.8.4",
-    "travis-deploy-once": "^5.0.11",
     "ts-jest": "^26.0.0",
     "ts-node": "^8.10.1",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "tslint-config-standard": "^9.0.0",
-    "typedoc": "^0.17.7",
     "typescript": "^3.9.2"
   },
   "dependencies": {
