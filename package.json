@@ -21,7 +21,8 @@
   "author": "Juciano de Carvalho Barbosa <>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jucian0/react-data-forms"
+    "url": "https://github.com/Jucian0/react-data-forms",
+    "homepage": "https://react-data-forms.org/"
   },
   "license": "MIT",
   "engines": {
