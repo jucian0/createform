@@ -1,4 +1,4 @@
-# React Forms
+# React Data Forms
 [![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/react-data-forms/blob/master/LICENSE) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/react-data-formse)  [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/react-data-forms&hashtags=reactjs,hook,javascript,forms)
 # React Forms 🚀
 
@@ -7,9 +7,45 @@ https://react-data-forms.org/
 https://codesandbox.io/s/react-data-forms-2u2ju
 
 
+React data forms provides a way to create complex forms easily, react data forms provide a hook called `userForm`, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore, it does not matter if the object is complex or has many properties or array, the result is the same. The same process is realized with errors object and touched object.
+
+```jsx
+  const initialValues = {
+    first:"one",
+    second:{
+      other:[
+        {
+          x:12
+        }
+      ]
+    }
+  }
+
+    const finalValues = {
+    first:"one",
+    second:{
+      other:[
+        {
+          x:12
+        }
+      ]
+    }
+  }
+
+  <input {...input("second.other.0.x", "number")}/>
+                    /*or*/
+  <input {...input({name:"second.other.0.x", type:"number"})}/>
+  
+```
+
+Don't need the tag form, unless if you want to use uncontrolled inputs.
+
+By default react data forms work with Yup Validation.
+ - Yup is a JavaScript schema builder for value parsing and validation. Define a schema, transform a value to match, validate the shape of an existing value, or both. Yup schema are extremely expressive and allow modeling complex, interdependent validations, or value transformations.
+
 # Get Started
 
-
+## useForm hook
 
 
 The first example of creating forms is a controlled form, useForm receive an initialObject with optional some properties:
@@ -60,10 +96,13 @@ Uncontrolled inputs provide better performance because they drastically reduce t
 
 <br/>
 
-| onSubmit   	| is a void function that accepts a function as a parameter, this function is used when you choose uncontrolled inputs                                                                          	|
+| properties 	| description                                                                                                                                                                                   	|
 |------------	|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| reset      	| is a void function that reset form for the initial state.                                                                                                                                     	|
-| resetField 	| is a void function that resets an input for the initial state. That function receives the input name as a parameter.                                                                          	|
-| values     	| object of values your form.                                                                                                                                                                   	|
-| input      	| is a function that returns properties for the input component, this function receives the name and as a parameter or an object with input properties.                                         	|
-| custom     	| is a function that returns properties for custom input component like React Select or React Datepicker, this function receives the name and as a parameter or an object with input properties 	|
+| `onSubmit`   	| is a void function that accepts a function as a parameter, this function is used when you choose uncontrolled inputs                                                                          	|
+| `reset`      	| is a void function that reset form for the initial state.                                                                                                                                     	|
+| `resetField` 	| is a void function that resets an input for the initial state. That function receives the input name as a parameter.                                                                          	|
+| `values`     	| object of values your form.                                                                                                                                                                   	|
+| `input`      	| is a function that returns properties for the input component, this function receives the name and type as a parameter or an object with input properties.                                         	|
+| `custom`     	| is a function that returns properties for custom input component like React Select or React Datepicker, this function receives the name and type as a parameter or an object with input properties 	|
+| `errors`     	| object of errors your form. 	|
+| `touched`     | object with all inputs present in your form with the boolean value.	|
