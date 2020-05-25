@@ -15,17 +15,18 @@ import {
 import dot from 'dot-prop-immutable'
 import { isRadio, isCheckbox } from '../Utils'
 import { useValidation } from '../UseValidation'
+import { Schema } from 'yup'
 
-export function useForm<TInitial extends {}, TSchema = any>({
+export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
   initialValues,
   validation,
   ...optionsGetValues
-}: UseForm<TInitial, TSchema> = {}): UseFormR<TInitial> {
+}: UseForm<TInitial, TSchema>): UseFormR<TInitial> {
   const state = useRef(new State(initialValues || ({} as TInitial)))
   const listInputsRef = useRef<ListInputsRef>(Object.assign({}))
   const [values, setValues] = useState(initialValues || ({} as TInitial))
   const inputsTouched = useRef<TInitial>({} as TInitial)
-  const { errors, isValid } = useValidation(values, validation || ({} as any))
+  const { errors, isValid } = useValidation(values, validation)
 
   const setValuesDebounce = useCallback(debounce(setValues, optionsGetValues?.debounce || 500), [
     optionsGetValues,
@@ -150,10 +151,10 @@ export function useForm<TInitial extends {}, TSchema = any>({
           complementProps.type === 'number'
             ? e.target.valueAsNumber
             : complementProps.type === 'date'
-            ? e.target.valueAsDate
-            : complementProps.type === 'file'
-            ? e.target.files
-            : e.target.value,
+              ? e.target.valueAsDate
+              : complementProps.type === 'file'
+                ? e.target.files
+                : e.target.value,
       })
     }
 
