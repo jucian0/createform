@@ -1,10 +1,9 @@
 // import { renderHook, act } from '@testing-library/react-hooks'
 import { useForm } from '../../src/index'
 import { renderHook, act } from '@testing-library/react-hooks';
-import React from 'react'
-import { render, fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
+import { setup } from '../utils';
 
-const Input = ({ inputText }) => (<input {...inputText} data-testid="test-name" />)
 
 describe("UseForm hook ControlledForms forms", () => {
 
@@ -29,26 +28,19 @@ describe("UseForm hook ControlledForms forms", () => {
    })
 
    it("should change formState when change input value", () => {
+      const hookParams = {
+         initialValues: { "test-name": "my-name-test" },
+         onChange: true
+      }
 
-      const { result: { current: [{ values }, { input }] } } = renderHook(() => useForm({ initialValues: { "test-name": "my-name-test" }, onChange: true }))
+      const inputParams = {
+         name: "test-name",
+         type: "text"
+      }
 
-      const inputText = input("test-name", "text")
+      const result = setup({ hookParams, inputParams })
+      fireEvent.change(screen.getByTestId(inputParams.name), { target: { value: "new-name-test" } })
 
-      render(<Input inputText={inputText} />)
-
-      act(() => {
-
-         fireEvent.change(screen.getByTestId("test-name"), { target: { value: 'Good Day' } })
-
-
-         fireEvent.input(screen.getByTestId("test-name"), {})
-         console.log(screen.getByTestId("test-name"))
-      })
-
-
-
-
-
-
+      expect(result.values).toEqual({ "test-name": "new-name-test" })
    })
 })
