@@ -72,8 +72,8 @@
         "statements": 95
       }
     },
-    "collectCoverageFrom": [
-      "src/*.{ts}"
+    "forceCoverageMatch": [
+      "**/*.ts"
     ]
   },
   "prettier": {
