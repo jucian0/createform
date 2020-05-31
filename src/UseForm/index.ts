@@ -149,12 +149,12 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
         fieldPath: e.target.name,
         value:
           complementProps.type === 'number'
-            ? e.target.valueAsNumber
+            ? Number(e.target.value)
             : complementProps.type === 'date'
-              ? e.target.valueAsDate
-              : complementProps.type === 'file'
-                ? e.target.files
-                : e.target.value,
+            ? e.target.value
+            : complementProps.type === 'file'
+            ? e.target.files
+            : e.target.value,
       })
     }
 

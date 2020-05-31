@@ -1,0 +1,17 @@
+{
+  "id": "uncontrolled-input",
+  "title": "Uncontrolled Input",
+  "description": "With uncontrolled input values, there is no updating or changing of any states. What you submit is what you get.",
+  "source": "@site/docs/uncontrolled-input.mdx",
+  "permalink": "/docs/uncontrolled-input",
+  "editUrl": "https://github.com/Jucian0/react-data-forms/tree/docs/docs/uncontrolled-input.mdx",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "Debounced Input",
+    "permalink": "/docs/debounced-input"
+  },
+  "next": {
+    "title": "Controled Input",
+    "permalink": "/docs/controlled-input"
+  }
+}
