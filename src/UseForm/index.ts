@@ -70,7 +70,9 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
           )
         })
 
-        if ((validation as any)?.isValidSync(state.current.getState)) {
+        if (!validation) {
+          fn(state.current.getState)
+        } else if ((validation as any)?.isValidSync(state.current.getState)) {
           fn(state.current.getState)
         }
       }
