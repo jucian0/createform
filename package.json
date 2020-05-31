@@ -60,9 +60,8 @@
       "tsx",
       "js"
     ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}"
     ],
     "coverageThreshold": {
       "global": {
@@ -71,10 +70,7 @@
         "lines": 95,
         "statements": 95
       }
-    },
-    "forceCoverageMatch": [
-      "**/*.ts"
-    ]
+    }
   },
   "prettier": {
     "semi": false,
@@ -120,6 +116,7 @@
     "prompt": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-select": "^3.1.0",
     "react-test-renderer": "^16.13.1",
     "replace-in-file": "^6.0.0",
     "rimraf": "^3.0.2",
