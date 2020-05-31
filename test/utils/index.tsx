@@ -10,7 +10,6 @@ export function setup({ hookParams, inputParams }) {
 
       const [{ values }, { input }] = useForm(hookParams)
 
-
       Object.assign(returnVal, values)
       return <input {...input(inputParams)} data-testid={inputParams.name} />
    }

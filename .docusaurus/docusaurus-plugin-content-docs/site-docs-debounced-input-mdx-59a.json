@@ -1,0 +1,17 @@
+{
+  "id": "debounced-input",
+  "title": "Debounced Input",
+  "description": "The debounce parameter delays the updating of the state until the user has stopped changing inputs for a predetermined amount of time.",
+  "source": "@site/docs/debounced-input.mdx",
+  "permalink": "/docs/debounced-input",
+  "editUrl": "https://github.com/Jucian0/react-data-forms/tree/docs/docs/debounced-input.mdx",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "Get Starter",
+    "permalink": "/docs/get-starter"
+  },
+  "next": {
+    "title": "Uncontrolled Input",
+    "permalink": "/docs/uncontrolled-input"
+  }
+}

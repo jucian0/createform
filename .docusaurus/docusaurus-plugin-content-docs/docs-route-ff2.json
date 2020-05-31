@@ -1,0 +1,62 @@
+{
+  "docsSidebars": {
+    "someSidebar": [
+      {
+        "type": "category",
+        "label": "Introduction",
+        "items": [
+          {
+            "type": "link",
+            "label": "Read Me",
+            "href": "/docs/readme"
+          }
+        ]
+      },
+      {
+        "type": "category",
+        "label": "Steps",
+        "items": [
+          {
+            "type": "link",
+            "label": "Get Starter",
+            "href": "/docs/get-starter"
+          },
+          {
+            "type": "link",
+            "label": "Debounced Input",
+            "href": "/docs/debounced-input"
+          },
+          {
+            "type": "link",
+            "label": "Uncontrolled Input",
+            "href": "/docs/uncontrolled-input"
+          },
+          {
+            "type": "link",
+            "label": "Controled Input",
+            "href": "/docs/controlled-input"
+          },
+          {
+            "type": "link",
+            "label": "Custom Input",
+            "href": "/docs/custom-input"
+          },
+          {
+            "type": "link",
+            "label": "Validation",
+            "href": "/docs/validation"
+          }
+        ]
+      }
+    ]
+  },
+  "permalinkToSidebar": {
+    "/docs/controlled-input": "someSidebar",
+    "/docs/custom-input": "someSidebar",
+    "/docs/debounced-input": "someSidebar",
+    "/docs/get-starter": "someSidebar",
+    "/docs/readme": "someSidebar",
+    "/docs/uncontrolled-input": "someSidebar",
+    "/docs/validation": "someSidebar"
+  }
+}
