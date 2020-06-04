@@ -500,3 +500,75 @@ describe('Test form with validation', () => {
     expect(callback).not.toBeCalled()
   })
 })
+
+describe('Test custom inputs', () => {
+  const initialDate = new Date('2018-01-01')
+  const finalDate = new Date('2018-12-31')
+
+  it('should call cllback when change the value', () => {
+    const callback = jest.fn()
+    const initialValues = {
+      'test-custom': initialDate,
+    }
+
+    const hookParams = {
+      initialValues,
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-custom',
+    }
+
+    const result = customSetup({ hookParams, inputParams, onSubmit: callback })
+
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: finalDate } })
+    })
+
+    expect(result.values).toEqual({ 'test-custom': finalDate })
+  })
+
+  it('should set onBlur on custom input', () => {
+    const hookParams = {
+      initialValues: { 'test-custom-blur': initialDate },
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-custom-blur',
+    }
+
+    const result = customSetup({ hookParams, inputParams })
+
+    act(() => {
+      fireEvent.blur(screen.getByRole('textbox'))
+    })
+
+    expect(result.touched[inputParams.name]).toEqual(true)
+  })
+
+  it('should change state input without onChange or debounce because custom input exist', () => {
+    const hookParams = {
+      initialValues: {
+        'test-custom-blur': initialDate,
+        supporting: null,
+      },
+    }
+
+    const inputParams = {
+      name: 'test-custom-blur',
+    }
+
+    const result = customSetup({ hookParams, inputParams })
+
+    act(() => {
+      fireEvent.change(screen.getByTestId('supporting'), { target: { value: 'new-name-test' } })
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: finalDate } })
+    })
+
+    console.log(result.values)
+
+    expect(result.values.supporting).toEqual('new-name-test')
+  })
+})
