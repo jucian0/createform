@@ -98,6 +98,24 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
     setRefValue(listInputsRef.current[fieldPath], value)
   }
 
+  function setField<TValue>(fieldPath: string, newValue: TValue) {
+    state.current.change({ value: newValue, fieldPath })
+    const value = state.current.getValue(fieldPath)
+    if (listInputsRef.current[fieldPath]?.type === 'custom') {
+      setValues(dot.set(values, fieldPath, value))
+    }
+    setRefValue(listInputsRef.current[fieldPath], value)
+  }
+
+  function setFields<TValues>(values: TValues) {
+    state.current.change({ value: values, fieldPath: '' })
+    Object.keys(listInputsRef.current).forEach((key) => {
+      setRefValue(listInputsRef.current[key], dot.get(state.current.getState, key))
+      inputsTouched.current = dot.set(inputsTouched.current, listInputsRef.current[key].name, false)
+    })
+    setValues(state.current.getState)
+  }
+
   function setOnBlur(fieldPath: string) {
     if (inputsTouched.current) {
       inputsTouched.current = dot.set(inputsTouched.current, fieldPath, true)
@@ -230,7 +248,17 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
   }, [setFormState])
 
   return [
-    { values, onSubmit, reset, resetField, errors, isValid, touched: inputsTouched.current },
+    {
+      values,
+      onSubmit,
+      reset,
+      resetField,
+      errors,
+      isValid,
+      touched: inputsTouched.current,
+      setField,
+      setFields,
+    },
     { input, custom },
   ]
 }
