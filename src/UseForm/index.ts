@@ -107,8 +107,8 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
     setRefValue(listInputsRef.current[fieldPath], value)
   }
 
-  function setFields<TValues>(values: TValues) {
-    state.current.change({ value: values, fieldPath: '' })
+  function setFields(values: TInitial) {
+    state.current.setState = values
     Object.keys(listInputsRef.current).forEach((key) => {
       setRefValue(listInputsRef.current[key], dot.get(state.current.getState, key))
       inputsTouched.current = dot.set(inputsTouched.current, listInputsRef.current[key].name, false)
