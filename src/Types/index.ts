@@ -20,9 +20,9 @@ interface FormFunctions<TValues> {
   values: TValues
   onSubmit: (fn: (values: TValues) => void) => (e: React.BaseSyntheticEvent) => void
   reset: () => void
-  resetField: (field: string) => void
-  setFields: (values: TValues) => void
-  setField: <TValue>(field: string, value: TValue) => void
+  resetInput: (field: string) => void
+  setInputs: (values: TValues) => void
+  setInput: <TValue>(field: string, value: TValue) => void
   errors: TValues
   touched: TValues
   isValid: Boolean

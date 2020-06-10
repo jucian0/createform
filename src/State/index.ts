@@ -31,7 +31,7 @@ class State<T extends {}> {
     this.notify()
   }
 
-  resetField(fieldPath: string) {
+  resetInput(fieldPath: string) {
     const value = dot.get(this.initialState, fieldPath)
     this.state = dot.set(this.state, fieldPath, value)
     this.notify(fieldPath)

@@ -89,8 +89,8 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
     setValues(state.current.getState)
   }
 
-  function resetField(fieldPath: string) {
-    state.current.resetField(fieldPath)
+  function resetInput(fieldPath: string) {
+    state.current.resetInput(fieldPath)
     const value = state.current.getValue(fieldPath)
     if (listInputsRef.current[fieldPath]?.type === 'custom') {
       setValues(dot.set(values, fieldPath, value))
@@ -98,7 +98,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
     setRefValue(listInputsRef.current[fieldPath], value)
   }
 
-  function setField<TValue>(fieldPath: string, newValue: TValue) {
+  function setInput<TValue>(fieldPath: string, newValue: TValue) {
     state.current.change({ value: newValue, fieldPath })
     const value = state.current.getValue(fieldPath)
     if (listInputsRef.current[fieldPath]?.type === 'custom') {
@@ -107,7 +107,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
     setRefValue(listInputsRef.current[fieldPath], value)
   }
 
-  function setFields(values: TInitial) {
+  function setInputs(values: TInitial) {
     state.current.setState = values
     Object.keys(listInputsRef.current).forEach((key) => {
       setRefValue(listInputsRef.current[key], dot.get(state.current.getState, key))
@@ -252,12 +252,12 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
       values,
       onSubmit,
       reset,
-      resetField,
+      resetInput,
       errors,
       isValid,
       touched: inputsTouched.current,
-      setField,
-      setFields,
+      setInput,
+      setInputs,
     },
     { input, custom },
   ]
