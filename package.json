@@ -132,8 +132,8 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-config-standard": "^9.0.0",
     "typescript": "^3.9.2",
-    "react": "link:../node_modules/react",
-    "react-dom": "link:../node_modules/react-dom"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "dependencies": {
     "dot-prop-immutable": "^2.1.0",
