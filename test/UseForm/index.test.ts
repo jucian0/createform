@@ -301,7 +301,7 @@ describe('Test functions returned by hook', () => {
     expect(result.values).toEqual({ 'test-reset': 'new-name-test' })
 
     act(() => {
-      result.resetField('test-reset')
+      result.resetInput('test-reset')
     })
 
     expect(result.values).toEqual(initialValues)
@@ -330,7 +330,7 @@ describe('Test functions returned by hook', () => {
     expect(result.values).toEqual({ 'test-reset': false })
 
     act(() => {
-      result.resetField('test-reset')
+      result.resetInput('test-reset')
     })
 
     expect(result.values).toEqual(initialValues)
@@ -393,6 +393,58 @@ describe('Test functions returned by hook', () => {
     })
 
     expect(callback).toBeCalled()
+  })
+
+  it('should setInputs', () => {
+    const initialValues = {
+      'test-set-inputs': 'my-value',
+    }
+
+    const setInputsValues = {
+      'test-set-inputs': 'value-changed',
+    }
+
+    const hookParams = {
+      initialValues,
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-set-inputs',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    act(() => {
+      result.setInputs(setInputsValues)
+    })
+
+    expect(result.values).toEqual(setInputsValues)
+  })
+
+  it('should setValue specific input', () => {
+    const initialValues = {
+      'test-set-input': 'old-value',
+    }
+
+    const hookParams = {
+      initialValues,
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-set-input',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    act(() => {
+      result.setInput('test-set-input', 'new-value')
+    })
+
+    expect(result.values).toEqual({ 'test-set-input': 'new-value' })
   })
 })
 
