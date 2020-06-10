@@ -301,7 +301,7 @@ describe('Test functions returned by hook', () => {
     expect(result.values).toEqual({ 'test-reset': 'new-name-test' })
 
     act(() => {
-      result.resetField('test-reset')
+      result.resetInput('test-reset')
     })
 
     expect(result.values).toEqual(initialValues)
@@ -330,7 +330,7 @@ describe('Test functions returned by hook', () => {
     expect(result.values).toEqual({ 'test-reset': false })
 
     act(() => {
-      result.resetField('test-reset')
+      result.resetInput('test-reset')
     })
 
     expect(result.values).toEqual(initialValues)
@@ -393,6 +393,58 @@ describe('Test functions returned by hook', () => {
     })
 
     expect(callback).toBeCalled()
+  })
+
+  it('should setInputs', () => {
+    const initialValues = {
+      'test-set-inputs': 'my-value',
+    }
+
+    const setInputsValues = {
+      'test-set-inputs': 'value-changed',
+    }
+
+    const hookParams = {
+      initialValues,
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-set-inputs',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    act(() => {
+      result.setInputs(setInputsValues)
+    })
+
+    expect(result.values).toEqual(setInputsValues)
+  })
+
+  it('should setValue specific input', () => {
+    const initialValues = {
+      'test-set-input': 'old-value',
+    }
+
+    const hookParams = {
+      initialValues,
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-set-input',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    act(() => {
+      result.setInput('test-set-input', 'new-value')
+    })
+
+    expect(result.values).toEqual({ 'test-set-input': 'new-value' })
   })
 })
 
@@ -498,5 +550,77 @@ describe('Test form with validation', () => {
     })
 
     expect(callback).not.toBeCalled()
+  })
+})
+
+describe('Test custom inputs', () => {
+  const initialDate = new Date('2018-01-01')
+  const finalDate = new Date('2018-12-31')
+
+  it('should call cllback when change the value', () => {
+    const callback = jest.fn()
+    const initialValues = {
+      'test-custom': initialDate,
+    }
+
+    const hookParams = {
+      initialValues,
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-custom',
+    }
+
+    const result = customSetup({ hookParams, inputParams, onSubmit: callback })
+
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: finalDate } })
+    })
+
+    expect(result.values).toEqual({ 'test-custom': finalDate })
+  })
+
+  it('should set onBlur on custom input', () => {
+    const hookParams = {
+      initialValues: { 'test-custom-blur': initialDate },
+      onChange: true,
+    }
+
+    const inputParams = {
+      name: 'test-custom-blur',
+    }
+
+    const result = customSetup({ hookParams, inputParams })
+
+    act(() => {
+      fireEvent.blur(screen.getByRole('textbox'))
+    })
+
+    expect(result.touched[inputParams.name]).toEqual(true)
+  })
+
+  it('should change state input without onChange or debounce because custom input exist', () => {
+    const hookParams = {
+      initialValues: {
+        'test-custom-blur': initialDate,
+        supporting: null,
+      },
+    }
+
+    const inputParams = {
+      name: 'test-custom-blur',
+    }
+
+    const result = customSetup({ hookParams, inputParams })
+
+    act(() => {
+      fireEvent.change(screen.getByTestId('supporting'), { target: { value: 'new-name-test' } })
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: finalDate } })
+    })
+
+    console.log(result.values)
+
+    expect(result.values.supporting).toEqual('new-name-test')
   })
 })
