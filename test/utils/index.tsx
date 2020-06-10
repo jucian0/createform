@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react';
 import { useForm } from '../../src/index'
-import Select from 'react-select'
+import DatePicker from "react-datepicker";
 
 export function setup({ hookParams, inputParams, onSubmit }: any) {
    const returnVal: any = {}
@@ -29,16 +29,13 @@ export function customSetup({ hookParams, inputParams, onSubmit }: any) {
 
    function InputComponent() {
 
-      const [{ values, ...rest }, { custom }] = useForm(hookParams)
+      const [{ values, ...rest }, { custom, input }] = useForm(hookParams)
 
       Object.assign(returnVal, { values, ...rest })
       return (
          <form onSubmit={rest.onSubmit(onSubmit)} onReset={rest.reset} role="form">
-            <Select
-               classNamePrefix="react-select"
-               options={inputParams.options}
-               {...custom(inputParams.name)}
-            />
+            <DatePicker {...custom(inputParams.name)} data-testid={inputParams.name} />
+            <input {...input("supporting", "text")} role="text" data-testid="supporting" />
             <button type="submit" data-testid="on-submit"></button>
             <button type="reset" data-testid="on-reset"></button>
          </form>

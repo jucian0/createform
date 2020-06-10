@@ -301,7 +301,7 @@ describe('Test functions returned by hook', () => {
     expect(result.values).toEqual({ 'test-reset': 'new-name-test' })
 
     act(() => {
-      result.resetField('test-reset')
+      result.resetInput('test-reset')
     })
 
     expect(result.values).toEqual(initialValues)
@@ -330,7 +330,7 @@ describe('Test functions returned by hook', () => {
     expect(result.values).toEqual({ 'test-reset': false })
 
     act(() => {
-      result.resetField('test-reset')
+      result.resetInput('test-reset')
     })
 
     expect(result.values).toEqual(initialValues)
