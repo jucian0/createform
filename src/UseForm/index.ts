@@ -82,6 +82,15 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
 
   function reset() {
     state.current.reset()
+    setRefsInputsValues()
+  }
+
+  function setInputs(values: TInitial) {
+    state.current.setState = values
+    setRefsInputsValues()
+  }
+
+  function setRefsInputsValues() {
     Object.keys(listInputsRef.current).forEach((key) => {
       setRefValue(listInputsRef.current[key], dot.get(state.current.getState, key))
       inputsTouched.current = dot.set(inputsTouched.current, listInputsRef.current[key].name, false)
@@ -92,28 +101,20 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
   function resetInput(fieldPath: string) {
     state.current.resetInput(fieldPath)
     const value = state.current.getValue(fieldPath)
-    if (listInputsRef.current[fieldPath]?.type === 'custom') {
-      setValues(dot.set(values, fieldPath, value))
-    }
-    setRefValue(listInputsRef.current[fieldPath], value)
+    changeRefInputValue(fieldPath, value)
   }
 
   function setInput<TValue>(fieldPath: string, newValue: TValue) {
     state.current.change({ value: newValue, fieldPath })
     const value = state.current.getValue(fieldPath)
+    changeRefInputValue(fieldPath, value)
+  }
+
+  function changeRefInputValue<T>(fieldPath: string, value: T) {
     if (listInputsRef.current[fieldPath]?.type === 'custom') {
       setValues(dot.set(values, fieldPath, value))
     }
     setRefValue(listInputsRef.current[fieldPath], value)
-  }
-
-  function setInputs(values: TInitial) {
-    state.current.setState = values
-    Object.keys(listInputsRef.current).forEach((key) => {
-      setRefValue(listInputsRef.current[key], dot.get(state.current.getState, key))
-      inputsTouched.current = dot.set(inputsTouched.current, listInputsRef.current[key].name, false)
-    })
-    setValues(state.current.getState)
   }
 
   function setOnBlur(fieldPath: string) {

@@ -1,10 +1,13 @@
-# React Data Forms
-[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/react-data-forms/blob/master/LICENSE) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/react-data-forms)  [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/react-data-forms&hashtags=reactjs,hook,javascript,forms)
-# React Forms 🚀
+![Logo](img/logo2.svg)
+
+
+# React Data Forms🚀
+[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/react-data-forms/blob/master/LICENSE)   [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/Jucian0/react-data-forms/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-data-forms) ![npm bundle size](https://img.shields.io/bundlephobia/min/react-data-forms) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/react-data-forms)  [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/react-data-forms&hashtags=reactjs,hook,javascript,forms)
+
 
 ## Docs  https://react-data-forms.org/
 
-React data forms provides a way to create complex forms easily, react data forms provide a hook called `userForm`, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore, it does not matter if the object is complex or has many properties or array, the result is the same. The same process is realized with errors object and touched object.
+React data forms provide a way to create complex forms easily, react data forms provide a hook called `userForm`, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore, it does not matter if the object is complex or has many properties or array, the result is the same. The same process is realized with errors object and touched object.
 
 ```jsx
   const initialValues = {
