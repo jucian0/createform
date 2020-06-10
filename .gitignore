@@ -17,33 +17,6 @@ yarn.lock
 
 
 
-/site/node_modules
-/site/.pnp
-/site.pnp.js
 
-# testing
-/site/coverage
-
-# next.js
-/site/.next/
-/site/out/
-
-# production
-/site/build
-
-# misc
-/site/.DS_Store
-
-# debug
-/site/npm-debug.log*
-/site/yarn-debug.log*
-/site/yarn-error.log*
-
-# local env files
-/site/.env.local
-/site/.env.development.local
-/site/.env.test.local
-/site/.env.production.local
-
-# Local Netlify folder
-/site/.netlify
+# docs
+.docusaurus
