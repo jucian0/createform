@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import * as yup from 'yup'
-import ReactJson from 'react-json-view'
 import { useForm } from 'react-data-forms';
 
 
@@ -83,18 +82,6 @@ const Uncontrolled: React.FC = () => {
                      <input className="form-control" autoComplete="off" {...input("accept", "checkbox")} />
                   </div>
                </div>
-            </div>
-
-            <div className="col-lg-6">
-               <h2>Form Values</h2>
-               <ReactJson src={values} theme="solarized" />
-            </div>
-            <div className="col-lg-3">
-               <button type="button" className="btn btn-primary" onClick={() => reset()}>Reset All</button>
-            </div>
-
-            <div className="col-lg-3">
-               <button type="submit" className="btn btn-primary">Submit</button>
             </div>
          </div>
       </form>

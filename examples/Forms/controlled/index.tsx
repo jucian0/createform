@@ -35,7 +35,7 @@ const initialValues = {
 
 const Controlled: React.FC = () => {
 
-   const [{ values, reset, resetField, touched }, { input }] = useForm({ initialValues, validation, onChange: true })
+   const [{ values, reset, resetInput, touched }, { input }] = useForm({ initialValues, validation, onChange: true })
    const { errors } = useValidation?.(values, validation) as any
 
    return (
@@ -93,7 +93,7 @@ const Controlled: React.FC = () => {
          </div>
 
          <div className="col-lg-3">
-            <button type="button" className="btn btn-primary" onClick={() => resetField("address.0.number")}>Reset number</button>
+            <button type="button" className="btn btn-primary" onClick={() => resetInput("address.0.number")}>Reset number</button>
          </div>
          <div className="col-lg-3">
             <button type="button" className="btn btn-primary" onClick={() => reset()}>Reset All</button>
