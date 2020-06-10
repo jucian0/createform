@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import * as yup from 'yup'
 import { useForm } from 'react-data-forms';
-import ReactJson from 'react-json-view'
 
 
 const validation: any = yup.object().shape({
@@ -49,17 +48,17 @@ const newValues = {
 
 const Debounced: React.FC = () => {
 
-   const [{ values, reset, resetField, errors, touched, setFields, setField }, { input }] = useForm({ initialValues, validation })
+   const [{ values, reset, resetInput, errors, touched, setInputs, setInput }, { input }] = useForm({ initialValues, validation })
 
 
 
    return (
       <div className="row">
          <div className="col-lg-12">
-            <button type="button" className="btn btn-primary" onClick={() => resetField("address.0.number")}>Reset number</button>
+            <button type="button" className="btn btn-primary" onClick={() => resetInput("address.0.number")}>Reset number</button>
             <button type="button" className="btn btn-primary" onClick={() => reset()}>Reset All</button>
-            <button type="button" className="btn btn-primary" onClick={() => setFields(newValues)}>Set All values</button>
-            <button type="button" className="btn btn-primary" onClick={() => setField("name", "Juciano")}>setField name</button>
+            <button type="button" className="btn btn-primary" onClick={() => setInputs(newValues)}>Set All values</button>
+            <button type="button" className="btn btn-primary" onClick={() => setInput("name", "Juciano")}>setInput name</button>
          </div>
          <div className="col-lg-4">
             <h2>Debounce Form</h2>
@@ -107,16 +106,6 @@ const Debounced: React.FC = () => {
                </div>
             </div>
          </div>
-
-         <div className="col-lg-4">
-            <h2>Form Values</h2>
-            <ReactJson src={values} theme="solarized" />
-         </div>
-         <div className="col-lg-4">
-            <h2>Form Errors</h2>
-            <ReactJson src={errors} theme="solarized" />
-         </div>
-
       </div>
    );
 }

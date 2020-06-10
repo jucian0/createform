@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import * as yup from 'yup'
 import { useForm } from 'react-data-forms';
-import ReactJson from 'react-json-view';
 
 
 const validation: any = yup.object().shape({
@@ -83,15 +82,6 @@ const Controlled: React.FC = () => {
                   <label className="form-check-label" htmlFor="exampleRadios3" >OP3</label>
                </div>
             </div >
-         </div>
-
-         <div className="col-lg-6">
-            <h2>Form Values</h2>
-            <ReactJson src={values} theme="solarized" />
-         </div>
-
-         <div className="col-lg-3">
-            <button type="button" className="btn btn-primary" onClick={() => reset()}>Reset All</button>
          </div>
       </div>
    );
