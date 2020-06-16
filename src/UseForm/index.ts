@@ -17,7 +17,7 @@ import { isRadio, isCheckbox } from '../Utils'
 import { useValidation } from '../UseValidation'
 import { Schema } from 'yup'
 
-export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
+export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = any>({
   initialValues,
   validation,
   ...optionsGetValues
@@ -82,15 +82,15 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial>>({
 
   function reset() {
     state.current.reset()
-    setRefsInputsValues()
+    setRefInputsValues()
   }
 
   function setInputs(values: TInitial) {
     state.current.setState = values
-    setRefsInputsValues()
+    setRefInputsValues()
   }
 
-  function setRefsInputsValues() {
+  function setRefInputsValues() {
     Object.keys(listInputsRef.current).forEach((key) => {
       setRefValue(listInputsRef.current[key], dot.get(state.current.getState, key))
       inputsTouched.current = dot.set(inputsTouched.current, listInputsRef.current[key].name, false)
