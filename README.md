@@ -1,7 +1,7 @@
-![Logo](img/logo2.svg)
+![Logo](img/logo3.png)
 
 
-# React Data Forms🚀
+# UseForm🚀
 [![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/react-data-forms/blob/master/LICENSE)   [![GitHub coverage](https://img.shields.io/badge/coverage-97.1%25-brightgreen)](https://github.com/Jucian0/react-data-forms/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-data-forms) ![npm bundle size](https://img.shields.io/bundlephobia/min/react-data-forms) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/react-data-forms)  [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/react-data-forms&hashtags=reactjs,hook,javascript,forms)
 
 
