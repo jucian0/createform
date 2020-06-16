@@ -1,7 +1,7 @@
 {
-  "name": "react-data-forms",
-  "version": "1.0.2",
-  "description": "React hook for forms validations",
+  "name": "useforms",
+  "version": "1.0.1",
+  "description": "UseFom provides a way to create complex forms easily.",
   "keywords": [
     "react",
     "hooks",
@@ -27,8 +27,8 @@
   "author": "Juciano de Carvalho Barbosa <>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jucian0/react-data-forms",
-    "homepage": "https://react-data-forms.org/"
+    "url": "https://github.com/Jucian0/useform",
+    "homepage": "https://useform.org/"
   },
   "license": "MIT",
   "engines": {
