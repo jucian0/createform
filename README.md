@@ -2,7 +2,8 @@
 
 
 # UseForm🚀
-[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/react-data-forms/blob/master/LICENSE)   [![GitHub coverage](https://img.shields.io/badge/coverage-97.1%25-brightgreen)](https://github.com/Jucian0/react-data-forms/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-data-forms) ![npm bundle size](https://img.shields.io/bundlephobia/min/react-data-forms) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/react-data-forms)  [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/react-data-forms&hashtags=reactjs,hook,javascript,forms)
+[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/Jucian0/useform/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/useforms)![npm bundle size](https://img.shields.io/bundlephobia/minzip/useforms)[![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/useforms) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/useform&hashtags=reactjs,hook,javascript,forms)
+
 
 
 ## Docs  https://useform.org/
@@ -56,7 +57,7 @@ The first example of creating forms is a controlled form, useForm receive an ini
   * `validations`: Receives a validation schema yup.
 
 ```jsx
-  import {useForm} from 'react-data-forms'
+  import {useForm} from 'useforms'
 
   const initialValues = {
       name:"Jesse",
