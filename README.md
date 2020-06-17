@@ -2,7 +2,11 @@
 
 
 # UseForm🚀
+<<<<<<< HEAD
 [![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/Jucian0/useform/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/useforms) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/useforms) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/useforms) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/useform&hashtags=reactjs,hook,javascript,forms)
+=======
+[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-97.1%25-brightgreen)](https://github.com/Jucian0/useform/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/useforms)![npm bundle size](https://img.shields.io/bundlephobia/minzip/useforms)[![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/useforms) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=useform+and+validations&url=https://github.com/Jucian0/useform&hashtags=reactjs,hook,javascript,forms)
+>>>>>>> 2f50c6d0332feaca2686b2df5771b387de2ff640
 
 
 
