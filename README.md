@@ -108,3 +108,22 @@ Uncontrolled inputs provide better performance because they drastically reduce t
 | `custom`     	| is a function that returns properties for custom input component like React Select or React Datepicker, this function receives the name and type as a parameter or an object with input properties 	|
 | `errors`     	| object of errors your form. 	|
 | `touched`     | object with all inputs present in your form with the boolean value.	|
+
+<br/>
+
+## useValidation Hook
+`useValidation` is a hook validation, that hook receives values of form and a schema validation created by Yup and returns the object errors at every change in values form.
+
+`
+  Yup is a JavaScript schema builder for value parsing and validation. Define a schema, transform a value to match, validate the shape of an existing value, or both. Yup schema are extremely expressive and allow modeling complex, interdependent validations, or value transformations.
+`
+
+[Yup]:https://github.com/jquense/yup
+
+ ```tsx
+    const validation = {....Yup}
+
+    const values = {...object values provides by useForm}
+
+    const errors = useValidation(values, validation)
+ ```
