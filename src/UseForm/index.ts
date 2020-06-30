@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef, useState, useEffect, useCallback, createRef, ChangeEvent } from 'react'
+import React, { useRef, useState, useEffect, useCallback, createRef, ChangeEvent } from 'react'
 import State from '../State'
 import { debounce } from '../Debounce'
 import {
@@ -28,10 +28,20 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   const inputsTouched = useRef<TInitial>({} as TInitial)
   const { errors, isValid } = useValidation(values, validation)
 
+  /**
+   * This function set form values with a delay time,by default has a 500 milliseconds.
+   * When uses a option debounce form this function is used to set a new form values.
+   */
   const setValuesDebounce = useCallback(debounce(setValues, optionsGetValues?.debounce || 500), [
     optionsGetValues,
   ])
 
+
+  /**
+   * The purpose that function is set a new value in value ref of a every input element.
+   * @param input is a object with properties like ref input.
+   * @param value that value is placed on input ref value
+   */
   function setRefValue(input: InputRegisterProps<any>, value: any) {
     if (!input?.ref?.current) {
       return
@@ -46,16 +56,35 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     return (input.ref.current.value = value || null)
   }
 
+  /**
+   * That function register every inputs, and it return a input props.
+   * @param props {
+   *   name: string
+   *    defaultValue?: any
+   *   value?: any
+   *   onChange: (...args: Array<any>) => void
+   *   onBlur?: (...args: Array<any>) => void
+   *   type?: string
+   *   defaultChecked?: any
+   * }
+   */
   function registerInput(props: InputPartialProps) {
     const inputProps = {
       ...listInputsRef.current,
       [props.name]: { ...props, ref: createRef<HTMLInputElement>() },
     } as ListInputsRef
 
+    /**
+     * creating a input props an put one on a specific key in listInputsRef.
+     */
     listInputsRef.current = inputProps
     return listInputsRef.current[props.name]
   }
 
+  /**
+   * onSubmit return a function that executed when onSubmit event is called. 
+   * That function is option when uses a form like controlled or debounce. 
+   */
   const onSubmit = useCallback(
     (fn: (values: TInitial) => void) => {
       return (e: React.BaseSyntheticEvent) => {
@@ -70,6 +99,10 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
           )
         })
 
+        /**
+         * if validations is false it's means that the function can return the form value. 
+         * If not this means that form values not valid. 
+         */
         if (!validation) {
           fn(state.current.getState)
         } else if ((validation as any)?.isValidSync(state.current.getState)) {
@@ -172,10 +205,10 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
           complementProps.type === 'number'
             ? Number(e.target.value)
             : complementProps.type === 'date'
-            ? e.target.value
-            : complementProps.type === 'file'
-            ? e.target.files
-            : e.target.value,
+              ? e.target.value
+              : complementProps.type === 'file'
+                ? e.target.files
+                : e.target.value,
       })
     }
 
