@@ -150,6 +150,11 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     setRefValue(listInputsRef.current[fieldPath], value)
   }
 
+  /**
+   * Set in a list of input if is touched or not.
+   * inputTouched is an object with the same shape of object values,
+   * it's convenient to use the same field path for object values ​​and object touched to find and put the value with dot notation.
+   */
   function setOnBlur(fieldPath: string) {
     if (inputsTouched.current) {
       inputsTouched.current = dot.set(inputsTouched.current, fieldPath, true)
@@ -159,6 +164,11 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     }
   }
 
+  /**
+   * 
+   * @param param this is object with properties of a custom input.
+   * custom function register a custom inputs like a react date piker or react-select.
+   */
   function custom<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
     const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
@@ -173,6 +183,9 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
       setOnBlur(complementProps.name)
     }
 
+    /**
+     * set a type custom to filter a custom inputs in complex forms.
+     */
     const props = registerInput({
       value: dot.get(values, complementProps.name),
       onChange,
@@ -184,6 +197,12 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     return props
   }
 
+  /**
+   * 
+   * @param param is a object with the same properties of native input in react like {type, checked, value ...}
+   * @param args get a rest o arguments like type whe use approach like this {<input {...input("test", "text")}/>}
+   * this function register a default input with default properties.
+   */
   function input(
     param: FieldParam<InputProps>,
     ...args: Array<string>
@@ -191,6 +210,10 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     const complementProps =
       typeof param === 'string' ? { name: param, type: args[0] } : { ...param }
 
+
+    /**
+     * To turn logic easier has a function to process input checkbox or radio and baseDefaultInput for another kind of input like text, data...
+     */
     if (isCheckbox(complementProps.type) || isRadio(complementProps.type)) {
       return baseChecked(complementProps)
     }
