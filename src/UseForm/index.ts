@@ -75,7 +75,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     } as ListInputsRef
 
     /**
-     * creating a input props an put one on a specific key in listInputsRef.
+     * Create input props a put that on a specific key in list InputRef.
      */
     listInputsRef.current = inputProps
     return listInputsRef.current[props.name]
@@ -83,7 +83,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
 
   /**
    * onSubmit return a function that executed when onSubmit event is called. 
-   * That function is option when uses a form like controlled or debounce. 
+   * That function is called when uses a form like controlled or debounce. 
    */
   const onSubmit = useCallback(
     (fn: (values: TInitial) => void) => {
@@ -100,8 +100,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
         })
 
         /**
-         * if validations is false it's means that the function can return the form value. 
-         * If not this means that form values not valid. 
+         * If validations are false it means that the function can return the form value, if not this means that form values not valid. 
          */
         if (!validation) {
           fn(state.current.getState)
@@ -151,9 +150,9 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   }
 
   /**
-   * Set in a list of input if is touched or not.
-   * inputTouched is an object with the same shape of object values,
-   * it's convenient to use the same field path for object values ​​and object touched to find and put the value with dot notation.
+   * Set in a list of input if the current input is touched or not.
+   * inputTouched is an object with the same shape of form values,
+   * it's convenient to use the same field path for form values ​​and object touched to find and put the value with dot notation.
    */
   function setOnBlur(fieldPath: string) {
     if (inputsTouched.current) {
@@ -166,8 +165,8 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
 
   /**
    * 
-   * @param param this is object with properties of a custom input.
-   * custom function register a custom inputs like a react date piker or react-select.
+   * @param This is an object with properties of a custom input.
+   * Custom function register custom inputs like a react date piker or react-select.
    */
   function custom<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
     const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
@@ -184,7 +183,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     }
 
     /**
-     * set a type custom to filter a custom inputs in complex forms.
+     * Set a type custom to filter custom inputs in complex forms.
      */
     const props = registerInput({
       value: dot.get(values, complementProps.name),
@@ -199,9 +198,9 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
 
   /**
    * 
-   * @param param is a object with the same properties of native input in react like {type, checked, value ...}
-   * @param args get a rest o arguments like type whe use approach like this {<input {...input("test", "text")}/>}
-   * this function register a default input with default properties.
+   * @param param Is a object with the same properties of native input in react like {type, checked, value ...}
+   * @args Args get a rest o arguments like type whe use approach like this {<input {...input("test", "text")}/>}
+   * This function register default inputs with default properties.
    */
   function input(
     param: FieldParam<InputProps>,
