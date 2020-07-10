@@ -220,15 +220,12 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   function customNative<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
     const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
-    function onValueChange(e: ChangeEvent<any>) {
+    function onValueChange(e: ChangeEvent<TextInput>) {
+      setOnBlur(complementProps.name)
       state.current.change({
         fieldPath: complementProps.name,
         value: e,
       })
-    }
-
-    function onBlur() {
-      setOnBlur(complementProps.name)
     }
 
     /**
@@ -237,7 +234,6 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     const props = registerInput({
       value: dot.get(values, complementProps.name),
       onValueChange,
-      onBlur,
       type: 'custom',
       ...complementProps,
     })
@@ -336,14 +332,14 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
       })
     }
 
-    function onBlur() {
+    function onTouchStart() {
       setOnBlur(complementProps.name)
     }
 
     const props = registerInput({
       defaultValue: state.current.getValue(complementProps.name),
       onChange,
-      onBlur,
+      onTouchStart,
       ...complementProps,
     })
     return props
