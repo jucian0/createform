@@ -1,18 +1,37 @@
 ![Logo](img/logo3.png)
+<h1 align="center">Welcome to useForm 👋</h1>
 
 
-# UseForm🚀
 [![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/Jucian0/useform/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/useforms) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/useforms) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/useforms) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/useform&hashtags=reactjs,hook,javascript,forms)
 
+> useFom provide a way to create complex forms easily.
 
+### 🏠 [Homepage](https://useform.org)
 
-## [Read Docs](https://useform.org)
+### ✨ [Demo](https://codesandbox.io/s/useform-2u2ju)
 
-## React Web and React Native Support
+## Install
+
+```sh
+yarn add useforms
+```
+```sh
+npm install useforms
+```
+
+## Run tests
+
+```sh
+yarn test
+```
 
 React data forms provide a way to create complex forms easily, react data forms provide a hook called `userForm`, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore, it does not matter if the object is complex or has many properties or array, the result is the same. The same process is realized with errors object and touched object.
 
+## Usage
+
 ```jsx
+  import {useform} from "useforms"
+
   const initialValues = {
     first:"one",
     second:{
@@ -41,15 +60,14 @@ React data forms provide a way to create complex forms easily, react data forms 
   
 ```
 
+
 Don't need the tag form, unless if you want to use uncontrolled inputs.
 
 By default react data forms work with Yup Validation.
  - Yup is a JavaScript schema builder for value parsing and validation. Define a schema, transform a value to match, validate the shape of an existing value, or both. Yup schema are extremely expressive and allow modeling complex, interdependent validations, or value transformations.
 
-# Get Started
 
-## useForm hook
-
+## Get Started
 
 The first example of creating forms is a controlled form, useForm receive an initialObject with optional some properties:
 
@@ -114,7 +132,7 @@ Uncontrolled inputs provide better performance because they drastically reduce t
 
 <br/>
 
-## useValidation Hook
+## useValidation
 `useValidation` is a hook validation, that hook receives values of form and a schema validation created by Yup and returns the object errors at every change in values form.
 
 `
@@ -131,18 +149,23 @@ Uncontrolled inputs provide better performance because they drastically reduce t
     const errors = useValidation(values, validation)
  ```
 
+## Author
 
- # Contents
+👤 **Jucian0**
 
- ## Forms
+* Website: https://medium.com/@jucian0
+* Twitter: [@juciano\_barbosa](https://twitter.com/juciano\_barbosa)
+* Github: [@jucian0](https://github.com/jucian0)
 
- - ### [Debounce Input ](https://useform.org/docs/debounced-input)
-  - ### [Uncontrolled Input ](https://useform.org/docs/uncontrolled-input)
- - ### [Controlled Inputs ](https://useform.org/docs/controlled-input)
- - ### [Custom Input](https://useform.org/docs/custom-input)
+## 🤝 Contributing
 
- ## Validation 
- - ### [Validation with Yup ](https://useform.org/docs/validation)
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/Jucian0/useform/issues). You can also take a look at the [contributing guide](https://github.com/Jucian0/useform/blob/master/CONTRIBUTING.md).
 
- ## Get Starter 
- - ### [Small Tutorial](https://useform.org/docs/get-starter)
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+Copyright © 2020 [Jucian0](https://github.com/jucian0).<br />
+This project is [MIT](https://github.com/Jucian0/useform/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
