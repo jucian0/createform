@@ -46,13 +46,14 @@ export interface InputPartialProps {
   value?: any
   onChange: (...args: Array<any>) => void
   onBlur?: (...args: Array<any>) => void
+  onTouchStart?: (...args: Array<any>) => void
   type?: string
   defaultChecked?: any
 }
 export interface InputRegisterProps<T = RefFieldElement> extends InputPartialProps {
   ref?: T extends RefFieldElement
-    ? RefObject<RefFieldElement extends RefObject<infer Ref> ? Ref : never>
-    : RefObject<T>
+  ? RefObject<RefFieldElement extends RefObject<infer Ref> ? Ref : never>
+  : RefObject<T>
 }
 
 export type ListInputsRef = {
