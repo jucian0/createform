@@ -220,7 +220,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   function customNative<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
     const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
-    function onValueChange(e: ChangeEvent<TextInput>) {
+    function onValueChange(e: any) {
       setOnBlur(complementProps.name)
       state.current.change({
         fieldPath: complementProps.name,
