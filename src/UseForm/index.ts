@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useRef, useState, useEffect, useCallback, createRef, ChangeEvent } from 'react'
+import React, { useRef, useState, useEffect, useCallback, createRef, ChangeEvent } from 'react'
 import State from '../State'
 import { debounce } from '../Debounce'
 import {
@@ -28,14 +28,29 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   const inputsTouched = useRef<TInitial>({} as TInitial)
   const { errors, isValid } = useValidation(values, validation)
 
+  /**
+   * This function set form values with a delay time,by default has a 500 milliseconds.
+   * When uses a option debounce form this function is used to set a new form values.
+   */
   const setValuesDebounce = useCallback(debounce(setValues, optionsGetValues?.debounce || 500), [
     optionsGetValues,
   ])
 
+
+  /**
+   * The purpose that function is set a new value in value ref of a every input element.
+   * @param input is a object with properties like ref input.
+   * @param value that value is placed on input ref value
+   */
   function setRefValue(input: InputRegisterProps<any>, value: any) {
     if (!input?.ref?.current) {
       return
     }
+
+    if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+      return input.ref.current?.setNativeProps?.({ text: value || null })
+    }
+
     const type = input.ref.current.type
 
     if (isRadio(type)) {
@@ -43,19 +58,40 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     } else if (isCheckbox(type)) {
       return (input.ref.current.checked = Boolean(value))
     }
-    return (input.ref.current.value = value || null)
+
+
+    return input.ref.current.value = value || null
   }
 
+  /**
+   * That function register every inputs, and it return a input props.
+   * @param props {
+   *   name: string
+   *    defaultValue?: any
+   *   value?: any
+   *   onChange: (...args: Array<any>) => void
+   *   onBlur?: (...args: Array<any>) => void
+   *   type?: string
+   *   defaultChecked?: any
+   * }
+   */
   function registerInput(props: InputPartialProps) {
     const inputProps = {
       ...listInputsRef.current,
       [props.name]: { ...props, ref: createRef<HTMLInputElement>() },
     } as ListInputsRef
 
+    /**
+     * creating a input props an put one on a specific key in listInputsRef.
+     */
     listInputsRef.current = inputProps
     return listInputsRef.current[props.name]
   }
 
+  /**
+   * onSubmit return a function that executed when onSubmit event is called. 
+   * That function is option when uses a form like controlled or debounce. 
+   */
   const onSubmit = useCallback(
     (fn: (values: TInitial) => void) => {
       return (e: React.BaseSyntheticEvent) => {
@@ -70,6 +106,10 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
           )
         })
 
+        /**
+         * if validations is false it's means that the function can return the form value. 
+         * If not this means that form values not valid. 
+         */
         if (!validation) {
           fn(state.current.getState)
         } else if ((validation as any)?.isValidSync(state.current.getState)) {
@@ -117,6 +157,11 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     setRefValue(listInputsRef.current[fieldPath], value)
   }
 
+  /**
+   * Set in a list of input if is touched or not.
+   * inputTouched is an object with the same shape of object values,
+   * it's convenient to use the same field path for object values ​​and object touched to find and put the value with dot notation.
+   */
   function setOnBlur(fieldPath: string) {
     if (inputsTouched.current) {
       inputsTouched.current = dot.set(inputsTouched.current, fieldPath, true)
@@ -126,7 +171,20 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     }
   }
 
+
   function custom<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
+    if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+      return customNative(param)
+    }
+    return customWeb(param)
+  }
+
+  /**
+   * 
+   * @param param this is object with properties of a custom input web.
+   * custom function register a custom inputs like a react date piker or react-select.
+   */
+  function customWeb<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
     const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
     function onChange(e: any) {
@@ -140,6 +198,9 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
       setOnBlur(complementProps.name)
     }
 
+    /**
+     * set a type custom to filter a custom inputs in complex forms.
+     */
     const props = registerInput({
       value: dot.get(values, complementProps.name),
       onChange,
@@ -151,6 +212,41 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     return props
   }
 
+  /**
+ * 
+ * @param param this is object with properties of a custom input native.
+ * custom function register a custom inputs like a Switch Picker.
+ */
+  function customNative<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
+    const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
+
+    function onValueChange(e: any) {
+      setOnBlur(complementProps.name)
+      state.current.change({
+        fieldPath: complementProps.name,
+        value: e,
+      })
+    }
+
+    /**
+     * set a type custom to filter a custom inputs in complex forms.
+     */
+    const props = registerInput({
+      value: dot.get(values, complementProps.name),
+      onValueChange,
+      type: 'custom',
+      ...complementProps,
+    })
+
+    return props
+  }
+
+  /**
+   * 
+   * @param param is a object with the same properties of native input in react like {type, checked, value ...}
+   * @param args get a rest o arguments like type whe use approach like this {<input {...input("test", "text")}/>}
+   * this function register a default input with default properties.
+   */
   function input(
     param: FieldParam<InputProps>,
     ...args: Array<string>
@@ -158,13 +254,21 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     const complementProps =
       typeof param === 'string' ? { name: param, type: args[0] } : { ...param }
 
-    if (isCheckbox(complementProps.type) || isRadio(complementProps.type)) {
-      return baseChecked(complementProps)
+
+    if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+      return nativeBase(complementProps)
     }
-    return baseDefaultInput(complementProps)
+
+    /**
+     * To turn logic easier has a function to process input checkbox or radio and defaultInputBase for another kind of input like text, data...
+     */
+    if (isCheckbox(complementProps.type) || isRadio(complementProps.type)) {
+      return checkedBase(complementProps)
+    }
+    return defaultInputBase(complementProps)
   }
 
-  function baseDefaultInput(complementProps: InputProps) {
+  function defaultInputBase(complementProps: InputProps) {
     function onChange(e: ChangeEvent<HTMLInputElement>) {
       state.current.change({
         fieldPath: e.target.name,
@@ -172,10 +276,10 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
           complementProps.type === 'number'
             ? Number(e.target.value)
             : complementProps.type === 'date'
-            ? e.target.value
-            : complementProps.type === 'file'
-            ? e.target.files
-            : e.target.value,
+              ? e.target.value
+              : complementProps.type === 'file'
+                ? e.target.files
+                : e.target.value,
       })
     }
 
@@ -193,7 +297,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     return props
   }
 
-  function baseChecked(complementProps: InputProps) {
+  function checkedBase(complementProps: InputProps) {
     function onChange(e: ChangeEvent<HTMLInputElement>) {
       state.current.change({
         fieldPath: e.target.name,
@@ -216,6 +320,33 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     })
     return props
   }
+
+
+
+  function nativeBase(complementProps: InputProps) {
+
+    function onChange(e: any) {
+      state.current.change({
+        fieldPath: complementProps.name,
+        value: e.nativeEvent.text,
+      })
+    }
+
+    function onTouchStart() {
+      setOnBlur(complementProps.name)
+    }
+
+    const props = registerInput({
+      defaultValue: state.current.getValue(complementProps.name),
+      onChange,
+      onTouchStart,
+      ...complementProps,
+    })
+    return props
+
+  }
+
+
 
   const hasCustomInputs = useCallback(() => {
     return Object.keys(listInputsRef.current)
