@@ -10,6 +10,10 @@
 
 ### ✨ [Demo](https://codesandbox.io/s/useform-2u2ju)
 
+<a href="https://codesandbox.io/s/useform-2u2ju">
+  <img width="150" alt="Example in CodeSandbox" src="https://codesandbox.io/static/img/play-codesandbox.svg">
+</a>
+
 ## Install
 
 ```sh
@@ -107,6 +111,10 @@ The first example of creating forms is a controlled form, useForm receive an ini
   }
 ```
 <br/>
+
+<a href="https://codesandbox.io/s/useform-2u2ju">
+  <img width="150" alt="Example in CodeSandbox" src="https://codesandbox.io/static/img/play-codesandbox.svg">
+</a>
 
 In this case I created a form without a `validation` and with ` onChange` option, it is worth mentioning that useForm by default works with uncontrolled inputs. 
 
