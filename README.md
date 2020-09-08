@@ -29,7 +29,19 @@ npm install useforms
 yarn test
 ```
 
-React data forms provide a way to create complex forms easily, react data forms provide a hook called `userForm`, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore, it does not matter if the object is complex or has many properties or array, the result is the same. The same process is realized with errors object and touched object.
+## Description
+
+
+Forms are an important part of web applications, and with react it's possible to create greats forms,  
+react hooks are a game-changer when we think about forms, with hooks is very simple to create forms, and you can go on without libraries.  
+But when we wanna complex forms with many validations and complex objects with several layer and properties is appropriate to use a library form to manager the state of inputs and its validations.  
+For this reason, there is useForm, with useForm we can make greats forms and complex validations with less line code.
+
+UseForm provides a way to create complex forms easily, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore, 
+it does not matter if the object is complex or has many properties or array, 
+the result is the same. This process turns very easily to create forms from an object with several layers, 
+the same layers and properties are replicated in the final object, 
+this approach prevents you to type more code to convert an object from form to backend object type. The same process is realized with errors object and touched object.
 
 ## Usage
 
