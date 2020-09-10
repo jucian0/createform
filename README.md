@@ -75,10 +75,10 @@ By default react data forms work with Yup Validation.
 
 The first example of creating forms is a controlled form, useForm receive an initialObject with optional some properties:
 
-  * `onChange`: Defines when form state will update.
+  * `isControlled`: Defines when form state will update.
   * `debounce`: Defines a form with debounce values.
   * `initialValues`: Defines initial state of form.
-  * `validations`: Receives a validation schema yup.
+  * `schemaValidation`: Receives a validation schema yup.
 
 ```jsx
   import {useForm} from 'useforms'
@@ -91,7 +91,7 @@ The first example of creating forms is a controlled form, useForm receive an ini
 
   function ControlledForm(){
 
-      const [{values, reset},{input}] = useForm({onChange:true, initialValues})
+      const [{values, reset},{input}] = useForm({isControlled:true, initialValues})
       
       return (
         <>
@@ -116,7 +116,7 @@ The first example of creating forms is a controlled form, useForm receive an ini
   <img width="150" alt="Example in CodeSandbox" src="https://codesandbox.io/static/img/play-codesandbox.svg">
 </a>
 
-In this case I created a form without a `validation` and with ` onChange` option, it is worth mentioning that useForm by default works with uncontrolled inputs. 
+In this case I created a form without a `validation` and with ` isControlled` option, it is worth mentioning that useForm by default works with uncontrolled inputs. 
 
 Uncontrolled inputs provide better performance because they drastically reduce the amount of time render component.
 <br/>
@@ -150,7 +150,7 @@ Uncontrolled inputs provide better performance because they drastically reduce t
 [Yup]:https://github.com/jquense/yup
 
  ```tsx
-    const validation = {....Yup}
+    const schemaValidation = {....Yup}
 
     const values = {...object values provides by useForm}
 
