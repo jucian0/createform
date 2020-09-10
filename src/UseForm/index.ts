@@ -19,21 +19,22 @@ import { Schema } from 'yup'
 
 export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = any>({
   initialValues,
-  validation,
-  ...optionsGetValues
+  schemaValidation,
+  isControlled,
+  isDebounce,
 }: UseForm<TInitial, TSchema>): UseFormR<TInitial> {
   const state = useRef(new State(initialValues || ({} as TInitial)))
   const listInputsRef = useRef<ListInputsRef>(Object.assign({}))
   const [values, setValues] = useState(initialValues || ({} as TInitial))
   const inputsTouched = useRef<TInitial>({} as TInitial)
-  const { errors, isValid } = useValidation(values, validation)
+  const { errors, isValid } = useValidation(values, schemaValidation)
 
   /**
    * This function set form values with a delay time,by default has a 500 milliseconds.
    * When uses a option debounce form this function is used to set a new form values.
    */
-  const setValuesDebounce = useCallback(debounce(setValues, optionsGetValues?.debounce || 500), [
-    optionsGetValues,
+  const setValuesDebounce = useCallback(debounce(setValues, isDebounce || 500), [
+    isDebounce,
   ])
 
 
@@ -107,17 +108,17 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
         })
 
         /**
-         * if validations is false it's means that the function can return the form value. 
-         * If not this means that form values not valid. 
+         * If validations are false its means that the function can return the form value. 
+         * If not its means that form values not valid. 
          */
-        if (!validation) {
+        if (!schemaValidation) {
           fn(state.current.getState)
-        } else if ((validation as any)?.isValidSync(state.current.getState)) {
+        } else if ((schemaValidation as any)?.isValidSync(state.current.getState)) {
           fn(state.current.getState)
         }
       }
     },
-    [validation]
+    [schemaValidation]
   )
 
   function reset() {
@@ -128,6 +129,10 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   function setInputs(values: TInitial) {
     state.current.setState = values
     setRefInputsValues()
+  }
+
+  function watch() {
+
   }
 
   function setRefInputsValues() {
@@ -165,7 +170,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   function setOnBlur(fieldPath: string) {
     if (inputsTouched.current) {
       inputsTouched.current = dot.set(inputsTouched.current, fieldPath, true)
-      if (optionsGetValues.debounce || optionsGetValues.onChange) {
+      if (isDebounce || isControlled) {
         setValues({ ...values })
       }
     }
@@ -273,7 +278,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
       state.current.change({
         fieldPath: e.target.name,
         value:
-          complementProps.type === 'number'
+          complementProps.type === 'number' || complementProps.type === 'range'
             ? Number(e.target.value)
             : complementProps.type === 'date'
               ? e.target.value
@@ -346,8 +351,6 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
 
   }
 
-
-
   const hasCustomInputs = useCallback(() => {
     return Object.keys(listInputsRef.current)
       .filter((ref) => listInputsRef.current[ref].type === 'custom')
@@ -359,9 +362,9 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
       if (JSON.stringify(newValues) === JSON.stringify(values)) {
         return
       }
-      if (optionsGetValues?.debounce) {
+      if (isDebounce) {
         return setValuesDebounce(newValues)
-      } else if (optionsGetValues?.onChange) {
+      } else if (isControlled) {
         return setValues(newValues)
       } else if (hasCustomInputs()) {
         if (hasCustomInputs().includes(fieldPath)) {
@@ -369,7 +372,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
         }
       }
     },
-    [hasCustomInputs, optionsGetValues, setValuesDebounce, values]
+    [hasCustomInputs, isControlled, isDebounce, setValuesDebounce, values]
   )
 
   useEffect(() => {
