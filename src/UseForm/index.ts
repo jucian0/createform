@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useState, useEffect, useCallback, createRef, ChangeEvent } from 'react'
 import State from '../State'
-import { debounce } from '../Debounce'
+import { debounce as debouncer } from '../Debounce'
 import {
   FieldParam,
   InputProps,
@@ -21,7 +21,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   initialValues,
   schemaValidation,
   isControlled,
-  isDebounce,
+  debounce,
   watch
 }: UseForm<TInitial, TSchema>): UseFormR<TInitial> {
   const state = useRef(new State(initialValues || ({} as TInitial)))
@@ -34,8 +34,8 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
    * This function set form values with a delay time,by default has a 500 milliseconds.
    * When uses a option debounce form this function is used to set a new form values.
    */
-  const setValuesDebounce = useCallback(debounce(setValues, isDebounce || 500), [
-    isDebounce,
+  const setValuesDebounce = useCallback(debouncer(setValues, debounce || 500), [
+    debounce,
   ])
 
 
@@ -60,8 +60,6 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     } else if (isCheckbox(type)) {
       return (input.ref.current.checked = Boolean(value))
     }
-
-
     return input.ref.current.value = value || null
   }
 
@@ -167,7 +165,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   function setOnBlur(fieldPath: string) {
     if (inputsTouched.current) {
       inputsTouched.current = dot.set(inputsTouched.current, fieldPath, true)
-      if (isDebounce || isControlled) {
+      if (debounce || isControlled) {
         setValues({ ...values })
       }
     }
@@ -362,7 +360,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
       if (watch) {
         watch(newValues)
       }
-      if (isDebounce) {
+      if (debounce) {
         return setValuesDebounce(newValues)
       } else if (isControlled) {
         return setValues(newValues)
@@ -372,7 +370,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
         }
       }
     },
-    [hasCustomInputs, isControlled, isDebounce, setValuesDebounce, values]
+    [hasCustomInputs, isControlled, debounce, setValuesDebounce, values]
   )
 
   useEffect(() => {
