@@ -5,10 +5,9 @@ import { InputHTMLAttributes, RefObject } from 'react'
  */
 export interface UseForm<TInitialValues = {}, TValidation = any> {
   initialValues?: TInitialValues
-  validation?: TValidation
-  onChange?: boolean
-  debounce?: number
-  onSubmit?: boolean
+  schemaValidation?: TValidation
+  isControlled?: boolean
+  isDebounce?: number
 }
 
 type ObjectInputs = {
