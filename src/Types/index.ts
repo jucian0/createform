@@ -8,6 +8,7 @@ export interface UseForm<TInitialValues = {}, TValidation = any> {
   schemaValidation?: TValidation
   isControlled?: boolean
   isDebounce?: number
+  watch?: (e: TInitialValues) => void
 }
 
 type ObjectInputs = {

@@ -22,6 +22,7 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   schemaValidation,
   isControlled,
   isDebounce,
+  watch
 }: UseForm<TInitial, TSchema>): UseFormR<TInitial> {
   const state = useRef(new State(initialValues || ({} as TInitial)))
   const listInputsRef = useRef<ListInputsRef>(Object.assign({}))
@@ -129,10 +130,6 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
   function setInputs(values: TInitial) {
     state.current.setState = values
     setRefInputsValues()
-  }
-
-  function watch() {
-
   }
 
   function setRefInputsValues() {
@@ -361,6 +358,9 @@ export function useForm<TInitial extends {}, TSchema extends Schema<TInitial> = 
     (newValues: TInitial, fieldPath: string) => {
       if (JSON.stringify(newValues) === JSON.stringify(values)) {
         return
+      }
+      if (watch) {
+        watch(newValues)
       }
       if (isDebounce) {
         return setValuesDebounce(newValues)
