@@ -621,4 +621,28 @@ describe('Test custom inputs', () => {
 
     expect(result.values.supporting).toEqual('new-name-test')
   })
+
+  it('should call watch function when values is changed', () => {
+
+    const watch = jest.fn()
+
+    const hookParams = {
+      initialValues: {
+        'test-watch': 'test',
+      },
+      watch
+    }
+
+    const inputParams = {
+      name: 'test-watch',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    act(() => {
+      fireEvent.change(screen.getByTestId('test-watch'), { target: { value: 'new-value-test' } })
+    })
+
+    expect(watch).toBeCalled()
+  })
 })
