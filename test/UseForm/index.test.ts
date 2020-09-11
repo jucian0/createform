@@ -1,7 +1,7 @@
 // import { renderHook, act } from '@testing-library/react-hooks'
 import { useForm } from '../../src/index'
 import { renderHook } from '@testing-library/react-hooks'
-import { fireEvent, act, screen, queryByAttribute } from '@testing-library/react'
+import { fireEvent, act, screen } from '@testing-library/react'
 import { setup, customSetup } from '../utils'
 import * as yup from 'yup'
 
@@ -9,7 +9,7 @@ describe('Test useForm hook controlled inputs forms', () => {
   it('should set correct properties', () => {
     const {
       result: {
-        current: [{}, { input }],
+        current: [{ }, { input }],
       },
     } = renderHook(() => useForm({ initialValues: { 'test-name': 'my-name-test' } }))
 
@@ -19,8 +19,8 @@ describe('Test useForm hook controlled inputs forms', () => {
           name: 'test-name',
           type: 'text',
           defaultValue: 'my-name-test',
-          onBlur: () => {},
-          onChange: () => {},
+          onBlur: () => { },
+          onChange: () => { },
           /**
            * ref is change when component is mounted
            */
@@ -33,7 +33,7 @@ describe('Test useForm hook controlled inputs forms', () => {
   it('should change formState when change input value type text', () => {
     const hookParams = {
       initialValues: { 'test-name': 'my-name-test' },
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -52,7 +52,7 @@ describe('Test useForm hook controlled inputs forms', () => {
   it('should change formState when change input value type checkbox', () => {
     const hookParams = {
       initialValues: { 'test-accept': true },
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -71,7 +71,7 @@ describe('Test useForm hook controlled inputs forms', () => {
   it('should change formState when change input value type number', () => {
     const hookParams = {
       initialValues: { 'test-number': 22 },
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -92,7 +92,7 @@ describe('Test useForm hook controlled inputs forms', () => {
     const finalDate = '2018-12-31'
     const hookParams = {
       initialValues: { 'test-date': initialDate },
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -112,7 +112,7 @@ describe('Test useForm hook controlled inputs forms', () => {
     const finalFile = require('./../utils/tes-input-file.json')
     const hookParams = {
       initialValues: { 'test-file': null },
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -131,7 +131,7 @@ describe('Test useForm hook controlled inputs forms', () => {
   it('should change formState when change input value type radio', () => {
     const hookParams = {
       initialValues: { 'test-radio': 'France' },
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -285,7 +285,7 @@ describe('Test functions returned by hook', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -314,7 +314,7 @@ describe('Test functions returned by hook', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -343,7 +343,7 @@ describe('Test functions returned by hook', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -373,7 +373,7 @@ describe('Test functions returned by hook', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -406,7 +406,7 @@ describe('Test functions returned by hook', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -430,7 +430,7 @@ describe('Test functions returned by hook', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -491,7 +491,7 @@ describe('Test onBlur event', () => {
 })
 
 describe('Test form with validation', () => {
-  const validation = yup.object().shape({
+  const schemaValidation = yup.object().shape({
     'test-validation': yup.string().required('this field is required'),
   })
 
@@ -503,8 +503,8 @@ describe('Test form with validation', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
-      validation,
+      isControlled: true,
+      schemaValidation,
     }
 
     const inputParams = {
@@ -534,8 +534,8 @@ describe('Test form with validation', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
-      validation,
+      isControlled: true,
+      schemaValidation,
     }
 
     const inputParams = {
@@ -565,7 +565,7 @@ describe('Test custom inputs', () => {
 
     const hookParams = {
       initialValues,
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -584,7 +584,7 @@ describe('Test custom inputs', () => {
   it('should set onBlur on custom input', () => {
     const hookParams = {
       initialValues: { 'test-custom-blur': initialDate },
-      onChange: true,
+      isControlled: true,
     }
 
     const inputParams = {
@@ -619,8 +619,30 @@ describe('Test custom inputs', () => {
       fireEvent.change(screen.getByRole('textbox'), { target: { value: finalDate } })
     })
 
-    console.log(result.values)
-
     expect(result.values.supporting).toEqual('new-name-test')
+  })
+
+  it('should call watch function when values is changed', () => {
+
+    const watch = jest.fn()
+
+    const hookParams = {
+      initialValues: {
+        'test-watch': 'test',
+      },
+      watch
+    }
+
+    const inputParams = {
+      name: 'test-watch',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    act(() => {
+      fireEvent.change(screen.getByTestId('test-watch'), { target: { value: 'new-value-test' } })
+    })
+
+    expect(watch).toBeCalled()
   })
 })

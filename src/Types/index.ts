@@ -5,10 +5,10 @@ import { InputHTMLAttributes, RefObject } from 'react'
  */
 export interface UseForm<TInitialValues = {}, TValidation = any> {
   initialValues?: TInitialValues
-  validation?: TValidation
-  onChange?: boolean
+  schemaValidation?: TValidation
+  isControlled?: boolean
   debounce?: number
-  onSubmit?: boolean
+  watch?: (e: TInitialValues) => void
 }
 
 type ObjectInputs = {
@@ -73,5 +73,4 @@ export type OnChange = {
 }
 
 export type Subscriber<T> = (e: T, fieldPath: string) => void
-
 export type Subscribers<T> = Array<Subscriber<T>>
