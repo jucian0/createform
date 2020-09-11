@@ -73,5 +73,4 @@ export type OnChange = {
 }
 
 export type Subscriber<T> = (e: T, fieldPath: string) => void
-
 export type Subscribers<T> = Array<Subscriber<T>>
