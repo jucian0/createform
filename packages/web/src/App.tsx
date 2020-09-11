@@ -1,16 +1,30 @@
 import React, { useEffect } from 'react'
-import api from '@omnirepo/axios-config'
+import './styles.css'
 
-// import { Container } from './styles';
+import { } from '@useForms/useForms'
 
 const App: React.FC = () => {
-  useEffect(() => {
-    api.get('/').then(response => {
-      console.log(response)
-    })
-  }, [])
+  useEffect(() => { }, [])
 
-  return <h1>Hello World</h1>
+  return (
+    <section>
+      <form>
+        <div>
+          <input type="text" placeholder="name" />
+        </div>
+        <div>
+          <input type="text" placeholder="email" />
+        </div>
+        <div>
+          <input type="text" placeholder="password" />
+        </div>
+        <div>
+          <button>reset</button>
+          <button>submit</button>
+        </div>
+      </form>
+    </section>
+  )
 }
 
 export default App
