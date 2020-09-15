@@ -6,14 +6,20 @@ const form = create({
   initialValues: {
     name: 'juciano',
     email: 'jose',
-    password: '123456'
+    password: '123456',
+    other: {
+      ice: -12
+    }
   }
 })
 
 const App: React.FC = () => {
 
 
-  const [values, { register }] = useForm(form)
+  const [values, { register }] = useForm(form,
+    {
+      isControlled: true
+    })
 
   console.log(values)
 
