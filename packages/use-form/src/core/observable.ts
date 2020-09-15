@@ -1,7 +1,7 @@
 type Subscriber<TValues> = (e: TValues) => void
 type Subscribers<TValues = {}> = Array<Subscriber<TValues>>
 
-function Observer() {
+export function Observer() {
 
    let subscribers: Subscribers = []
 

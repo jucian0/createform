@@ -1,5 +1,5 @@
 {
-  "name": "useforms",
+  "name": "use-form",
   "private": true,
   "version": "1.0.4",
   "main": "index.js",
@@ -14,11 +14,12 @@
     ]
   },
   "devDependencies": {
-    "@useForms/eslint-config": "*",
     "@types/jest": "^26.0.5",
+    "@use-form/eslint-config": "*",
     "jest": "^26.1.0",
+    "jest-environment-jsdom": "^26.0.1",
+    "lerna": "^3.22.1",
     "ts-jest": "^26.1.3",
-    "typescript": "^3.9.7",
-    "jest-environment-jsdom": "^26.0.1"
+    "typescript": "^3.9.7"
   }
 }

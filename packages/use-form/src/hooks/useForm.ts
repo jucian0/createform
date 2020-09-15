@@ -1,9 +1,11 @@
-function useForm(param: any) {
+import React from "react"
 
-   const [state, setState] = useState(param.values)
-   const listInputsRef = useRef<any>({})
+export function useForm(param: any) {
 
-   useEffect(() => {
+   const [state, setState] = React.useState(param.values)
+   const listInputsRef = React.useRef<any>({})
+
+   React.useEffect(() => {
       // const sub = param.subscriber.subscriber(setState)
 
       return () => {

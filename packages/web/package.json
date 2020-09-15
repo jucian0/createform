@@ -1,5 +1,5 @@
 {
-  "name": "@useForms/web",
+  "name": "@use-form/web",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-refresh": "^0.8.3",
-    "@useForms/useForms": "*"
+    "@use-form/use-form": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

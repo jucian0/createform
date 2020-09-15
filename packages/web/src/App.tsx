@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
 import './styles.css'
 
-import { } from '@useForms/useForms'
+import { useForm } from '@use-form/use-form'
 
 const App: React.FC = () => {
+
+  console.log(useForm)
   useEffect(() => { }, [])
 
   return (
