@@ -1,7 +1,7 @@
 {
-  "name": "@use-form/web",
+  "name": "@forms/web",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --mode development"
@@ -10,7 +10,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-refresh": "^0.8.3",
-    "@use-form/use-form": "*"
+    "@forms/useform": "*",
+    "@forms/test": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

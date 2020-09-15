@@ -1,24 +1,33 @@
 import React, { useEffect } from 'react'
 import './styles.css'
+import { create, useForm } from '@forms/useform'
 
-import { useForm } from '@use-form/use-form'
+const form = create({
+  initialValues: {
+    name: 'juciano',
+    email: 'jose',
+    password: '123456'
+  }
+})
 
 const App: React.FC = () => {
 
-  console.log(useForm)
-  useEffect(() => { }, [])
+
+  const [values, { register }] = useForm(form)
+
+  console.log(values)
 
   return (
     <section>
       <form>
         <div>
-          <input type="text" placeholder="name" />
+          <input placeholder="name" {...register('name', 'text')} />
         </div>
         <div>
-          <input type="text" placeholder="email" />
+          <input placeholder="email" {...register('email', 'email')} />
         </div>
         <div>
-          <input type="text" placeholder="password" />
+          <input placeholder="password" {...register('password', 'text')} />
         </div>
         <div>
           <button>reset</button>
