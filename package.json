@@ -1,5 +1,5 @@
 {
-  "name": "use-form",
+  "name": "forms",
   "private": true,
   "version": "1.0.4",
   "main": "index.js",
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.5",
-    "@use-form/eslint-config": "*",
+    "@forms/eslint-config": "*",
     "jest": "^26.1.0",
     "jest-environment-jsdom": "^26.0.1",
     "lerna": "^3.22.1",

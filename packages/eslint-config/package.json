@@ -1,5 +1,5 @@
 {
-  "name": "@use-form/eslint-config",
+  "name": "@forms/eslint-config",
   "version": "1.0.0",
   "main": ".eslintrc.js",
   "license": "MIT",

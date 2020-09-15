@@ -1,7 +1,7 @@
 {
-  "name": "@use-form/use-form",
+  "name": "@forms/useform",
   "version": "1.0.4",
-  "main": "index.js",
+  "main": "src/index.ts",
   "license": "MIT",
   "scripts": {},
   "dependencies": {

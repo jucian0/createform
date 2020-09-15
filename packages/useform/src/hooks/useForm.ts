@@ -1,15 +1,25 @@
 import React from "react"
+import { create } from "../core/create"
 
-export function useForm(param: any) {
+type UseFormOptions<TValues> = {
+   isControlled?: boolean,
+   debounce?: number,
+   watch?: (values: TValues) => void
+}
 
-   const [state, setState] = React.useState(param.values)
+export function useForm<TForm extends ReturnType<typeof create>>(
+   formContext: TForm,
+   options: UseFormOptions<ReturnType<TForm['get']>>
+): [ReturnType<TForm['get']>, any] {
+
+   const [state, setState] = React.useState<ReturnType<TForm["get"]>>(formContext.get() as any)
    const listInputsRef = React.useRef<any>({})
 
    React.useEffect(() => {
-      // const sub = param.subscriber.subscriber(setState)
+      const sub = formContext.subscriber.subscriber(setState)
 
       return () => {
-         //  sub()
+         sub()
       }
    }, [])
 
@@ -29,11 +39,11 @@ export function useForm(param: any) {
    function register(name: string, type: string) {
 
       function onChange(e: any) {
-         param.setValues({ [e.target.name]: e.target.value })
+         formContext.setValues({ [e.target.name]: e.target.value })
       }
 
       const props = registerInput({
-         defaultValue: param.get()[name],
+         defaultValue: formContext.get()[name],
          name,
          type,
          onChange
@@ -43,5 +53,5 @@ export function useForm(param: any) {
 
    }
 
-   return [state, { onSubmit: param.onSubmit, register }]
+   return [state, { onSubmit: formContext.onSubmit, register }]
 }
