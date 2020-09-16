@@ -5,7 +5,7 @@ import { create, useForm } from '@forms/useform'
 const form = create({
   initialValues: {
     name: 'juciano',
-    email: 'jose',
+    email: 'jose@jose.com',
     password: '123456',
     other: {
       ice: -12
@@ -18,7 +18,7 @@ const App: React.FC = () => {
 
   const [values, { input, onSubmit, reset }] = useForm(form,
     {
-      isControlled: true,
+      //isControlled: true,
       //debounce: 500
     })
 
@@ -39,11 +39,14 @@ const App: React.FC = () => {
           <input placeholder="email" {...input('email', 'email')} />
         </div>
         <div>
-          <input placeholder="password" {...input('password', 'text')} />
+          <input placeholder="password" {...input('passwords.test', 'password')} />
         </div>
         <div>
-          <button type="submit">reset</button>
-          <button type="reset">submit</button>
+          <input placeholder="password" {...input('password', 'password')} />
+        </div>
+        <div>
+          <button type="reset">reset</button>
+          <button type="submit">submit</button>
         </div>
       </form>
     </section>
