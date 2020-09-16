@@ -16,28 +16,34 @@ const form = create({
 const App: React.FC = () => {
 
 
-  const [values, { register }] = useForm(form,
+  const [values, { input, onSubmit, reset }] = useForm(form,
     {
-      isControlled: true
+      isControlled: true,
+      //debounce: 500
     })
 
-  console.log(values)
+  React.useEffect(() => {
+    console.log(values)
+  }, [values])
+
 
   return (
     <section>
-      <form>
+      <form onSubmit={onSubmit(e => {
+        console.log(e)
+      })} onReset={reset}>
         <div>
-          <input placeholder="name" {...register('name', 'text')} />
+          <input placeholder="name" {...input('name', 'text')} />
         </div>
         <div>
-          <input placeholder="email" {...register('email', 'email')} />
+          <input placeholder="email" {...input('email', 'email')} />
         </div>
         <div>
-          <input placeholder="password" {...register('password', 'text')} />
+          <input placeholder="password" {...input('password', 'text')} />
         </div>
         <div>
-          <button>reset</button>
-          <button>submit</button>
+          <button type="submit">reset</button>
+          <button type="reset">submit</button>
         </div>
       </form>
     </section>

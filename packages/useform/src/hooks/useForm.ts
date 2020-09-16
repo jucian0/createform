@@ -1,5 +1,11 @@
 import React from "react"
 import { create } from "../core/create"
+import { debounce } from "../utils"
+
+
+
+type TypeForm = ReturnType<typeof create>
+type TValues<TForm extends TypeForm> = ReturnType<TForm['get']>
 
 type UseFormOptions<TValues> = {
    isControlled?: boolean,
@@ -7,21 +13,48 @@ type UseFormOptions<TValues> = {
    watch?: (values: TValues) => void
 }
 
-export function useForm<TForm extends ReturnType<typeof create>>(
+
+
+type OnSubmit = (fn: (values: TValues<TypeForm>) => void) => (e: React.BaseSyntheticEvent) => void
+type Input = (name: string, type: string) => any
+type Set = (e: Partial<TValues<TypeForm>>) => void
+type Reset = () => void
+
+type UseForm<TForm extends TypeForm> = [
+   TValues<TForm>,
+   {
+      onSubmit: OnSubmit,
+      input: Input,
+      set: Set,
+      reset: Reset
+   }
+]
+
+
+
+export function useForm<TForm extends TypeForm>(
    formContext: TForm,
-   options: UseFormOptions<ReturnType<TForm['get']>>
-): [ReturnType<TForm['get']>, any] {
+   options: UseFormOptions<TValues<TForm>>
+): UseForm<TForm> {
 
    const [state, setState] = React.useState<ReturnType<TForm["get"]>>(formContext.get() as any)
    const listInputsRef = React.useRef<any>({})
+   const initialValues = React.useRef<ReturnType<TForm["get"]>>(formContext.get() as any)
 
    React.useEffect(() => {
-      const sub = formContext.subscriber.subscriber(setState)
-
-      return () => {
-         sub()
+      if (options.isControlled) {
+         const sub = formContext.subscriber.subscriber(setState)
+         return () => {
+            sub()
+         }
+      } else if (options.debounce) {
+         const setValuesDebounce = debounce(setState, options.debounce)
+         const sub = formContext.subscriber.subscriber(setValuesDebounce)
+         return () => {
+            sub()
+         }
       }
-   }, [])
+   }, [options])
 
    function registerInput(props: any) {
       const inputProps = {
@@ -29,17 +62,14 @@ export function useForm<TForm extends ReturnType<typeof create>>(
          [props.name]: { ...props, ref: React.createRef<HTMLInputElement>() },
       }
 
-      /**
-       * creating a input props an put one on a specific key in listInputsRef.
-       */
       listInputsRef.current = inputProps
       return listInputsRef.current[props.name]
    }
 
-   function register(name: string, type: string) {
+   function input(name: string, type: string) {
 
       function onChange(e: any) {
-         formContext.setValues({ [e.target.name]: e.target.value })
+         formContext.set({ [e.target.name]: e.target.value })
       }
 
       const props = registerInput({
@@ -53,5 +83,20 @@ export function useForm<TForm extends ReturnType<typeof create>>(
 
    }
 
-   return [state, { onSubmit: formContext.onSubmit, register }]
+   function onSubmit(fn: (values: TValues<TForm>) => void) {
+      return (e: React.BaseSyntheticEvent) => {
+         e.preventDefault()
+         formContext.onSubmit(fn)
+      }
+   }
+
+   function set(e: Partial<TValues<TForm>>) {
+      formContext.set(e)
+   }
+
+   function reset() {
+      formContext.set(initialValues.current)
+   }
+
+   return [state, { onSubmit, input, set, reset }]
 }
