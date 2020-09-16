@@ -16,9 +16,12 @@ const form = create({
 const App: React.FC = () => {
 
 
-  const [values, { input, onSubmit, reset }] = useForm(form,
+  const [values, { input, onSubmit, reset, set }] = useForm(form,
     {
-      //isControlled: true,
+      watch: e => {
+        console.log(e, '<<<<<<<<< watch')
+      },
+      // isControlled: true,
       //debounce: 500
     })
 
@@ -27,10 +30,19 @@ const App: React.FC = () => {
   }, [values])
 
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      set({
+        name: 'jose antonio'
+      })
+    }, 3000)
+  }, [])
+
+
   return (
     <section>
       <form onSubmit={onSubmit(e => {
-        console.log(e)
+        console.log(e, 'submit')
       })} onReset={reset}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />
