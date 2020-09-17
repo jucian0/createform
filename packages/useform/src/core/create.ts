@@ -1,13 +1,25 @@
 import { Observable } from "./observable"
 import dot from 'dot-prop-immutable'
 
+export type InitialErrors<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
+export type InitialTouched<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
+
+export type CreateReturn<TValues> = {
+   setValues: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
+   setErrors: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
+   setTouched: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
+   context: ReturnType<typeof Observable>,
+   get: () => TValues,
+   onSubmit: (fn: (e: TValues) => void) => void
+   reset: () => void
+}
+
 type CreateParams<TValues> = {
    initialValues: TValues,
    schemaValidation?: any,
-   initialErrors?: { [k in keyof TValues]?: TValues[k] extends object ? any : string }
-   initialTouched?: { [k in keyof TValues]?: TValues[k] extends object ? any : string }
+   initialErrors?: InitialErrors<TValues>
+   initialTouched?: InitialTouched<TValues>
 }
-
 // type Flatten<T> = NonObjectPropertiesOf<T> & SubPropertiesOf<T>;
 
 // type NonObjectKeysOf<T> = { [K in keyof T]: T[K] extends Array<any> ? K : T[K] extends object ? never : K }[keyof T];
@@ -27,15 +39,6 @@ type CreateParams<TValues> = {
 
 
 
-export type CreateReturn<TValues> = {
-   setValues: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
-   setErrors: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
-   setTouched: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
-   context: ReturnType<typeof Observable>,
-   get: () => TValues,
-   onSubmit: (fn: (e: TValues) => void) => void
-   reset: () => void
-}
 
 
 export function create<TValues>({ initialValues }: CreateParams<TValues>): CreateReturn<TValues> {

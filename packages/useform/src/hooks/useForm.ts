@@ -1,5 +1,5 @@
 import React from "react"
-import { create } from "../core/create"
+import { create, InitialErrors, InitialTouched } from "../core/create"
 import { debounce } from "../utils"
 
 
@@ -17,20 +17,22 @@ type UseFormOptions<TValues> = {
 
 type OnSubmit<TValues> = (fn: (values: TValues) => void) => (e: React.BaseSyntheticEvent) => void
 type Input = (name: string, type: string) => any
-type Set<TValues> = (e: Partial<TValues>) => void
+type SetValues<TValues> = (e: Partial<TValues>) => void
+type SetErrors<TValues> = (e: Partial<InitialErrors<TValues>>) => void
+type SetTouched<TValues> = (e: Partial<InitialTouched<TValues>>) => void
 type Reset = () => void
 
 type UseForm<TForm extends TypeForm> = [
    TValues<TForm>,
    {
-      onSubmit: OnSubmit<TValues<TForm>>,
-      input: Input,
-      set: Set<TValues<TForm>>,
+      onSubmit: OnSubmit<TValues<TForm>>
+      input: Input
+      setValues: SetValues<TValues<TForm>>
+      setErrors: SetErrors<TValues<TForm>>
+      setTouched: SetTouched<TValues<TForm>>
       reset: Reset
    }
 ]
-
-
 
 export function useForm<TForm extends TypeForm>(
    form: TForm,
@@ -70,7 +72,7 @@ export function useForm<TForm extends TypeForm>(
    function input(name: string, type: string) {
 
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         form.set({ name: e.target.name, value: e.target.value })
+         form.setValues({ name: e.target.name, value: e.target.value })
       }
 
       const props = registerInput({
@@ -90,13 +92,21 @@ export function useForm<TForm extends TypeForm>(
       }
    }
 
-   function set(e: Partial<TValues<TForm>>) {
-      form.set({ name: null, value: e })
+   function setValues(e: Partial<TValues<TForm>>) {
+      form.setValues({ name: null, value: e })
+   }
+
+   function setErrors(e: Partial<InitialErrors<TValues<TForm>>>) {
+      form.setErrors({ name: null, value: e })
+   }
+
+   function setTouched(e: Partial<InitialTouched<TValues<TForm>>>) {
+      form.setTouched({ name: null, value: e })
    }
 
    function reset() {
       form.reset()
    }
 
-   return [state, { onSubmit, input, set, reset }]
+   return [state, { onSubmit, input, setValues, reset, setErrors, setTouched }]
 }

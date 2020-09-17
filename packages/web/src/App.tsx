@@ -30,7 +30,7 @@ const form = create({
 const App: React.FC = () => {
 
 
-  const [values, { input, onSubmit, reset, set }] = useForm(form,
+  const [values, { input, onSubmit, reset, setValues }] = useForm(form,
     {
       watch: e => {
         // console.log(e, '<<<<<<<<< watch')
@@ -46,7 +46,7 @@ const App: React.FC = () => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      set({
+      setValues({
         name: 'jose antonio',
         email: 'jose@olimpio.com'
       })
