@@ -19,7 +19,7 @@ const App: React.FC = () => {
   const [values, { input, onSubmit, reset, set }] = useForm(form,
     {
       watch: e => {
-        console.log(e, '<<<<<<<<< watch')
+        // console.log(e, '<<<<<<<<< watch')
       },
       // isControlled: true,
       //debounce: 500
