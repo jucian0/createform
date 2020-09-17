@@ -4,16 +4,23 @@ import { create, useForm } from '@forms/useform'
 
 const form = create({
   initialValues: {
-    name: 'juciano',
+    name: 12,
     email: 'jose@jose.com',
     password: '123456',
     other: {
-      ice: -12
+      ice: -12,
+      more: {
+        less: '1212'
+      }
     }
   },
   initialErrors: {
-    name: 'Not valid',
-    email: 'Not Valid'
+    name: 'Not Valid',
+    email: 'Not Valid',
+    password: 'Not Valid',
+    other: {
+      ice: 'Not Valid'
+    }
   }
 })
 
