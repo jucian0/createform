@@ -10,6 +10,10 @@ const form = create({
     other: {
       ice: -12
     }
+  },
+  initialErrors: {
+    name: 'Not valid',
+    email: 'Not Valid'
   }
 })
 
