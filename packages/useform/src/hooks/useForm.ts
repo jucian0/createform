@@ -33,15 +33,15 @@ type UseForm<TForm extends TypeForm> = [
 
 
 export function useForm<TForm extends TypeForm>(
-   context: TForm,
+   form: TForm,
    options: UseFormOptions<TValues<TForm>>
 ): UseForm<TForm> {
 
-   const [state, setState] = React.useState<ReturnType<TForm["get"]>>(context.get() as any)
+   const [state, setState] = React.useState<ReturnType<TForm["get"]>>(form.get() as any)
    const listInputsRef = React.useRef<any>({})
 
    React.useEffect(() => {
-      const subscriber = context.formState.subscribe<TValues<TForm>>(e => {
+      const subscriber = form.context.subscribe<TValues<TForm>>(e => {
          options.watch?.(e)
          if (options.isControlled) {
             setState(e)
@@ -70,11 +70,11 @@ export function useForm<TForm extends TypeForm>(
    function input(name: string, type: string) {
 
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         context.set({ name: e.target.name, value: e.target.value })
+         form.set({ name: e.target.name, value: e.target.value })
       }
 
       const props = registerInput({
-         defaultValue: context.get()[name],
+         defaultValue: form.get()[name],
          name,
          type,
          onChange
@@ -86,16 +86,16 @@ export function useForm<TForm extends TypeForm>(
    function onSubmit(fn: (values: TValues<TForm>) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         context.onSubmit(fn)
+         form.onSubmit(fn)
       }
    }
 
    function set(e: Partial<TValues<TForm>>) {
-      context.set({ name: null, value: e })
+      form.set({ name: null, value: e })
    }
 
    function reset() {
-      context.reset()
+      form.reset()
    }
 
    return [state, { onSubmit, input, set, reset }]

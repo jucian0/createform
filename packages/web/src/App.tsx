@@ -4,7 +4,7 @@ import { create, useForm } from '@forms/useform'
 
 const form = create({
   initialValues: {
-    name: 12,
+    name: 'jose',
     email: 'jose@jose.com',
     password: '123456',
     other: {
@@ -19,7 +19,10 @@ const form = create({
     email: 'Not Valid',
     password: 'Not Valid',
     other: {
-      ice: 'Not Valid'
+      ice: '',
+      more: {
+        less: ''
+      }
     }
   }
 })

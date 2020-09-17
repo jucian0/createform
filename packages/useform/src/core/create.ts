@@ -29,7 +29,7 @@ type CreateParams<TValues> = {
 
 export type CreateReturn<TValues> = {
    set: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
-   formState: ReturnType<typeof Observable>,
+   context: ReturnType<typeof Observable>,
    get: () => TValues,
    onSubmit: (fn: (e: TValues) => void) => void
    reset: () => void
@@ -38,31 +38,31 @@ export type CreateReturn<TValues> = {
 
 export function create<TValues>({ initialValues }: CreateParams<TValues>): CreateReturn<TValues> {
 
-   const formState = Observable()
-   let values = {
+   const context = Observable()
+   let state = {
       values: initialValues,
       errors: {},
       onChanged: {}
    }
 
    function changeValues(nextValues: TValues) {
-      values = nextValues
+      state.values = nextValues
       notify()
    }
 
    function get() {
-      return values
+      return state.values
    }
 
    function notify() {
-      formState.notify<TValues>(values)
+      context.notify<TValues>(state.values)
    }
 
    function set<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
-         changeValues(dot.set(values, e.name, e.value))
+         changeValues(dot.set(state.values, e.name, e.value))
       } else {
-         changeValues(Object.assign(values, e.value))
+         changeValues(Object.assign(state.values, e.value))
       }
    }
 
@@ -76,7 +76,7 @@ export function create<TValues>({ initialValues }: CreateParams<TValues>): Creat
 
    return {
       set,
-      formState,
+      context,
       get,
       onSubmit,
       reset
