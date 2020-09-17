@@ -4,23 +4,23 @@ import dot from 'dot-prop-immutable'
 type CreateParams<TValues> = {
    initialValues: TValues,
    schemaValidation?: any,
-   initialErrors?: { [k in keyof TValues]?: TValues[k] extends object ? TValues[k] : string }
-   // initialTouched?: Flatten<TValues> //{ [k in keyof TValues]?: boolean }
+   initialErrors?: { [k in keyof TValues]?: TValues[k] extends object ? any : string }
+   initialTouched?: { [k in keyof TValues]?: TValues[k] extends object ? any : string }
 }
 
-type Flatten<T> = NonObjectPropertiesOf<T> & SubPropertiesOf<T>;
+// type Flatten<T> = NonObjectPropertiesOf<T> & SubPropertiesOf<T>;
 
-type NonObjectKeysOf<T> = { [K in keyof T]: T[K] extends Array<any> ? K : T[K] extends object ? never : K }[keyof T];
+// type NonObjectKeysOf<T> = { [K in keyof T]: T[K] extends Array<any> ? K : T[K] extends object ? never : K }[keyof T];
 
-type NonObjectPropertiesOf<T> = Pick<T, NonObjectKeysOf<T>>;
+// type NonObjectPropertiesOf<T> = Pick<T, NonObjectKeysOf<T>>;
 
 
-type ValuesOf<T> = T[keyof T];
-type ObjectValuesOf<T> = Exclude<Extract<ValuesOf<T>, object>, Array<any>>;
+// type ValuesOf<T> = T[keyof T];
+// type ObjectValuesOf<T> = Exclude<Extract<ValuesOf<T>, object>, Array<any>>;
 
-type SubPropertiesOf<T> = {
-   [K in keyof ObjectValuesOf<T>]: ObjectValuesOf<T>[K]
-};
+// type SubPropertiesOf<T> = {
+//    [K in keyof ObjectValuesOf<T>]: ObjectValuesOf<T>[K]
+// };
 
 
 
