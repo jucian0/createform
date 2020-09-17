@@ -30,18 +30,18 @@ const form = create({
 const App: React.FC = () => {
 
 
-  const [values, { input, onSubmit, reset, setValues }] = useForm(form,
+  const [state, { input, onSubmit, reset, setValues }] = useForm(form,
     {
       watch: e => {
         // console.log(e, '<<<<<<<<< watch')
       },
-      // isControlled: true,
-      //debounce: 500
+      //isControlled: true,
+      debounce: 500
     })
 
   React.useEffect(() => {
-    console.log(values)
-  }, [values])
+    console.log(state)
+  }, [state])
 
 
   React.useEffect(() => {

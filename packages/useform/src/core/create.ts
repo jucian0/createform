@@ -9,7 +9,9 @@ export type CreateReturn<TValues> = {
    setErrors: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
    setTouched: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
    context: ReturnType<typeof Observable>,
-   get: () => TValues,
+   getValues: () => TValues,
+   getErrors: () => {},
+   getTouched: () => {},
    onSubmit: (fn: (e: TValues) => void) => void
    reset: () => void
 }
@@ -50,49 +52,59 @@ export function create<TValues>({ initialValues }: CreateParams<TValues>): Creat
       touched: {}
    }
 
-   function changeValues(nextValues: TValues) {
-      state.values = nextValues
+   function changeValues(path: string, nextValues: TValues) {
+      state = dot.set(state, path, nextValues)
       notify()
    }
 
-   function get() {
+   function getValues() {
       return state.values
    }
 
+   function getTouched() {
+      return state.touched
+   }
+
+   function getErrors() {
+      return state.errors
+   }
+
    function notify() {
-      context.notify<TValues>(state.values)
+      context.notify(state)
    }
 
    function setValues<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
-         changeValues(dot.set(state.values, e.name, e.value))
+         changeValues('values', dot.set(state.values, e.name, e.value))
       } else {
-         changeValues(Object.assign(state.values, e.value))
+         changeValues('values', Object.assign(state.values, e.value))
       }
    }
 
    function setErrors<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
-         changeValues(dot.set(state.errors, e.name, e.value))
+         changeValues('errors', dot.set(state.errors, e.name, e.value))
       } else {
-         changeValues(Object.assign(state.errors, e.value))
+         changeValues('errors', Object.assign(state.errors, e.value))
       }
    }
 
    function setTouched<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
-         changeValues(dot.set(state.touched, e.name, e.value))
+         changeValues('touched', dot.set(state.touched, e.name, e.value))
       } else {
-         changeValues(Object.assign(state.touched, e.value))
+         changeValues('touched', Object.assign(state.touched, e.value))
       }
    }
 
    function onSubmit(fn: any) {
-      return fn(get())
+      return fn(getValues())
    }
 
    function reset() {
-      changeValues(initialValues)
+      changeValues('values', initialValues)
+      changeValues('errors', initialValues)
+      changeValues('touched', initialValues)
    }
 
    return {
@@ -100,7 +112,9 @@ export function create<TValues>({ initialValues }: CreateParams<TValues>): Creat
       setErrors,
       setTouched,
       context,
-      get,
+      getValues,
+      getErrors,
+      getTouched,
       onSubmit,
       reset
    }
