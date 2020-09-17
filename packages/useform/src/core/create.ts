@@ -28,7 +28,9 @@ type CreateParams<TValues> = {
 
 
 export type CreateReturn<TValues> = {
-   set: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
+   setValues: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
+   setErrors: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
+   setTouched: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
    context: ReturnType<typeof Observable>,
    get: () => TValues,
    onSubmit: (fn: (e: TValues) => void) => void
@@ -42,7 +44,7 @@ export function create<TValues>({ initialValues }: CreateParams<TValues>): Creat
    let state = {
       values: initialValues,
       errors: {},
-      onChanged: {}
+      touched: {}
    }
 
    function changeValues(nextValues: TValues) {
@@ -58,11 +60,27 @@ export function create<TValues>({ initialValues }: CreateParams<TValues>): Creat
       context.notify<TValues>(state.values)
    }
 
-   function set<TValue extends TValues>(e: { name: string, value: TValue }) {
+   function setValues<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
          changeValues(dot.set(state.values, e.name, e.value))
       } else {
          changeValues(Object.assign(state.values, e.value))
+      }
+   }
+
+   function setErrors<TValue extends TValues>(e: { name: string, value: TValue }) {
+      if (e.name) {
+         changeValues(dot.set(state.errors, e.name, e.value))
+      } else {
+         changeValues(Object.assign(state.errors, e.value))
+      }
+   }
+
+   function setTouched<TValue extends TValues>(e: { name: string, value: TValue }) {
+      if (e.name) {
+         changeValues(dot.set(state.touched, e.name, e.value))
+      } else {
+         changeValues(Object.assign(state.touched, e.value))
       }
    }
 
@@ -75,7 +93,9 @@ export function create<TValues>({ initialValues }: CreateParams<TValues>): Creat
    }
 
    return {
-      set,
+      setValues,
+      setErrors,
+      setTouched,
       context,
       get,
       onSubmit,
