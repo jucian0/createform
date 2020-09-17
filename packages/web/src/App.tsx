@@ -33,7 +33,8 @@ const App: React.FC = () => {
   React.useEffect(() => {
     setTimeout(() => {
       set({
-        name: 'jose antonio'
+        name: 'jose antonio',
+        email: 'jose@olimpio.com'
       })
     }, 3000)
   }, [])
