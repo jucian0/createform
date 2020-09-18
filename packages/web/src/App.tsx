@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react'
+import * as yup from 'yup'
 import './styles.css'
 import { create, useForm } from '@forms/useform'
+
+
+const schemaValidation = yup.object().shape({
+  email: yup.string().email().required(),
+  name: yup.string().required()
+})
 
 const form = create({
   initialValues: {
@@ -24,19 +31,20 @@ const form = create({
         less: ''
       }
     }
-  }
+  },
+  schemaValidation
 })
 
 const App: React.FC = () => {
 
 
-  const [state, { input, onSubmit, reset, setValues }] = useForm(form,
+  const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form,
     {
       watch: e => {
         // console.log(e, '<<<<<<<<< watch')
       },
-      //isControlled: true,
-      debounce: 500
+      isControlled: true,
+      //debounce: 500
     })
 
   React.useEffect(() => {
@@ -48,8 +56,16 @@ const App: React.FC = () => {
     setTimeout(() => {
       setValues({
         name: 'jose antonio',
-        email: 'jose@olimpio.com'
+        // email: 'jose@olimpio.com'
       })
+
+      // setTouched({
+      //   name: true
+      // })
+
+      // setErrors({
+      //   name: 'Invalid'
+      // })
     }, 3000)
   }, [])
 
@@ -57,7 +73,7 @@ const App: React.FC = () => {
   return (
     <section>
       <form onSubmit={onSubmit(e => {
-        console.log(e, 'submit')
+        //  console.log(e, 'submit')
       })} onReset={reset}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />
