@@ -1,4 +1,5 @@
 import React from "react"
+import dot from 'dot-prop-immutable'
 import { create, InitialErrors, InitialTouched } from "../core/create"
 import { debounce, isCheckbox, isRadio } from "../utils"
 
@@ -79,45 +80,36 @@ export function useForm<TForm extends TypeForm>(
    const listInputsRef = React.useRef<ListInputsRef>(Object.assign({}))
    const setValuesDebounce = React.useCallback(debounce(setState, options.debounce), [])
 
-
-
    /**
- * The purpose that function is set a new value in value ref of a every input element.
- * @param input is a object with properties like ref input.
+ * The purpose that function is set a new value in value ref of an every input element.
+ * @param input is an object with properties like ref input.
  * @param value that value is placed on input ref value
  */
-   // function setRefValue(input: InputRegisterProps<any>, value: any) {
-   //    if (!input?.ref?.current) {
-   //       return
-   //    }
+   function setRefValue(input: InputRegisterProps<any>, value: any) {
+      if (!input?.ref?.current) {
+         return
+      }
 
-   //    const type = input.ref.current.type
+      const type = input.ref.current.type
 
-   //    if (isRadio(type)) {
-   //       return (input.ref.current.checked = input.ref.current.value === value)
-   //    } else if (isCheckbox(type)) {
-   //       return (input.ref.current.checked = Boolean(value))
-   //    }
+      if (isRadio(type)) {
+         return (input.ref.current.checked = input.ref.current.value === value)
+      } else if (isCheckbox(type)) {
+         return (input.ref.current.checked = Boolean(value))
+      }
 
-   //    return input.ref.current.value = value || null
-   // }
+      return input.ref.current.value = value || null
+   }
 
-   // function setRefInputsValues() {
-   //    Object.keys(listInputsRef.current).forEach((key) => {
-   //       setRefValue(listInputsRef.current[key], form.getValues()[key])
-   //       // setTouched(dot.set(form.getTouched(), listInputsRef.current[key].name, false))
-   //    })
-   //    setValues(form.getValues() as any)
-   // }
-
-
-
-
-
-
+   function setRefInputsValues() {
+      Object.keys(listInputsRef.current).forEach((key) => {
+        setRefValue(listInputsRef.current[key], form.getValues()[key])
+        form.setTouched({name:listInputsRef.current[key].name,value: false})
+      })
+   }
 
    /**
-    * That function register every inputs, and it return a input props.
+    * That function register every inputs, and it return an input props.
     * @param props {
     *   name: string
     *    defaultValue?: any
@@ -135,7 +127,7 @@ export function useForm<TForm extends TypeForm>(
       } as ListInputsRef
 
       /**
-       * creating a input props an put one on a specific key in listInputsRef.
+       * creating an input props a put one on a specific key in listInputsRef.
        */
       listInputsRef.current = inputProps
       return listInputsRef.current[props.name]
@@ -143,9 +135,9 @@ export function useForm<TForm extends TypeForm>(
 
 
    /**
-   * 
+   *
    * @param param is a object with the same properties of native input in react like {type, checked, value ...}
-   * @param args get a rest o arguments like type whe use approach like this {<input {...input("test", "text")}/>}
+   * @param args get a rest o arguments like type when use approach like this {<input {...input("test", "text")}/>}
    * this function register a default input with default properties.
    */
    function input(
@@ -221,18 +213,18 @@ export function useForm<TForm extends TypeForm>(
    function onSubmit(fn: (values: TValues<TForm>) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         // setState({
-         //    values: form.getValues(),
-         //    errors: form.getErrors(),
-         //    touched: form.getTouched()
-         // })
+         setState({
+            values: form.getValues(),
+            errors: form.getErrors(),
+            touched: form.getTouched()
+         })
          form.onSubmit(fn)
       }
    }
 
    function setValues(e: Partial<TValues<TForm>>) {
       form.setValues({ name: null, value: e })
-      // setRefInputsValues()
+      setRefInputsValues()
    }
 
    function setErrors(e: Partial<InitialErrors<TValues<TForm>>>) {
@@ -240,12 +232,13 @@ export function useForm<TForm extends TypeForm>(
    }
 
    function setTouched(e: Partial<InitialTouched<TValues<TForm>>>) {
+     console.log(e)
       form.setTouched({ name: null, value: e })
    }
 
    function reset() {
       form.reset()
-      //setRefInputsValues()
+      setRefInputsValues()
    }
 
    React.useEffect(() => {
