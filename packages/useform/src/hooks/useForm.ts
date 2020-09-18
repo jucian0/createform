@@ -67,7 +67,7 @@ type ListInputsRef = {
    >
 }
 
-function reducer<TState>(state: TState, nextState: Partial<TState>) {
+function reducer<TState>(state: TState, nextState: Partial<TState>):TState {
    return { ...state, ...nextState }
 }
 
@@ -256,5 +256,5 @@ export function useForm<TForm extends TypeForm>(
       }
    }, [options])
 
-   return [state, { onSubmit, input, setValues, reset, setErrors, setTouched }]
+   return [state as UseForm<TForm>[0], { onSubmit, input, setValues, reset, setErrors, setTouched }]
 }
