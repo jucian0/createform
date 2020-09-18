@@ -41,9 +41,9 @@ const App: React.FC = () => {
   const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form,
     {
       watch: e => {
-        // console.log(e, '<<<<<<<<< watch')
+        //console.log(e, '<<<<<<<<< watch')
       },
-      isControlled: true,
+      //isControlled: true,
       //debounce: 500
     })
 
@@ -54,10 +54,10 @@ const App: React.FC = () => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      setValues({
-        name: 'jose antonio',
-        // email: 'jose@olimpio.com'
-      })
+      // setValues({
+      //   name: 'jose antonio',
+      //   // email: 'jose@olimpio.com'
+      // })
 
       // setTouched({
       //   name: true
@@ -73,7 +73,7 @@ const App: React.FC = () => {
   return (
     <section>
       <form onSubmit={onSubmit(e => {
-        //  console.log(e, 'submit')
+        console.log(e, 'submit')
       })} onReset={reset}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />
