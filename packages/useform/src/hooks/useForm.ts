@@ -67,7 +67,7 @@ type ListInputsRef = {
    >
 }
 
-function reducer<TState>(state: TState, nextState: Partial<TState>):TState {
+function reducer<TState>(state: TState, nextState: Partial<TState>): TState {
    return { ...state, ...nextState }
 }
 
@@ -103,8 +103,7 @@ export function useForm<TForm extends TypeForm>(
 
    function setRefInputsValues() {
       Object.keys(listInputsRef.current).forEach((key) => {
-        setRefValue(listInputsRef.current[key], form.getValues()[key])
-        form.setTouched({name:listInputsRef.current[key].name,value: false})
+         setRefValue(listInputsRef.current[key], form.getValues()[key])
       })
    }
 
@@ -213,11 +212,6 @@ export function useForm<TForm extends TypeForm>(
    function onSubmit(fn: (values: TValues<TForm>) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         setState({
-            values: form.getValues(),
-            errors: form.getErrors(),
-            touched: form.getTouched()
-         })
          form.onSubmit(fn)
       }
    }
@@ -232,7 +226,6 @@ export function useForm<TForm extends TypeForm>(
    }
 
    function setTouched(e: Partial<InitialTouched<TValues<TForm>>>) {
-     console.log(e)
       form.setTouched({ name: null, value: e })
    }
 
