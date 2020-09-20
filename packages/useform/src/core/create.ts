@@ -1,4 +1,4 @@
-import { Observable } from "./observable"
+import { state } from "./observable"
 import dot from 'dot-prop-immutable'
 import { ValidationError, Schema as YupSchema } from "yup"
 
@@ -9,7 +9,7 @@ export type CreateReturn<TValues> = {
    setValues: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
    setErrors: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
    setTouched: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
-   context: ReturnType<typeof Observable>,
+   context: ReturnType<typeof state>,
    getValues: () => TValues,
    getErrors: () => {},
    getTouched: () => {},
@@ -27,55 +27,55 @@ type CreateParams<TValues> = {
 
 export function create<TValues>({ initialValues, schemaValidation, initialErrors = {}, initialTouched = {} }: CreateParams<TValues>): CreateReturn<TValues> {
 
-   const context = Observable()
-   let state = {
+   const context = state({
       values: initialValues,
-      errors: {},
-      touched: {}
-   }
+      errors: initialErrors,
+      touched: initialTouched
+   })
 
    function setState(path: string, nextValues: TValues) {
-      state = dot.set(state, path, nextValues)
+      const state = context.get
+      context.set = dot.set(state, path, nextValues)
       notify()
    }
 
    function getValues() {
-      return state.values
+      return context.get.values
    }
 
    function getTouched() {
-      return state.touched
+      return context.get.touched
    }
 
    function getErrors() {
-      return state.errors
+      return context.get.errors
    }
 
    function notify() {
-      context.notify(state)
+      context.notify()
    }
 
    function setValues<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
-         setState('values', dot.set(state.values, e.name, e.value))
+         setState('values', dot.set(context.get.values, e.name, e.value))
       } else {
-         setState('values', Object.assign(state.values, e.value))
+         setState('values', Object.assign(context.get.values, e.value))
       }
    }
 
    function setErrors<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
-         setState('errors', dot.set(state.errors, e.name, e.value))
+         setState('errors', dot.set(context.get.errors, e.name, e.value))
       } else {
-         setState('errors', Object.assign(state.errors, e.value))
+         setState('errors', Object.assign(context.get.errors, e.value))
       }
    }
 
    function setTouched<TValue extends TValues>(e: { name: string, value: TValue }) {
       if (e.name) {
-         setState('touched', dot.set(state.touched, e.name, e.value))
+         setState('touched', dot.set(context.get.touched, e.name, e.value))
       } else {
-         setState('touched', Object.assign(state.touched, e.value))
+         setState('touched', Object.assign(context.get.touched, e.value))
       }
    }
 
@@ -87,6 +87,10 @@ export function create<TValues>({ initialValues, schemaValidation, initialErrors
       setState('values', initialValues)
       setState('errors', initialErrors)
       setState('touched', initialTouched)
+   }
+
+   function setInput<T>(value: T, name: string) {
+
    }
 
    return {

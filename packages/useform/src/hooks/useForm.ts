@@ -235,7 +235,7 @@ export function useForm<TForm extends TypeForm>(
    }
 
    React.useEffect(() => {
-      const subscriber = form.context.subscribe<TValues<TForm>>(e => {
+      const subscriber = form.context.subscribe(e => {
          options.watch?.(e)
          if (options.isControlled) {
             setState(e)
