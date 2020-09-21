@@ -1,6 +1,7 @@
-import { Observable } from "./observable"
+import { Observable, State } from "./observable"
 import dot from 'dot-prop-immutable'
 import { ValidationError, Schema as YupSchema } from "yup"
+import { validation } from "./validation"
 
 export type InitialErrors<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
 export type InitialTouched<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
@@ -103,46 +104,49 @@ export type InitialTouched<TValues> = { [k in keyof TValues]?: TValues[k] extend
 // }
 
 
-interface Test {
-   initialValues: any
-   initialErrors: any
-   initialTouched: any
+interface Options<T> {
+   initialValues: T
+   initialErrors: T
+   initialTouched: T
+   schemaValidation: any
 }
-class Create<T extends Test> extends Observable<T>{
+class Create<T extends Options<T>> extends Observable<T>{
 
-   private initialState: Test = Object.assign({})
+   private initialState: Options<T> = Object.assign({})
+   private schemaValidation
 
    constructor(state: T) {
-      super(state)
-      this.initialState = {
-         initialValues: state.initialValues,
-         initialErrors: state.initialErrors,
-         initialTouched: state.initialTouched
-      }
+      super({
+         values: state.initialValues,
+         errors: state.initialErrors,
+         touched: state.initialTouched,
+      })
+      this.initialState = state
+      this.schemaValidation = state.schemaValidation
    }
 
    get getValues() {
-      return this.get.initialValues
+      return this.get.values
    }
 
    get getErrors() {
-      return this.get.initialErrors
+      return this.get.errors
    }
 
    get getTouched() {
-      return this.get.initialTouched
+      return this.get.touched
    }
 
-   set setValues(values) {
-      this.set = dot.set(this.get, 'values', values)
+   set setValues(values: Partial<State<T>["values"]>) {
+      this.set = dot.set(this.get, `values`, { ...this.getValues, ...values })
    }
 
-   set setErrors(errors) {
-      this.set = dot.set(this.get, 'errors', errors)
+   set setErrors(errors: Partial<State<T>["errors"]>) {
+      this.set = dot.set(this.get, `errors`, { ...this.getErrors, ...errors })
    }
 
-   set setTouched(touched) {
-      this.set = dot.set(this.get, 'touched', touched)
+   set setTouched(touched: Partial<State<T>["touched"]>) {
+      this.set = dot.set(this.get, `touched`, { ...this.getTouched, ...touched })
    }
 
    reset() {
@@ -155,4 +159,4 @@ class Create<T extends Test> extends Observable<T>{
 
 }
 
-export const create = <T extends Test>(state: T) => new Create(state)
+export const create = <T extends Options<T>>(state: T) => new Create(state)

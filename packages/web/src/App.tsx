@@ -9,6 +9,8 @@ const schemaValidation = yup.object().shape({
   name: yup.string().required()
 })
 
+
+
 const form = create({
   initialValues: {
     name: 'jose',
@@ -21,17 +23,17 @@ const form = create({
       }
     }
   },
-  initialErrors: {
-    name: 'Not Valid',
-    email: 'Not Valid',
-    password: 'Not Valid',
-    other: {
-      ice: '',
-      more: {
-        less: ''
-      }
-    }
-  },
+  // initialErrors: {
+  //   name: 'Not Valid',
+  //   email: 'Not Valid',
+  //   password: 'Not Valid',
+  //   other: {
+  //     ice: '',
+  //     more: {
+  //       less: ''
+  //     }
+  //   }
+  // },
   schemaValidation
 })
 
@@ -72,7 +74,7 @@ const App: React.FC = () => {
   return (
     <section>
       <form onSubmit={onSubmit(e => {
-        //   console.log(e, 'submit')
+        // console.log(e, '<<<<<<<<<< submit')
       })} onReset={reset}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />

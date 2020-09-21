@@ -6,7 +6,7 @@ import { debounce, isCheckbox, isRadio } from "../utils"
 
 
 type TypeForm = ReturnType<typeof create>
-type TValues<TForm extends TypeForm> = ReturnType<TForm['getValues']>
+type TValues<TForm extends TypeForm> = TForm['getValues']
 
 type UseFormOptions<TValues> = {
    isControlled?: boolean,
@@ -158,20 +158,18 @@ export function useForm<TForm extends TypeForm>(
    function defaultInputBase(complementProps: InputProps) {
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
          form.setValues = {
-            name: e.target.name,
-            value:
-               complementProps.type === 'number'
-                  ? Number(e.target.value)
-                  : complementProps.type === 'date'
-                     ? e.target.value
-                     : complementProps.type === 'file'
-                        ? e.target.files
-                        : e.target.value,
+            [e.target.name]: complementProps.type === 'number'
+               ? Number(e.target.value)
+               : complementProps.type === 'date'
+                  ? e.target.value
+                  : complementProps.type === 'file'
+                     ? e.target.files
+                     : e.target.value,
          }
       }
 
       function onBlur() {
-         form.setTouched = { name: complementProps.name, value: true }
+         form.setTouched = { [complementProps.name]: true }
       }
 
       const props = registerInput({
@@ -187,13 +185,12 @@ export function useForm<TForm extends TypeForm>(
    function checkedBase(complementProps: InputProps) {
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
          form.setValues = {
-            name: e.target.name,
-            value: complementProps.type === 'radio' ? e.target.value : e.target.checked,
+            [e.target.name]: complementProps.type === 'radio' ? e.target.value : e.target.checked,
          }
       }
 
       function onBlur() {
-         form.setTouched({ name: complementProps.name, value: true })
+         form.setTouched = { [complementProps.name]: true }
       }
 
       const props = registerInput({
@@ -212,21 +209,22 @@ export function useForm<TForm extends TypeForm>(
    function onSubmit(fn: (values: TValues<TForm>) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         // form.onSubmit(fn)
+
+         fn(form.getValues)
       }
    }
 
    function setValues(e: Partial<TValues<TForm>>) {
-      form.setValues = { name: null, value: e }
+      form.setValues = e
       setRefInputsValues()
    }
 
    function setErrors(e: Partial<InitialErrors<TValues<TForm>>>) {
-      form.setErrors = { name: null, value: e }
+      form.setErrors = e
    }
 
    function setTouched(e: Partial<InitialTouched<TValues<TForm>>>) {
-      form.setTouched = { name: null, value: e }
+      form.setTouched = e
    }
 
    function reset() {
