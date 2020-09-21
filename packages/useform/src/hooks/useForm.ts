@@ -76,7 +76,7 @@ export function useForm<TForm extends TypeForm>(
    options: UseFormOptions<TValues<TForm>>
 ): UseForm<TForm> {
 
-   const [state, setState] = React.useReducer(reducer, { values: form.getValues(), errors: form.getErrors(), touched: form.getTouched() })
+   const [state, setState] = React.useReducer(reducer, { values: form.getValues, errors: form.getErrors, touched: form.getTouched })
    const listInputsRef = React.useRef<ListInputsRef>(Object.assign({}))
    const setValuesDebounce = React.useCallback(debounce(setState, options.debounce), [])
 
@@ -103,7 +103,7 @@ export function useForm<TForm extends TypeForm>(
 
    function setRefInputsValues() {
       Object.keys(listInputsRef.current).forEach((key) => {
-         setRefValue(listInputsRef.current[key], form.getValues()[key])
+         setRefValue(listInputsRef.current[key], form.getValues[key])
       })
    }
 
@@ -157,7 +157,7 @@ export function useForm<TForm extends TypeForm>(
 
    function defaultInputBase(complementProps: InputProps) {
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         form.setValues({
+         form.setValues = {
             name: e.target.name,
             value:
                complementProps.type === 'number'
@@ -167,15 +167,15 @@ export function useForm<TForm extends TypeForm>(
                      : complementProps.type === 'file'
                         ? e.target.files
                         : e.target.value,
-         })
+         }
       }
 
       function onBlur() {
-         form.setTouched({ name: complementProps.name, value: true })
+         form.setTouched = { name: complementProps.name, value: true }
       }
 
       const props = registerInput({
-         defaultValue: form.getValues()[complementProps.name],
+         defaultValue: form.getValues[complementProps.name],
          onChange,
          onBlur,
          ...complementProps,
@@ -186,10 +186,10 @@ export function useForm<TForm extends TypeForm>(
 
    function checkedBase(complementProps: InputProps) {
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         form.setValues({
+         form.setValues = {
             name: e.target.name,
             value: complementProps.type === 'radio' ? e.target.value : e.target.checked,
-         })
+         }
       }
 
       function onBlur() {
@@ -199,8 +199,8 @@ export function useForm<TForm extends TypeForm>(
       const props = registerInput({
          defaultChecked:
             complementProps.type === 'radio'
-               ? form.getValues()[complementProps.name] === complementProps.value
-               : form.getValues()[complementProps.name],
+               ? form.getValues[complementProps.name] === complementProps.value
+               : form.getValues[complementProps.name],
          onChange,
          onBlur,
          ...complementProps,
@@ -212,21 +212,21 @@ export function useForm<TForm extends TypeForm>(
    function onSubmit(fn: (values: TValues<TForm>) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         form.onSubmit(fn)
+         // form.onSubmit(fn)
       }
    }
 
    function setValues(e: Partial<TValues<TForm>>) {
-      form.setValues({ name: null, value: e })
+      form.setValues = { name: null, value: e }
       setRefInputsValues()
    }
 
    function setErrors(e: Partial<InitialErrors<TValues<TForm>>>) {
-      form.setErrors({ name: null, value: e })
+      form.setErrors = { name: null, value: e }
    }
 
    function setTouched(e: Partial<InitialTouched<TValues<TForm>>>) {
-      form.setTouched({ name: null, value: e })
+      form.setTouched = { name: null, value: e }
    }
 
    function reset() {
@@ -235,7 +235,7 @@ export function useForm<TForm extends TypeForm>(
    }
 
    React.useEffect(() => {
-      const subscriber = form.context.subscribe(e => {
+      const subscriber = form.subscribe(e => {
          options.watch?.(e)
          if (options.isControlled) {
             setState(e)

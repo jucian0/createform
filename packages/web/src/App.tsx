@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import * as yup from 'yup'
 import './styles.css'
-import { create, useForm } from '@forms/useform'
+import { useForm, create } from '@forms/useform'
 
 
 const schemaValidation = yup.object().shape({
@@ -36,7 +36,6 @@ const form = create({
 })
 
 const App: React.FC = () => {
-
 
   const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form,
     {

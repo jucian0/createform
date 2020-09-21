@@ -1,29 +1,15 @@
+import dotPropImmutable from "dot-prop-immutable"
+
 type Subscribe<TValues> = (e: TValues) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
 
-// export function Observable() {
+interface State {
+   values: any
+   errors: any,
+   touched: any
+}
 
-//    let subscribers: Subscribers = []
-
-//    function subscribe<TValue>(fn: Subscribe<TValue>) {
-//       subscribers = [...subscribers, fn]
-//       return () => {
-//          subscribers.filter(subscriber => subscriber !== fn)
-//       }
-//    }
-
-//    function notify<TValues>(data: TValues) {
-//       subscribers.forEach(subscriber => subscriber(data))
-//    }
-
-//    return {
-//       notify,
-//       subscribe
-//    }
-// }
-
-
-class Observable<T extends {}> {
+export class Observable<T extends State> {
    private state: T = Object.assign({})
    private subscribers: Subscribers<T> = []
 
@@ -52,5 +38,3 @@ class Observable<T extends {}> {
       this.subscribers.forEach(fn => fn(this.get))
    }
 }
-
-export const state = <T>(state: T) => new Observable(state)
