@@ -1,10 +1,8 @@
-import { Observable, State } from "./observable"
+import { InitialErrors, InitialTouched, Observable } from "./observable"
 import dot from 'dot-prop-immutable'
 import { ValidationError, Schema as YupSchema } from "yup"
 import { validation } from "./validation"
 
-export type InitialErrors<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
-export type InitialTouched<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
 
 // export type CreateReturn<TValues> = {
 //    setValues: <TValue extends TValues>(e: { name: string, value: TValue }) => void,
@@ -103,14 +101,18 @@ export type InitialTouched<TValues> = { [k in keyof TValues]?: TValues[k] extend
 //    }
 // }
 
-
-interface Options<T> {
-   initialValues: T
-   initialErrors: T
-   initialTouched: T
-   schemaValidation: any
+export interface ObservableData<T extends Options<T>> {
+   values: T['initialValues'],
+   errors: T['initialErrors'],
+   touched: T['initialTouched']
 }
-class Create<T extends Options<T>> extends Observable<T>{
+export interface Options<T> {
+   initialValues?: T
+   initialErrors?: InitialErrors<T>
+   initialTouched?: InitialTouched<T>
+   schemaValidation?: any
+}
+class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
    private initialState: Options<T> = Object.assign({})
    private schemaValidation
@@ -137,15 +139,15 @@ class Create<T extends Options<T>> extends Observable<T>{
       return this.get.touched
    }
 
-   set setValues(values: Partial<State<T>["values"]>) {
+   set setValues(values: Partial<ObservableData<T>["values"]>) {
       this.set = dot.set(this.get, `values`, { ...this.getValues, ...values })
    }
 
-   set setErrors(errors: Partial<State<T>["errors"]>) {
+   set setErrors(errors: Partial<ObservableData<T>["errors"]>) {
       this.set = dot.set(this.get, `errors`, { ...this.getErrors, ...errors })
    }
 
-   set setTouched(touched: Partial<State<T>["touched"]>) {
+   set setTouched(touched: Partial<ObservableData<T>["touched"]>) {
       this.set = dot.set(this.get, `touched`, { ...this.getTouched, ...touched })
    }
 

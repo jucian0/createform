@@ -1,19 +1,16 @@
 import dotPropImmutable from "dot-prop-immutable"
 
+export type InitialErrors<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
+export type InitialTouched<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
 type Subscribe<TValues> = (e: TValues) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
 
-export interface State<T> {
-   values: T
-   errors: T,
-   touched: T
-}
 
-export class Observable<T extends State<T>> {
-   private state: State<T> = Object.assign({})
-   private subscribers: Subscribers<State<T>> = []
+export class Observable<T> {
+   private state: T = Object.assign({})
+   private subscribers: Subscribers<T> = []
 
-   constructor(state: State<T>) {
+   constructor(state: T) {
       this.state = state
    }
 
@@ -21,12 +18,12 @@ export class Observable<T extends State<T>> {
       return this.state
    }
 
-   set set(values: State<T>) {
+   set set(values: T) {
       this.state = { ...this.state, ...values }
       this.notify()
    }
 
-   subscribe(fn: Subscribe<State<T>>) {
+   subscribe(fn: Subscribe<T>) {
       this.subscribers = [...this.subscribers, fn]
 
       return () => {

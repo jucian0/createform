@@ -49,7 +49,7 @@ const App: React.FC = () => {
     })
 
   React.useEffect(() => {
-    console.log(state)
+    console.log(state.values)
   }, [state])
 
 
@@ -74,7 +74,7 @@ const App: React.FC = () => {
   return (
     <section>
       <form onSubmit={onSubmit(e => {
-        // console.log(e, '<<<<<<<<<< submit')
+        console.log(e, '<<<<<<<<<< submit')
       })} onReset={reset}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />

@@ -1,7 +1,8 @@
 import React from "react"
 import dot from 'dot-prop-immutable'
-import { create, InitialErrors, InitialTouched } from "../core/create"
+import { create } from "../core/create"
 import { debounce, isCheckbox, isRadio } from "../utils"
+import { InitialErrors, InitialTouched } from "../core/observable"
 
 
 
@@ -24,16 +25,16 @@ type Reset = () => void
 
 type UseForm<TForm extends TypeForm> = [
    {
-      values: TValues<TForm>,
-      errors: InitialErrors<TValues<TForm>>,
-      touched: InitialErrors<TValues<TForm>>
+      values: TValues<TForm>['initialValues'],
+      errors: InitialErrors<TValues<TForm>>['initialValues'],
+      touched: InitialTouched<TValues<TForm>['initialValues']>
    },
    {
-      onSubmit: OnSubmit<TValues<TForm>>
+      onSubmit: OnSubmit<TValues<TForm>['initialValues']>
       input: Input
-      setValues: SetValues<TValues<TForm>>
-      setErrors: SetErrors<TValues<TForm>>
-      setTouched: SetTouched<TValues<TForm>>
+      setValues: SetValues<TValues<TForm>['initialValues']>
+      setErrors: SetErrors<TValues<TForm>['initialValues']>
+      setTouched: SetTouched<TValues<TForm>['initialValues']>
       reset: Reset
    }
 ]
@@ -76,7 +77,7 @@ export function useForm<TForm extends TypeForm>(
    options: UseFormOptions<TValues<TForm>>
 ): UseForm<TForm> {
 
-   const [state, setState] = React.useReducer(reducer, { values: form.getValues, errors: form.getErrors, touched: form.getTouched })
+   const [state, setState] = React.useReducer(reducer, form.get)
    const listInputsRef = React.useRef<ListInputsRef>(Object.assign({}))
    const setValuesDebounce = React.useCallback(debounce(setState, options.debounce), [])
 
@@ -247,5 +248,5 @@ export function useForm<TForm extends TypeForm>(
       }
    }, [options])
 
-   return [state as UseForm<TForm>[0], { onSubmit, input, setValues, reset, setErrors, setTouched }]
+   return [state, { onSubmit, input, setValues, reset, setErrors, setTouched }]
 }
