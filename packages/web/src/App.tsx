@@ -15,8 +15,6 @@ const form = create({
     name: '',
     email: ''
   },
-  initialErrors: {},
-  initialTouched: {},
   schemaValidation
 })
 

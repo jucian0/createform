@@ -5,13 +5,11 @@ import { validation } from "./validation"
 
 export interface ObservableData<T extends Options<T>> {
    values: T['initialValues'],
-   errors: T['initialErrors'],
-   touched: T['initialTouched']
+   errors: T['initialValues'],
+   touched: T['initialValues']
 }
 export interface Options<T extends {}> {
    initialValues?: T
-   initialErrors?: any
-   initialTouched?: any
    schemaValidation?: any
 }
 
@@ -23,14 +21,12 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
    constructor(state: T) {
       super({
          values: state.initialValues,
-         errors: state.initialErrors,
-         touched: state.initialTouched,
+         errors: {} as any,
+         touched: {} as any,
       })
 
       this.initialState = {
          initialValues: state.initialValues,
-         initialErrors: state.initialErrors,
-         initialTouched: state.initialTouched
       } as T
 
       validation(this.getValues, state.schemaValidation, e => this.setErrors = e)
@@ -67,11 +63,13 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
    reset() {
       this.set = {
-         values: this.initialState.initialValues,
-         errors: this.initialState.initialErrors,
-         touched: this.initialState.initialTouched
+         values: this.initialState,
+         touched: {}
       }
       validation(this.getValues, this.schemaValidation, e => this.setErrors = e)
+
+
+      console.log(this.getErrors)
    }
 
 }
