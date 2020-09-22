@@ -108,3 +108,8 @@ div input{
    width: 100%;
    display: block;
 }
+
+.error{
+  color: red;
+  padding: 10px;;
+}

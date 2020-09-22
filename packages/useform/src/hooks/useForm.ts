@@ -1,5 +1,4 @@
 import React from "react"
-import dot from 'dot-prop-immutable'
 import { create } from "../core/create"
 import { debounce, isCheckbox, isRadio } from "../utils"
 import { Errors, Touched } from "../core/observable"
@@ -18,9 +17,9 @@ type UseFormOptions<TValues> = {
 
 type OnSubmit<TValues> = (fn: (values: TValues) => void) => (e: React.BaseSyntheticEvent) => void
 type Input = (param: FieldParam<InputProps>, ...args: Array<string>) => InputRegisterProps<RefFieldElement>
-type SetValues<TValues> = (e: Partial<TValues>) => void
-type SetErrors<TValues> = (e: Partial<Errors<TValues>>) => void
-type SetTouched<TValues> = (e: Partial<Errors<TValues>>) => void
+type SetValues<TValues> = (e: Partial<TValues> | ((e: TValues) => TValues)) => void
+type SetErrors<TValues> = (e: Partial<Errors<TValues>> | ((e: Errors<TValues>) => Errors<TValues>)) => void
+type SetTouched<TValues> = (e: Partial<Errors<TValues>> | ((e: Touched<TValues>) => Touched<TValues>)) => void
 type Reset = () => void
 
 type UseForm<TForm extends TypeForm> = [
@@ -215,17 +214,26 @@ export function useForm<TForm extends TypeForm>(
       }
    }
 
-   function setValues(e: Partial<TValues<TForm>>) {
-      form.setValues = e
+   function setValues(resolve: Partial<TValues<TForm>> | ((e: TValues<TForm>) => TValues<TForm>)) {
+      if (typeof resolve === 'function') {
+         form.setValues = resolve(form.getValues)
+      }
+      form.setValues = resolve
       setRefInputsValues()
    }
 
-   function setErrors(e: Partial<Errors<TValues<TForm>>>) {
-      form.setErrors = e
+   function setErrors(resolve: Partial<Errors<TValues<TForm>>> | ((e: Errors<TValues<TForm>>) => Errors<TValues<TForm>>)) {
+      if (typeof resolve === 'function') {
+         form.setErrors = resolve(form.getErrors)
+      }
+      form.setErrors = resolve
    }
 
-   function setTouched(e: Partial<Touched<TValues<TForm>>>) {
-      form.setTouched = e
+   function setTouched(resolve: Partial<Touched<TValues<TForm>>> | ((e: Touched<TValues<TForm>>) => Touched<TValues<TForm>>)) {
+      if (typeof resolve === 'function') {
+         form.setTouched = resolve(form.getTouched)
+      }
+      form.setTouched = resolve
    }
 
    function reset() {

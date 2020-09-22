@@ -1,5 +1,6 @@
 import { Observable } from "./observable"
 import dot from 'dot-prop-immutable'
+import { validation } from "./validation"
 
 
 export interface ObservableData<T extends Options<T>> {
@@ -17,7 +18,7 @@ export interface Options<T extends {}> {
 class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
    private initialState: Omit<T, 'schemaValidation'> = Object.assign({})
-   private schemaValidation: Pick<T, 'schemaValidation'>
+   private schemaValidation;
 
    constructor(state: T) {
       super({
@@ -31,6 +32,8 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
          initialErrors: state.initialErrors,
          initialTouched: state.initialTouched
       } as T
+
+      validation(this.getValues, state.schemaValidation, e => this.setErrors = e)
 
       this.schemaValidation = state.schemaValidation
    }
@@ -49,10 +52,13 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
    set setValues(values: Partial<ObservableData<T>["values"]>) {
       this.set = dot.set(this.get, `values`, { ...this.getValues, ...values })
+      if (this.schemaValidation) {
+         validation(this.getValues, this.schemaValidation, e => this.setErrors = e)
+      }
    }
 
    set setErrors(errors: Partial<ObservableData<T>["errors"]>) {
-      this.set = dot.set(this.get, `errors`, { ...this.getErrors, ...errors })
+      this.set = dot.set(this.get, `errors`, errors)
    }
 
    set setTouched(touched: Partial<ObservableData<T>["touched"]>) {
@@ -65,6 +71,7 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
          errors: this.initialState.initialErrors,
          touched: this.initialState.initialTouched
       }
+      validation(this.getValues, this.schemaValidation, e => this.setErrors = e)
    }
 
 }

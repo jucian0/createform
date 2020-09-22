@@ -1,16 +1,14 @@
 import { ValidationError, Schema as YupSchema } from "yup"
 import dot from 'dot-prop-immutable'
 
-export function validation<TValues extends {}>(values: TValues, schema: any) {
-
-   let errors = {}
+export function validation<TValues extends {}, Schema extends YupSchema<TValues>>(values: TValues, schema: Schema, callback: (errors: any) => void) {
 
    schema?.validate(values, { abortEarly: false })
       .then(() => {
-         errors = {}
+         callback({})
       })
       .catch((e: ValidationError) => {
-         //let errors = {}
+         let errors = {}
          e.inner.forEach(key => {
             const path = key.path
                .split('[')
@@ -20,8 +18,7 @@ export function validation<TValues extends {}>(values: TValues, schema: any) {
 
             errors = dot.set(errors, path, key.message)
          })
-         // setErrors({ ...errors } as TValues)
+         callback(errors)
       })
 
-   return errors as TValues
 }

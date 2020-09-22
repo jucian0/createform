@@ -5,37 +5,37 @@ import { useForm, create } from '@forms/useform'
 
 
 const schemaValidation = yup.object().shape({
-  email: yup.string().email().required(),
-  name: yup.string().required()
-})
-
+  name: yup.string().required("this field is required"),
+  email: yup.string().required("this field is required").email("this field must be a valid email"),
+});
 
 
 const form = create({
   initialValues: {
-    name: ''
+    name: '',
+    email: ''
   },
-  initialErrors: {
-
-  }
+  initialErrors: {},
+  initialTouched: {},
+  schemaValidation
 })
 
 
-const test = create()
+//const test = create()
 
 const App: React.FC = () => {
 
   const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form,
     {
       watch: e => {
-        console.log(e, '<<<<<<<<< watch')
+        // console.log(e, '<<<<<<<<< watch')
       },
-      //isControlled: true,
+      isControlled: true,
       //debounce: 500
     })
 
   React.useEffect(() => {
-    console.log(state.values)
+    //  console.log(state.values)
   }, [state])
 
 
@@ -60,13 +60,15 @@ const App: React.FC = () => {
   return (
     <section>
       <form onSubmit={onSubmit(e => {
-        console.log(e, '<<<<<<<<<< submit')
+        // console.log(e, '<<<<<<<<<< submit')
       })} onReset={reset}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />
+          <span className="error">{state.touched.name && state.errors.name}</span>
         </div>
         <div>
           <input placeholder="email" {...input('email', 'email')} />
+          <span className="error">{state.touched.email && state.errors.email}</span>
         </div>
         <div>
           <input placeholder="password" {...input('passwords.test', 'password')} />
