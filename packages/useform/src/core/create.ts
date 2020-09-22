@@ -67,9 +67,6 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
          touched: {}
       }
       validation(this.getValues, this.schemaValidation, e => this.setErrors = e)
-
-
-      console.log(this.getErrors)
    }
 
 }

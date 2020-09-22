@@ -209,7 +209,9 @@ export function useForm<TForm extends TypeForm>(
    function onSubmit(fn: (values: TValues<TForm>) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-
+         if (!options.debounce && !options.isControlled) {
+            setState(form.get)
+         }
          fn(form.getValues)
       }
    }

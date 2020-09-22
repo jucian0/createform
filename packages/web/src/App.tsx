@@ -15,7 +15,7 @@ const form = create({
     name: '',
     email: ''
   },
-  schemaValidation
+  //schemaValidation
 })
 
 
@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form,
     {
       watch: e => {
-        // console.log(e, '<<<<<<<<< watch')
+        console.log(e, '<<<<<<<<< watch')
       },
       isControlled: true,
       //debounce: 500
