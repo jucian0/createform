@@ -2,7 +2,7 @@ import React from "react"
 import dot from 'dot-prop-immutable'
 import { create } from "../core/create"
 import { debounce, isCheckbox, isRadio } from "../utils"
-import { InitialErrors, InitialTouched } from "../core/observable"
+import { Errors, Touched } from "../core/observable"
 
 
 
@@ -19,22 +19,22 @@ type UseFormOptions<TValues> = {
 type OnSubmit<TValues> = (fn: (values: TValues) => void) => (e: React.BaseSyntheticEvent) => void
 type Input = (param: FieldParam<InputProps>, ...args: Array<string>) => InputRegisterProps<RefFieldElement>
 type SetValues<TValues> = (e: Partial<TValues>) => void
-type SetErrors<TValues> = (e: Partial<InitialErrors<TValues>>) => void
-type SetTouched<TValues> = (e: Partial<InitialErrors<TValues>>) => void
+type SetErrors<TValues> = (e: Partial<Errors<TValues>>) => void
+type SetTouched<TValues> = (e: Partial<Errors<TValues>>) => void
 type Reset = () => void
 
 type UseForm<TForm extends TypeForm> = [
    {
-      values: TValues<TForm>['initialValues'],
-      errors: InitialErrors<TValues<TForm>>['initialValues'],
-      touched: InitialTouched<TValues<TForm>['initialValues']>
+      values: TValues<TForm>,
+      errors: Errors<TValues<TForm>>,
+      touched: Touched<TValues<TForm>>
    },
    {
-      onSubmit: OnSubmit<TValues<TForm>['initialValues']>
+      onSubmit: OnSubmit<TValues<TForm>>
       input: Input
-      setValues: SetValues<TValues<TForm>['initialValues']>
-      setErrors: SetErrors<TValues<TForm>['initialValues']>
-      setTouched: SetTouched<TValues<TForm>['initialValues']>
+      setValues: SetValues<TValues<TForm>>
+      setErrors: SetErrors<TValues<TForm>>
+      setTouched: SetTouched<TValues<TForm>>
       reset: Reset
    }
 ]
@@ -220,11 +220,11 @@ export function useForm<TForm extends TypeForm>(
       setRefInputsValues()
    }
 
-   function setErrors(e: Partial<InitialErrors<TValues<TForm>>>) {
+   function setErrors(e: Partial<Errors<TValues<TForm>>>) {
       form.setErrors = e
    }
 
-   function setTouched(e: Partial<InitialTouched<TValues<TForm>>>) {
+   function setTouched(e: Partial<Touched<TValues<TForm>>>) {
       form.setTouched = e
    }
 

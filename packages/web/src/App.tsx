@@ -13,29 +13,15 @@ const schemaValidation = yup.object().shape({
 
 const form = create({
   initialValues: {
-    name: 'jose',
-    email: 'jose@jose.com',
-    password: '123456',
-    other: {
-      ice: -12,
-      more: {
-        less: '1212'
-      }
-    }
+    name: ''
   },
-  // initialErrors: {
-  //   name: 'Not Valid',
-  //   email: 'Not Valid',
-  //   password: 'Not Valid',
-  //   other: {
-  //     ice: '',
-  //     more: {
-  //       less: ''
-  //     }
-  //   }
-  // },
-  schemaValidation
+  initialErrors: {
+
+  }
 })
+
+
+const test = create()
 
 const App: React.FC = () => {
 

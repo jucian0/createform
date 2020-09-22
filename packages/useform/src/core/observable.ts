@@ -1,10 +1,9 @@
 import dotPropImmutable from "dot-prop-immutable"
 
-export type InitialErrors<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
-export type InitialTouched<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
+export type Errors<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
+export type Touched<TValues> = { [k in keyof TValues]?: TValues[k] extends object ? any : string }
 type Subscribe<TValues> = (e: TValues) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
-
 
 export class Observable<T> {
    private state: T = Object.assign({})

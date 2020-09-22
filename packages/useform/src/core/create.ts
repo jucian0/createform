@@ -1,7 +1,6 @@
-import { InitialErrors, InitialTouched, Observable } from "./observable"
+import { Observable } from "./observable"
 import dot from 'dot-prop-immutable'
-import { ValidationError, Schema as YupSchema } from "yup"
-import { validation } from "./validation"
+
 
 export interface ObservableData<T extends Options<T>> {
    values: T['initialValues'],
@@ -10,16 +9,15 @@ export interface ObservableData<T extends Options<T>> {
 }
 export interface Options<T extends {}> {
    initialValues?: T
-   initialErrors?: InitialErrors<T>
-   initialTouched?: InitialTouched<T>
+   initialErrors?: any
+   initialTouched?: any
    schemaValidation?: any
 }
 
-//<TypeContext extends Context<TypeContext['state']>>
-class Create<T extends Options<T['initialValues']>> extends Observable<ObservableData<T>>{
+class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
-   private initialState: Options<T> = Object.assign({})
-   private schemaValidation
+   private initialState: Omit<T, 'schemaValidation'> = Object.assign({})
+   private schemaValidation: Pick<T, 'schemaValidation'>
 
    constructor(state: T) {
       super({
@@ -27,7 +25,13 @@ class Create<T extends Options<T['initialValues']>> extends Observable<Observabl
          errors: state.initialErrors,
          touched: state.initialTouched,
       })
-      this.initialState = state
+
+      this.initialState = {
+         initialValues: state.initialValues,
+         initialErrors: state.initialErrors,
+         initialTouched: state.initialTouched
+      } as T
+
       this.schemaValidation = state.schemaValidation
    }
 
@@ -65,4 +69,4 @@ class Create<T extends Options<T['initialValues']>> extends Observable<Observabl
 
 }
 
-export const create = <T extends Options<T>>(state: T) => new Create(state)
+export const create = <T>(state: Options<T> = {} as Options<T>) => new Create(state)
