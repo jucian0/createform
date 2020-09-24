@@ -2,6 +2,7 @@ import React from "react"
 import { create } from "../core/create"
 import { debounce, isCheckbox, isRadio } from "../utils"
 import { Errors, Touched } from "../core/observable"
+import dot from 'dot-prop-immutable'
 
 
 
@@ -103,7 +104,7 @@ export function useForm<TForm extends TypeForm>(
 
    function setRefInputsValues() {
       Object.keys(listInputsRef.current).forEach((key) => {
-         setRefValue(listInputsRef.current[key], form.getValues[key])
+         setRefValue(dot.get(listInputsRef.current, key), dot.get(form.getValues, key))
       })
    }
 
@@ -171,14 +172,10 @@ export function useForm<TForm extends TypeForm>(
          }
       }
 
-      function onBlur() {
-         form.setTouched = { [complementProps.name]: true }
-      }
 
       const props = registerInput({
-         defaultValue: form.getValues[complementProps.name],
+         defaultValue: dot.get(form.getValues, complementProps.name),
          onChange,
-         onBlur,
          ...complementProps,
       })
 
@@ -192,17 +189,12 @@ export function useForm<TForm extends TypeForm>(
          }
       }
 
-      function onBlur() {
-         form.setTouched = { [complementProps.name]: true }
-      }
-
       const props = registerInput({
          defaultChecked:
             complementProps.type === 'radio'
                ? form.getValues[complementProps.name] === complementProps.value
                : form.getValues[complementProps.name],
          onChange,
-         onBlur,
          ...complementProps,
       })
       return props
@@ -223,17 +215,12 @@ export function useForm<TForm extends TypeForm>(
          }
       }
 
-      function onBlur() {
-         form.setTouched = { [complementProps.name]: true }
-      }
-
       /**
        * set a type custom to filter a custom inputs in complex forms.
        */
       const props = registerInput({
-         value: form.getValues[complementProps.name] || null,
+         value: dot.get(form.getValues, complementProps.name) || null,
          onChange,
-         onBlur,
          type: 'custom',
          ...complementProps,
       })

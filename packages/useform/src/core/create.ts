@@ -51,13 +51,14 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
    }
 
    set onChange(e: any) {
-      const values = dot.set(this.getValues, `${e.path}`, e.value)
+      const values = dot.set(this.getValues, e.path, e.value)
+      const touched = dot.set(this.getTouched, e.path, true)
       if (this.schemaValidation) {
-         validation(values, this.schemaValidation, e => {
+         validation(values, this.schemaValidation, errors => {
             this.set = {
-               values: values,
-               errors: e,
-               touched: this.getTouched
+               values,
+               errors,
+               touched
             }
          })
       } else {
