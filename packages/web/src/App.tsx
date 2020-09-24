@@ -35,7 +35,7 @@ const App: React.FC = () => {
       watch: e => {
         // console.log(e, '<<<<<<<<< watch')
       },
-      isControlled: true,
+      //isControlled: true,
       //debounce: 500
     })
 

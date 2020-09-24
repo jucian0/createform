@@ -231,7 +231,7 @@ export function useForm<TForm extends TypeForm>(
        * set a type custom to filter a custom inputs in complex forms.
        */
       const props = registerInput({
-         value: form.getValues[complementProps.name],
+         value: form.getValues[complementProps.name] || null,
          onChange,
          onBlur,
          type: 'custom',
@@ -291,7 +291,7 @@ export function useForm<TForm extends TypeForm>(
    React.useEffect(() => {
       const subscriber = form.subscribe(e => {
          options.watch?.(e)
-         if (options.isControlled) {
+         if (options.isControlled || hasCustomInputs()) {
             setState(e)
          } else if (options.debounce) {
             setValuesDebounce(e)
