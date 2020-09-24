@@ -241,6 +241,9 @@ export function useForm<TForm extends TypeForm>(
    function reset() {
       form.reset()
       setRefInputsValues()
+      if (!options.debounce && !options.isControlled) {
+         setState(form.get)
+      }
    }
 
    React.useEffect(() => {
