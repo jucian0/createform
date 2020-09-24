@@ -73,12 +73,21 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
       this.set = dot.set(this.get, `touched`, { ...this.getTouched, ...touched })
    }
 
-   reset() {
-      this.set = {
-         values: this.initialState.initialValues,
-         touched: {}
+   reset(path?: string) {
+      if (path && typeof path === "string") {
+         this.set = {
+            values: dot.set(this.getValues, path, this.initialState.initialValues[path] || null),
+            touched: dot.set(this.getTouched, path, false),
+            errors: dot.set(this.getErrors, path, ''),
+         }
+      } else {
+         this.set = {
+            values: this.initialState.initialValues,
+            touched: {} as any,
+            errors: this.getErrors
+         }
+         validation(this.getValues, this.schemaValidation, e => this.setErrors = e)
       }
-      validation(this.getValues, this.schemaValidation, e => this.setErrors = e)
    }
 
 }

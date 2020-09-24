@@ -66,7 +66,7 @@ const App: React.FC = () => {
     <section>
       <form onSubmit={onSubmit(e => {
         console.log(e, '<<<<<<<<<< submit')
-      })} onReset={reset}>
+      })} onReset={() => reset('name')}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />
           <span className="error">{state.touched.name && state.errors.name}</span>

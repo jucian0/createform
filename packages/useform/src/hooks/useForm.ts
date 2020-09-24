@@ -20,7 +20,7 @@ type Input = (param: FieldParam<InputProps>, ...args: Array<string>) => InputReg
 type SetValues<TValues> = (e: Partial<TValues> | ((e: TValues) => TValues)) => void
 type SetErrors<TValues> = (e: Partial<Errors<TValues>> | ((e: Errors<TValues>) => Errors<TValues>)) => void
 type SetTouched<TValues> = (e: Partial<Errors<TValues>> | ((e: Touched<TValues>) => Touched<TValues>)) => void
-type Reset = () => void
+type Reset = (name?: string) => void
 
 type UseForm<TForm extends TypeForm> = [
    {
@@ -280,8 +280,8 @@ export function useForm<TForm extends TypeForm>(
          .map((field) => listInputsRef.current[field].name)
    }, [])
 
-   function reset() {
-      form.reset()
+   function reset(path?: string) {
+      form.reset(path)
       setRefInputsValues()
       if (!options.debounce && !options.isControlled || hasCustomInputs()) {
          setState(form.get)
