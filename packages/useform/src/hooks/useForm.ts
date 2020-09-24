@@ -4,10 +4,8 @@ import { debounce, isCheckbox, isRadio } from "../utils"
 import { Errors, Touched } from "../core/observable"
 import dot from 'dot-prop-immutable'
 
-
-
-type TypeForm = ReturnType<typeof create>
-type TValues<TForm extends TypeForm> = TForm['getValues']
+export type TypeForm = ReturnType<typeof create>
+export type TValues<TForm extends TypeForm> = TForm['getValues']
 
 type UseFormOptions<TValues> = {
    isControlled?: boolean,
@@ -56,13 +54,13 @@ export interface InputPartialProps {
    type?: string
    defaultChecked?: any
 }
-interface InputRegisterProps<T = RefFieldElement> extends InputPartialProps {
+export interface InputRegisterProps<T = RefFieldElement> extends InputPartialProps {
    ref?: T extends RefFieldElement
    ? React.RefObject<RefFieldElement extends React.RefObject<infer Ref> ? Ref : never>
    : React.RefObject<T>
 }
 
-type ListInputsRef = {
+export type ListInputsRef = {
    [x: string]: InputRegisterProps<
       RefFieldElement extends HTMLInputElement ? HTMLInputElement : HTMLTextAreaElement
    >
@@ -74,7 +72,7 @@ function reducer<TState>(state: TState, nextState: Partial<TState>): TState {
 
 export function useForm<TForm extends TypeForm>(
    form: TForm,
-   options: UseFormOptions<TValues<TForm>>
+   options: UseFormOptions<TValues<TForm>> = {}
 ): UseForm<TForm> {
 
    const [state, setState] = React.useReducer(reducer, form.get)
@@ -152,9 +150,10 @@ export function useForm<TForm extends TypeForm>(
        */
       if (isCheckbox(complementProps.type) || isRadio(complementProps.type)) {
          return checkedBase(complementProps)
-      } else if (!complementProps.type) {
-         return customWeb(complementProps)
       }
+      // else if (!complementProps.type) {
+      //    return customWeb(complementProps)
+      // }
       return defaultInputBase(complementProps)
    }
 
@@ -200,33 +199,33 @@ export function useForm<TForm extends TypeForm>(
       return props
    }
 
-   /**
-    * 
-    * @param param this is object with properties of a custom input web.
-    * custom function register a custom inputs like a react date piker or react-select.
-    */
-   function customWeb<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
-      const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
+   // /**
+   //  * 
+   //  * @param param this is object with properties of a custom input web.
+   //  * custom function register a custom inputs like a react date piker or react-select.
+   //  */
+   // function customWeb<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
+   //    const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
-      function onChange(e: any) {
-         form.onChange = {
-            path: complementProps.name,
-            value: e
-         }
-      }
+   //    function onChange(e: any) {
+   //       form.onChange = {
+   //          path: complementProps.name,
+   //          value: e
+   //       }
+   //    }
 
-      /**
-       * set a type custom to filter a custom inputs in complex forms.
-       */
-      const props = registerInput({
-         value: dot.get(form.getValues, complementProps.name) || null,
-         onChange,
-         type: 'custom',
-         ...complementProps,
-      })
+   //    /**
+   //     * set a type custom to filter a custom inputs in complex forms.
+   //     */
+   //    const props = registerInput({
+   //       value: dot.get(form.getValues, complementProps.name) || null,
+   //       onChange,
+   //       type: 'custom',
+   //       ...complementProps,
+   //    })
 
-      return props
-   }
+   //    return props
+   // }
 
 
    function onSubmit(fn: (values: TValues<TForm>) => void) {
@@ -261,16 +260,17 @@ export function useForm<TForm extends TypeForm>(
       form.setTouched = resolve
    }
 
-   const hasCustomInputs = React.useCallback(() => {
-      return Object.keys(listInputsRef.current)
-         .filter((ref) => listInputsRef.current[ref].type === 'custom')
-         .map((field) => listInputsRef.current[field].name)
-   }, [])
+   // const hasCustomInputs = React.useMemo(() => {
+   //    console.log(listInputsRef, '<<<<<<<<<,custom')
+   //    return Object.keys(listInputsRef.current)
+   //       .filter((ref) => listInputsRef.current[ref].type === 'custom')
+   //       .map((field) => listInputsRef.current[field].name)
+   // }, [])
 
    function reset(path?: string) {
       form.reset(path)
       setRefInputsValues()
-      if (!options.debounce && !options.isControlled || hasCustomInputs()) {
+      if (!options.debounce && !options.isControlled) {
          setState(form.get)
       }
    }
@@ -284,13 +284,15 @@ export function useForm<TForm extends TypeForm>(
             return setValuesDebounce(nextState)
          } else if (options.isControlled) {
             return setValues(nextState)
-         } else if (hasCustomInputs()) {
-            //if (hasCustomInputs().includes(fieldPath)) {
-            return setValues(nextState)
-            // }
          }
+         //else if (hasCustomInputs) {
+         // console.log(hasCustomInputs)
+         //if (hasCustomInputs().includes(fieldPath)) {
+         //return setValues(nextState)
+         // }
+         //}
       },
-      [hasCustomInputs, options, setValuesDebounce, state]
+      [options, setValuesDebounce, state]
    )
 
    React.useEffect(() => {

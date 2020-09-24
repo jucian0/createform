@@ -113,3 +113,12 @@ div input{
   color: red;
   padding: 10px;;
 }
+
+.select, .select div{
+  margin:0;
+  padding:0;
+}
+
+.select > div > div{
+  margin-left:10px;
+}

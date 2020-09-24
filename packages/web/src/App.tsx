@@ -1,13 +1,19 @@
 import React, { useEffect } from 'react'
 import * as yup from 'yup'
 import './styles.css'
-import { useForm, create } from '@forms/useform'
+import { useForm, create, useCustomInput } from '@forms/useform'
 import Select from 'react-select'
 
 const options = [
   { value: 'chocolate', label: 'Chocolate', },
   { value: 'strawberry', label: 'Strawberry' },
   { value: 'vanilla', label: 'Vanilla' }
+]
+
+const optionsColor = [
+  { value: 'red', label: 'RED', },
+  { value: 'blue', label: 'BLUE' },
+  { value: 'green', label: 'GREEN' }
 ]
 
 
@@ -20,7 +26,10 @@ const schemaValidation = yup.object().shape({
 const form = create({
   initialValues: {
     name: '',
-    email: ''
+    email: '',
+    iceCream: {
+      value: 'strawberry', label: 'Strawberry'
+    }
   },
   schemaValidation
 })
@@ -30,14 +39,8 @@ const form = create({
 
 const App: React.FC = () => {
 
-  const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form,
-    {
-      watch: e => {
-        // console.log(e, '<<<<<<<<< watch')
-      },
-      //isControlled: true,
-      debounce: 500
-    })
+  const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form, { isControlled: true })
+  const [register] = useCustomInput(form)
 
   React.useEffect(() => {
     console.log(state.values)
@@ -65,7 +68,7 @@ const App: React.FC = () => {
   return (
     <section>
       <form onSubmit={onSubmit(e => {
-        console.log(e, '<<<<<<<<<< submit')
+        // console.log(e, '<<<<<<<<<< submit')
       })} onReset={() => reset()}>
         <div>
           <input placeholder="name" {...input('name', 'text')} />
@@ -83,8 +86,18 @@ const App: React.FC = () => {
         </div>
         <div>
           <Select
-            {...input("iceCream")}
+            placeholder="IceCream"
+            className="select"
+            {...register("iceCream")}
             options={options}
+          />
+        </div>
+        <div>
+          <Select
+            placeholder="Color"
+            className="select"
+            {...register("color")}
+            options={optionsColor}
           />
         </div>
         <div>
