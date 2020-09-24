@@ -151,14 +151,17 @@ export function useForm<TForm extends TypeForm>(
        */
       if (isCheckbox(complementProps.type) || isRadio(complementProps.type)) {
          return checkedBase(complementProps)
+      } else if (!complementProps.type) {
+         return customWeb(complementProps)
       }
       return defaultInputBase(complementProps)
    }
 
    function defaultInputBase(complementProps: InputProps) {
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         form.setValues = {
-            [e.target.name]: complementProps.type === 'number'
+         form.onChange = {
+            path: e.target.name,
+            value: complementProps.type === 'number'
                ? Number(e.target.value)
                : complementProps.type === 'date'
                   ? e.target.value
@@ -205,6 +208,39 @@ export function useForm<TForm extends TypeForm>(
       return props
    }
 
+   /**
+    * 
+    * @param param this is object with properties of a custom input web.
+    * custom function register a custom inputs like a react date piker or react-select.
+    */
+   function customWeb<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
+      const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
+
+      function onChange(e: any) {
+         form.onChange = {
+            path: complementProps.name,
+            value: e
+         }
+      }
+
+      function onBlur() {
+         form.setTouched = { [complementProps.name]: true }
+      }
+
+      /**
+       * set a type custom to filter a custom inputs in complex forms.
+       */
+      const props = registerInput({
+         value: form.getValues[complementProps.name],
+         onChange,
+         onBlur,
+         type: 'custom',
+         ...complementProps,
+      })
+
+      return props
+   }
+
 
    function onSubmit(fn: (values: TValues<TForm>) => void) {
       return (e: React.BaseSyntheticEvent) => {
@@ -238,10 +274,16 @@ export function useForm<TForm extends TypeForm>(
       form.setTouched = resolve
    }
 
+   const hasCustomInputs = React.useCallback(() => {
+      return Object.keys(listInputsRef.current)
+         .filter((ref) => listInputsRef.current[ref].type === 'custom')
+         .map((field) => listInputsRef.current[field].name)
+   }, [])
+
    function reset() {
       form.reset()
       setRefInputsValues()
-      if (!options.debounce && !options.isControlled) {
+      if (!options.debounce && !options.isControlled || hasCustomInputs()) {
          setState(form.get)
       }
    }

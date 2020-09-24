@@ -48,8 +48,20 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
    set setValues(values: Partial<ObservableData<T>["values"]>) {
       this.set = dot.set(this.get, `values`, { ...this.getValues, ...values })
+   }
+
+   set onChange(e: any) {
+      const values = dot.set(this.getValues, `${e.path}`, e.value)
       if (this.schemaValidation) {
-         validation(this.getValues, this.schemaValidation, e => this.setErrors = e)
+         validation(values, this.schemaValidation, e => {
+            this.set = {
+               values: values,
+               errors: e,
+               touched: this.getTouched
+            }
+         })
+      } else {
+         this.set = dot.set(this.get, `values`, values)
       }
    }
 
@@ -63,7 +75,7 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
    reset() {
       this.set = {
-         values: this.initialState,
+         values: this.initialState.initialValues,
          touched: {}
       }
       validation(this.getValues, this.schemaValidation, e => this.setErrors = e)

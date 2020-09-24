@@ -2,6 +2,13 @@ import React, { useEffect } from 'react'
 import * as yup from 'yup'
 import './styles.css'
 import { useForm, create } from '@forms/useform'
+import Select from 'react-select'
+
+const options = [
+  { value: 'chocolate', label: 'Chocolate', },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' }
+]
 
 
 const schemaValidation = yup.object().shape({
@@ -28,12 +35,12 @@ const App: React.FC = () => {
       watch: e => {
         // console.log(e, '<<<<<<<<< watch')
       },
-      //isControlled: true,
+      isControlled: true,
       //debounce: 500
     })
 
   React.useEffect(() => {
-    //  console.log(state.values)
+    console.log(state.values)
   }, [state])
 
 
@@ -73,6 +80,12 @@ const App: React.FC = () => {
         </div>
         <div>
           <input placeholder="password" {...input('password', 'password')} />
+        </div>
+        <div>
+          <Select
+            {...input("iceCream")}
+            options={options}
+          />
         </div>
         <div>
           <button type="reset">reset</button>
