@@ -102,7 +102,7 @@ export function useForm<TForm extends TypeForm>(
 
    function setRefInputsValues() {
       Object.keys(listInputsRef.current).forEach((key) => {
-         setRefValue(dot.get(listInputsRef.current, key), dot.get(form.getValues, key))
+         setRefValue(listInputsRef.current[key], dot.get(form.getValues, key))
       })
    }
 
@@ -280,10 +280,10 @@ export function useForm<TForm extends TypeForm>(
          if (JSON.stringify(nextState) === JSON.stringify(state)) {
             return
          }
-         if (options?.debounce) {
+         if (options.debounce) {
             return setValuesDebounce(nextState)
          } else if (options.isControlled) {
-            return setValues(nextState)
+            return setState(nextState)
          }
          //else if (hasCustomInputs) {
          // console.log(hasCustomInputs)
@@ -296,11 +296,14 @@ export function useForm<TForm extends TypeForm>(
    )
 
    React.useEffect(() => {
+   }, [])
+
+   React.useEffect(() => {
       const subscriber = form.subscribe(setFormState)
       return () => {
          subscriber()
       }
-   }, [options])
+   }, [setFormState])
 
    return [state, { onSubmit, input, setValues, reset, setErrors, setTouched }]
 }

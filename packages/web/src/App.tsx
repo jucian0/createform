@@ -39,7 +39,13 @@ const form = create({
 
 const App: React.FC = () => {
 
-  const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form, { isControlled: true })
+  const [state, { input, onSubmit, reset, setValues, setTouched, setErrors }] = useForm(form,
+    {
+      //debounce: 500,
+      isControlled: true
+    }
+  )
+
   const [register] = useCustomInput(form)
 
   React.useEffect(() => {
