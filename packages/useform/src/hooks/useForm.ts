@@ -275,16 +275,26 @@ export function useForm<TForm extends TypeForm>(
       }
    }
 
-   React.useEffect(() => {
-      const subscriber = form.subscribe(e => {
-         options.watch?.(e)
-         if (options.isControlled || hasCustomInputs()) {
-            setState(e)
-         } else if (options.debounce || hasCustomInputs()) {
-            setValuesDebounce(e)
+   const setFormState = React.useCallback(
+      (nextState: TValues<TForm>) => {
+         if (JSON.stringify(nextState) === JSON.stringify(state)) {
+            return
          }
-      })
+         if (options?.debounce) {
+            return setValuesDebounce(nextState)
+         } else if (options.isControlled) {
+            return setValues(nextState)
+         } else if (hasCustomInputs()) {
+            //if (hasCustomInputs().includes(fieldPath)) {
+            return setValues(nextState)
+            // }
+         }
+      },
+      [hasCustomInputs, options, setValuesDebounce, state]
+   )
 
+   React.useEffect(() => {
+      const subscriber = form.subscribe(setFormState)
       return () => {
          subscriber()
       }

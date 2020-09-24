@@ -36,7 +36,7 @@ const App: React.FC = () => {
         // console.log(e, '<<<<<<<<< watch')
       },
       //isControlled: true,
-      //debounce: 500
+      debounce: 500
     })
 
   React.useEffect(() => {
