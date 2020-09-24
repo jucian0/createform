@@ -293,7 +293,7 @@ export function useForm<TForm extends TypeForm>(
          options.watch?.(e)
          if (options.isControlled || hasCustomInputs()) {
             setState(e)
-         } else if (options.debounce) {
+         } else if (options.debounce || hasCustomInputs()) {
             setValuesDebounce(e)
          }
       })
