@@ -1,0 +1,28 @@
+{
+  "name": "@forms/native",
+  "version": "0.0.1",
+  "main": "__generated__/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "postinstall": "expo-yarn-workspaces postinstall"
+  },
+  "dependencies": {
+    "expo": "~38.0.8",
+    "expo-status-bar": "^1.0.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
+    "react-native-web": "~0.11.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@types/react": "^16.9.43",
+    "@types/react-native": "~0.62.13",
+    "expo-yarn-workspaces": "^1.2.1",
+    "metro-config": "^0.60.0"
+  }
+}

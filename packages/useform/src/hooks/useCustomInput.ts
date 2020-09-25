@@ -76,6 +76,5 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
       return subscriber
    }, [])
 
-
    return register
 }
