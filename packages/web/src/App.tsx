@@ -44,7 +44,7 @@ const App: React.FC = () => {
       // debounce: 500,
       //isControlled: true
       watch: e => {
-        console.log(e)
+        //console.log(e)
       }
     }
   )
@@ -105,7 +105,7 @@ const App: React.FC = () => {
           <Select
             placeholder="Color"
             className="select"
-            {...register("color")}
+            {...register("color.favorite")}
             options={optionsColor}
           />
         </div>

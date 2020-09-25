@@ -22,4 +22,3 @@ export function debounce<TThis, TFn extends Function>(this: TThis, fn: TFn, wait
       }
    }
 }
-

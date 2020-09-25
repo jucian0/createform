@@ -1,10 +1,9 @@
 import React from 'react'
 import dot from 'dot-prop-immutable'
 import { InputPartialProps, InputRegisterProps, ListInputsRef, RefFieldElement, TypeForm } from '..'
-import { useStateCallback } from './useStateCallback'
 
 export function useCustomInput<TForm extends TypeForm>(form: TForm) {
-   const [state, setState] = useStateCallback<TForm['get']['values']>({}, e => form.setValues = e)
+   const [state, setState] = React.useState<TForm['get']['values']>(form.getValues)
    const listInputsRef = React.useRef<ListInputsRef>(Object.assign({}))
 
    /**
@@ -41,18 +40,17 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
       const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
       function onChange(e: any) {
-         setState(state => dot.set(state, complementProps.name, e))
-         // form.onChange = {
-         //    path: complementProps.name,
-         //    value: e
-         // }
+         form.onChange = {
+            path: complementProps.name,
+            value: e
+         }
       }
 
       /**
        * set a type custom to filter a custom inputs in complex forms.
        */
       const props = registerInput({
-         value: dot.get(state, complementProps.name) || null,
+         value: dot.get(form.getValues, complementProps.name) || null,
          onChange,
          type: 'custom',
          ...complementProps,
@@ -61,8 +59,26 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
       return props
    }
 
+   React.useEffect(() => {
+      const subscriber = form.subscribe(e => {
+
+         const isAllowedUpdate = Object.keys(listInputsRef.current).some(key => {
+            const firstValue = dot.get(state, key)
+            const secondValue = dot.get(form.getValues, key)
+            if (typeof firstValue === 'object') {
+               return JSON.stringify(firstValue) !== JSON.stringify(secondValue)
+            }
+            return String(firstValue) !== String(secondValue)
+         })
+
+         if (isAllowedUpdate) {
+            setState(e.values)
+         }
+      })
+
+      return subscriber
+   }, [])
+
 
    return register
-
-
 }

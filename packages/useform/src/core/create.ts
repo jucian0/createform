@@ -13,6 +13,11 @@ export interface Options<T extends {}> {
    schemaValidation?: any
 }
 
+type OnChange = {
+   path: string
+   value: any
+}
+
 class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
 
    private initialState: Omit<T, 'schemaValidation'> = Object.assign({})
@@ -50,7 +55,7 @@ class Create<T extends Options<T>> extends Observable<ObservableData<T>>{
       this.set = dot.set(this.get, `values`, { ...this.getValues, ...values })
    }
 
-   set onChange(e: any) {
+   set onChange(e: OnChange) {
       const values = dot.set(this.getValues, e.path, e.value)
       const touched = dot.set(this.getTouched, e.path, true)
       if (this.schemaValidation) {
