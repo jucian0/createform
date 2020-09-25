@@ -276,7 +276,8 @@ export function useForm<TForm extends TypeForm>(
    }
 
    const setFormState = React.useCallback(
-      (nextState: TValues<TForm>) => {
+      (nextState: TForm['get']) => {
+         options.watch?.(nextState.values)
          if (JSON.stringify(nextState) === JSON.stringify(state)) {
             return
          }

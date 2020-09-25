@@ -1,9 +1,10 @@
 import React from 'react'
 import dot from 'dot-prop-immutable'
 import { InputPartialProps, InputRegisterProps, ListInputsRef, RefFieldElement, TypeForm } from '..'
+import { useStateCallback } from './useStateCallback'
 
 export function useCustomInput<TForm extends TypeForm>(form: TForm) {
-   const [state, setState] = React.useState<TForm['get']>()
+   const [state, setState] = useStateCallback<TForm['get']['values']>({}, e => form.setValues = e)
    const listInputsRef = React.useRef<ListInputsRef>(Object.assign({}))
 
    /**
@@ -40,17 +41,18 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
       const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
       function onChange(e: any) {
-         form.onChange = {
-            path: complementProps.name,
-            value: e
-         }
+         setState(state => dot.set(state, complementProps.name, e))
+         // form.onChange = {
+         //    path: complementProps.name,
+         //    value: e
+         // }
       }
 
       /**
        * set a type custom to filter a custom inputs in complex forms.
        */
       const props = registerInput({
-         value: dot.get(form.getValues, complementProps.name) || null,
+         value: dot.get(state, complementProps.name) || null,
          onChange,
          type: 'custom',
          ...complementProps,
@@ -60,18 +62,7 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
    }
 
 
-   React.useEffect(() => {
-      const subscriber = form.subscribe(e => {
-         setState(e.values)
-      })
+   return register
 
-      return () => {
-         subscriber()
-      }
-   }, [])
-
-   return [
-      register
-   ]
 
 }
