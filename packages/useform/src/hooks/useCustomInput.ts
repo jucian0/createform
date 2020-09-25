@@ -1,6 +1,7 @@
 import React from 'react'
 import dot from 'dot-prop-immutable'
 import { InputPartialProps, InputRegisterProps, ListInputsRef, RefFieldElement, TypeForm } from '..'
+import { deepComparative } from '../utils'
 
 export function useCustomInput<TForm extends TypeForm>(form: TForm) {
    const [state, setState] = React.useState<TForm['get']['values']>(form.getValues)
@@ -59,19 +60,15 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
       return props
    }
 
+   function compareChanges<T>(first: T, second: T) {
+      return Object.keys(listInputsRef.current).some(key => {
+         return deepComparative(dot.get(first, key), dot.get(second, key)).isEqual()
+      })
+   }
+
    React.useEffect(() => {
       const subscriber = form.subscribe(e => {
-
-         const isAllowedUpdate = Object.keys(listInputsRef.current).some(key => {
-            const firstValue = dot.get(state, key)
-            const secondValue = dot.get(form.getValues, key)
-            if (typeof firstValue === 'object') {
-               return JSON.stringify(firstValue) !== JSON.stringify(secondValue)
-            }
-            return String(firstValue) !== String(secondValue)
-         })
-
-         if (isAllowedUpdate) {
+         if (compareChanges(state, e.values)) {
             setState(e.values)
          }
       })
