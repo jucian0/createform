@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 type UseStateCallback<T> = [T, React.Dispatch<React.SetStateAction<T>>]
 
@@ -6,7 +6,7 @@ export function useStateCallback<T>(initialState: T, callback: (state: T) => voi
 
    const [state, setState] = React.useState(initialState)
 
-   useEffect(() => {
+   React.useEffect(() => {
       callback(state)
    }, [state])
 
