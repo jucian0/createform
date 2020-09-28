@@ -37,7 +37,7 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
    * @param param this is object with properties of a custom input web.
    * custom function register a custom inputs like a react date piker or react-select.
    */
-   function register<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
+   function registerWeb<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
       const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
 
       function onChange(e: any) {
@@ -58,6 +58,41 @@ export function useCustomInput<TForm extends TypeForm>(form: TForm) {
       })
 
       return props
+   }
+
+   /**
+   * 
+   * @param param this is object with properties of a custom input native.
+   * custom function register a custom inputs like a Switch Picker.
+   */
+   function registerNative<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
+      const complementProps: any = typeof param === 'string' ? { name: param } : { ...param }
+
+      function onValueChange(e: any) {
+         form.onChange = {
+            path: complementProps.name,
+            value: e,
+         }
+      }
+
+      /**
+       * set a type custom to filter a custom inputs in complex forms.
+       */
+      const props = registerInput({
+         value: dot.get(form.getValues, complementProps.name),
+         onValueChange,
+         type: 'custom',
+         ...complementProps,
+      })
+
+      return props
+   }
+
+   function register<Custom = any>(param: Custom): InputRegisterProps<RefFieldElement> {
+      if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+         return registerNative(param)
+      }
+      return registerWeb(param)
    }
 
    function compareChanges<T>(first: T, second: T) {
