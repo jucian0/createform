@@ -1,0 +1,2 @@
+# Redirect default Netlify subdomain to primary domain
+https://useform.netlify.com/* https://www.useform.org/:splat 301!
