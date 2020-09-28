@@ -89,6 +89,10 @@ export function useForm<TForm extends TypeForm>(
          return
       }
 
+      if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+         return input.ref.current?.setNativeProps?.({ text: value || null })
+      }
+
       const type = input.ref.current.type
 
       if (isRadio(type)) {
@@ -145,6 +149,10 @@ export function useForm<TForm extends TypeForm>(
       const complementProps =
          typeof param === 'string' ? { name: param, type: args[0] } : { ...param }
 
+      if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+         return nativeBase(complementProps)
+      }
+
       /**
        * To turn logic easier has a function to process input checkbox or radio and defaultInputBase for another kind of input like text, data...
        */
@@ -180,8 +188,9 @@ export function useForm<TForm extends TypeForm>(
 
    function checkedBase(complementProps: InputProps) {
       function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         form.setValues = {
-            [e.target.name]: complementProps.type === 'radio' ? e.target.value : e.target.checked,
+         form.onChange = {
+            path: e.target.name,
+            value: complementProps.type === 'radio' ? e.target.value : e.target.checked,
          }
       }
 
@@ -194,6 +203,24 @@ export function useForm<TForm extends TypeForm>(
          ...complementProps,
       })
       return props
+   }
+
+   function nativeBase(complementProps: InputProps) {
+
+      function onChange(e: any) {
+         form.onChange = {
+            path: complementProps.name,
+            value: e.nativeEvent.text
+         }
+      }
+
+      const props = registerInput({
+         defaultValue: dot.get(form.getValues, complementProps.name),
+         onChange,
+         ...complementProps,
+      })
+      return props
+
    }
 
 
