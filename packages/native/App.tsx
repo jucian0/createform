@@ -2,28 +2,38 @@ import { StatusBar } from 'expo-status-bar'
 import React from 'react'
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
 import { create, useForm } from '@forms/useform'
+import * as yup from 'yup'
+
+const schemaValidation = yup.object().shape({
+  name: yup.string().required("this field is required"),
+  email: yup.string().required("this field is required").email("this field must be a valid email"),
+});
 
 const form = create({
   initialValues: {
-    name: 'James',
+    name: 'James S',
     email: 'james@james.com',
     password: '123456'
-  }
+  },
+  schemaValidation
 })
+
 
 const App: React.FC = () => {
 
-  const [{ values }, { reset, onSubmit }] = useForm(form)
+  const [{ values, errors, touched }, { reset, onSubmit, input }] = useForm(form)
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Name" />
-      <TextInput style={styles.input} placeholder="Email" />
-      <TextInput style={styles.input} placeholder="Password" />
+      <TextInput style={styles.input} placeholder="Name" {...input('name', 'text')} />
+      <Text>{touched.name && errors.name}</Text>
+      <TextInput style={styles.input} placeholder="Email" {...input('email', 'email')} />
+      <Text>{touched.email && errors.email}</Text>
+      <TextInput style={styles.input} placeholder="Password" {...input('password', 'password')} />
 
       <Button title="Reset" onPress={reset} />
       <Button title="Submit" onPress={onSubmit(e => {
-        console.log(e)
+        // console.log(errors)
       })} />
     </View>
   )
