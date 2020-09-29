@@ -1,0 +1,113 @@
+import { DefaultSeo } from 'next-seo';
+
+   <DefaultSeo
+      title="Test Seo MDX"
+      description="My description MDX."
+   />
+
+
+   # Title h1
+
+   ## Subtitle h2
+
+   ### Subtitle h3
+
+   ### Subtitle h4
+
+
+   Paragrafo, de testes <Inline>useform</Inline>.
+
+   <br/>
+
+   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec eros eu odio ullamcorper porta ac quis magna. In ultricies eget nunc eget gravida. Fusce neque diam, sagittis non nisi sed, elementum hendrerit purus. Sed fringilla vitae mauris non tincidunt. Cras ac malesuada ligula, ac euismod felis. Morbi ac scelerisque leo. Nullam sodales vel velit vel volutpat. Donec porttitor massa tortor, eget rutrum felis venenatis in.
+   <br/>
+
+   Morbi faucibus vestibulum mauris, ut gravida sapien tempus at. Aenean sit amet convallis tellus. Nullam ac hendrerit leo. In id neque in ex vestibulum faucibus malesuada et mauris. Donec hendrerit bibendum elit, et ultrices diam aliquet ac. Vestibulum nunc felis, vulputate quis turpis sed, consequat molestie ex. Sed aliquet quis ex vitae placerat. Ut egestas, elit eget interdum tempus, mauris mi rutrum eros, ac porta dolor elit at dui. Nulla varius nec nunc et viverra. Quisque condimentum sem nisl, gravida malesuada ligula rhoncus nec. Morbi lectus nulla, sollicitudin et sapien vel, volutpat imperdiet tortor. Vivamus sapien diam, auctor et pharetra ut, blandit et felis.
+   <br/>
+
+   Aenean consequat venenatis sem, vitae pharetra tellus auctor quis. Nulla feugiat mauris id mattis finibus. Donec luctus tellus eu lacus condimentum, nec congue turpis maximus. Vestibulum mollis augue in sodales eleifend. Curabitur efficitur arcu sed tincidunt vestibulum. Nulla tempor felis non rutrum rutrum. Nullam eget augue vel odio fermentum convallis id vitae tortor. Nam sem lorem, placerat eu ante nec, maximus feugiat quam. In hendrerit tincidunt felis non porttitor. Curabitur eget libero viverra leo varius scelerisque. Curabitur tortor est, elementum id dui sed, ultrices efficitur orci.
+   <br/>
+
+   Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin massa magna, venenatis nec blandit nec, consectetur sit amet risus. Morbi eget auctor arcu. Ut at dolor nec leo accumsan pulvinar id quis turpis. Suspendisse scelerisque eleifend imperdiet. Etiam sed egestas leo. Proin non justo et ipsum mattis porta. Ut varius porttitor quam finibus tempor.
+   <br/>
+
+   Nullam nibh risus, fringilla eu ultrices non, venenatis vitae tellus. Vestibulum finibus nulla ac convallis dictum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vivamus vestibulum libero nec facilisis molestie. Proin justo velit, aliquet nec eros quis, tempor mollis dolor. In hac habitasse platea dictumst. Ut convallis et arcu a tempus. Mauris posuere sed lorem et luctus.
+   <br/>
+
+
+   ```jsx
+   
+      import { CodeBlock, dracula } from "react-code-blocks";
+
+      function MyCoolCodeBlock({ code, language, showLineNumbers }) {
+         
+         const handle = ()=>{
+            
+         }
+
+         return (
+            <CodeBlock
+               text={code}
+               language={language}
+               showLineNumbers={showLineNumbers}
+               theme={dracula}
+            />
+         );
+      }
+   
+   ```
+
+| Tables   |      Are      |  Cool |
+|----------|:-------------:|------:|
+| col 1 is |  left-aligned | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned |    $1 |
+
+
+<br/>
+
+*This text will be italic*
+_This will also be italic_
+
+**This text will be bold**
+__This will also be bold__
+
+_You **can** combine them_
+
+
+1. `Item` 1
+1. Item 2
+1. Item 3
+   1. Item 3a
+   1. Item 3b
+
+
+
+
+
+   http://github.com - automatic!
+   [GitHub](http://github.com)
+
+
+   <br/>
+
+   As Kanye West said:
+
+> We're living the future so
+> the present is our past.
+
+```javascript
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+```
+
+<br/>
+<br/>
+
+- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported
+- [x] list syntax required (any unordered or ordered list supported)
+- [x] this is a complete item
+- [ ] this is an incomplete item

@@ -1,7 +1,0 @@
-export * from './box'
-export * from './button'
-export * from './checkbox'
-export * from './input'
-export * from './radio'
-export * from './range'
-export * from './textarea'

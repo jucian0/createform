@@ -1,42 +1,37 @@
 {
   "name": "@forms/site",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy"
+    "dev": "next dev",
+    "build": "next build",
+    "format": "prettier --write '**/*.{js,jsx}'",
+    "start": "next start",
+    "export": "next export",
+    "deploy": "npm run build && npm run export"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-alpha.63",
-    "@docusaurus/plugin-content-docs": "^2.0.0-alpha.63",
-    "@docusaurus/plugin-google-analytics": "^2.0.0-alpha.63",
-    "@docusaurus/plugin-sitemap": "^2.0.0-alpha.63",
-    "@docusaurus/preset-classic": "2.0.0-alpha.63",
-    "@docusaurus/theme-live-codeblock": "^2.0.0-alpha.63",
-    "classnames": "^2.2.6",
-    "react": "^16.8.4",
-    "react-datepicker": "^2.16.0",
-    "react-dom": "^16.8.4",
+    "@mdx-js/loader": "^1.6.10",
+    "@next/mdx": "^9.4.4",
+    "i": "^0.3.6",
+    "next": "^9.4.4",
+    "next-compose-plugins": "^2.2.0",
+    "next-mdx-blog": "^2.0.1",
+    "next-seo": "^4.7.3",
+    "polished": "^3.6.5",
+    "react": "^16.13.1",
+    "react-code-blocks": "^0.0.8",
+    "react-dom": "^16.13.1",
     "react-grid-system": "^6.4.2",
-    "react-json-pretty": "^2.2.0",
+    "react-icons": "^3.10.0",
     "react-json-view": "^1.19.1",
-    "react-select": "^3.1.0",
     "styled-components": "^5.1.1",
-    "@forms/useform": "*",
-    "yup": "^0.29.1"
+    "@forms/useform": "*"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-inline-react-svg": "^1.1.1",
+    "babel-plugin-styled-components": "^1.10.7",
+    "next-images": "^1.4.0"
   }
 }
