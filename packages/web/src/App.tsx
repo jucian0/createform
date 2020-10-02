@@ -123,12 +123,18 @@ import Select from 'react-select'
 const App: React.FC = () => {
 
 
-  const { register, setValues, reset } = useFormTest({
+  const { register, setValues, reset, state } = useFormTest({
     initialValues: {
       name: 'Jose Antonio',
       email: 'jose@jose.com'
-    }
+    },
+    debounced: 1000
   })
+
+
+  useEffect(() => {
+    console.log(state)
+  }, [state])
 
   return (
     <section>
