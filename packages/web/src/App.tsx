@@ -123,23 +123,28 @@ import Select from 'react-select'
 const App: React.FC = () => {
 
 
-  const { input, set } = useFormTest({})
+  const { register, setValues, reset } = useFormTest({
+    initialValues: {
+      name: 'Jose Antonio',
+      email: 'jose@jose.com'
+    }
+  })
 
   return (
     <section>
       <form >
         <div>
-          <input placeholder="Name" {...input('name')} />
+          <input placeholder="Name" {...register('name')} />
         </div>
         <div>
-          <input placeholder="E-mail" {...input('email')} />
+          <input placeholder="E-mail" {...register('email')} />
         </div>
         <div>
-          <input placeholder="Password" {...input('password')} />
+          <input placeholder="Password" {...register('password')} />
         </div>
         <div>
-          <button type="reset">reset</button>
-          <button type="button" onClick={() => set({ name: 'juciano de carvalho' })}>submit</button>
+          <button type="button" onClick={reset}>reset</button>
+          <button type="button" onClick={() => setValues({ name: 'juciano de carvalho', email: 'ze@ze.com' })}>submit</button>
         </div>
       </form>
     </section>
