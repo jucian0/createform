@@ -1,6 +1,8 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
 import { Observable } from "../core/observable";
+import { BaseState, useFormTestReducer } from "./useForm_TEST.reducer";
+import { Reducer } from "react";
 
 
 type Options<T> = {
@@ -24,8 +26,15 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    const refs = React.useRef<{ current: { [key: string]: Ref } }>({} as any)
 
-   function handleChanges(e) {
+   const [state, dispatch] = React.useReducer<Reducer<BaseState<TO['initialValues']>, any>>(
+      useFormTestReducer,
+      {
+         values: options.initialValues || {},
+         error: options.initialErrors || {},
+         touched: options.initialTouched || {}
+      })
 
+   function handleChanges(e) {
    }
 
    function register(path: string) {
