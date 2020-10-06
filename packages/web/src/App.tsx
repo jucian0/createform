@@ -123,12 +123,19 @@ import Select from 'react-select'
 const App: React.FC = () => {
 
 
-  const { register, state, resetForm, setForm } = useFormTest({ debounced: 1000 })
+  const { register, state, resetForm, setForm, setTouched, resetTouched } = useFormTest({ debounced: 1000 })
 
-  function handleSet() {
+  function handleSetForm() {
     setForm({
       name: 'Jose Olimpio',
       email: 'jose@jose.com'
+    })
+  }
+
+  function handleSetTouched() {
+    setTouched({
+      name: false,
+      email: true
     })
   }
 
@@ -151,8 +158,10 @@ const App: React.FC = () => {
           <input placeholder="Password" {...register('password')} />
         </div>
         <div>
-          <button type="button" onClick={resetForm}>reset</button>
-          <button type="button" onClick={handleSet}>set</button>
+          <button type="button" onClick={resetForm}>resetForm</button>
+          <button type="button" onClick={handleSetForm}>setForm</button>
+          <button type="button" onClick={handleSetTouched}>setTouched</button>
+          <button type="button" onClick={resetTouched}>resetTouched</button>
           {/*<button type="button" onClick={() => setValues({ name: 'juciano de carvalho', email: 'ze@ze.com' })}>submit</button> */}
         </div>
       </form>

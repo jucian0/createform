@@ -118,7 +118,17 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       })
    }
 
+   function setTouched(e: Partial<TO['initialTouched']>) {
+      touched$.set = e
+   }
 
-   return { register, state, resetForm, setForm }
+   function resetTouched(e: Partial<TO['initialTouched']>) {
+      Object.keys(refs.current).forEach(key => {
+         touched$.set = dot.set(values$.get, key, dot.get(options.initialTouched || {}, key) || false)
+      })
+   }
+
+
+   return { register, state, resetForm, setForm, setTouched, resetTouched }
 
 }
