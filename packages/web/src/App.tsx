@@ -123,9 +123,12 @@ import Select from 'react-select'
 const App: React.FC = () => {
 
 
-  const { register } = useFormTest({})
+  const { register, state, resetForm } = useFormTest({ debounced: 1000 })
 
 
+  useEffect(() => {
+    console.log(state)
+  }, [state])
 
 
   return (

@@ -1,8 +1,9 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
 import { Observable } from "../core/observable";
-import { BaseState, useFormTestReducer } from "./useForm_TEST.reducer";
+import { Action, BaseState, useFormTestReducer } from "./useForm_TEST.reducer";
 import { Reducer } from "react";
+import { debounce } from "../utils";
 
 
 type Options<T> = {
@@ -26,7 +27,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    const refs = React.useRef<{ current: { [key: string]: Ref } }>({} as any)
 
-   const [state, dispatch] = React.useReducer<Reducer<BaseState<TO['initialValues']>, any>>(
+   const [state, dispatch] = React.useReducer<Reducer<BaseState<TO['initialValues']>, Action>>(
       useFormTestReducer,
       {
          values: options.initialValues || {},
@@ -34,8 +35,8 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
          touched: options.initialTouched || {}
       })
 
-   function handleChanges(e) {
-   }
+   const dispatchDebounced = React.useCallback(debounce(dispatch, options.debounced || 300), [])
+
 
    function register(path: string) {
       const newRefs = {
@@ -50,7 +51,6 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    function handleEvent(event: string) {
       if (event === 'input') {
          return (e: Change) => {
-            console.log(e.target.name, '<<<<<<<<<<<<<<<<<<<')
             const nextState = dot.set(values$.get, e.target.name, e.target.value)
             values$.set = nextState
          }
@@ -74,11 +74,22 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       })
    }
 
+   function handleChanges(e: Action) {
+      if (options.isControlled || e.type === 'blur') {
+         return dispatch(e)
+      } else if (options.debounced) {
+         dispatchDebounced(e)
+      }
+   }
+
    React.useEffect(() => {
+      const valuesSubscriber = values$.subscribe(e => handleChanges({ type: 'input', payload: e }))
+      const touchedSubscriber = touched$.subscribe(e => handleChanges({ type: 'blur', payload: e }))
 
-      values$.subscribe(e => console.log(e))
-      touched$.subscribe(e => console.log(e))
-
+      return () => {
+         valuesSubscriber()
+         touchedSubscriber()
+      }
    }, [])
 
    React.useEffect(() => {
@@ -88,6 +99,14 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       }
    }, [refs])
 
-   return { register }
+
+
+   function resetForm() {
+      Object.keys(refs.current).forEach(key => {
+         refs.current[key].current.value = dot.get(options.initialValues, key) || null
+      })
+   }
+
+   return { register, state, resetForm }
 
 }
