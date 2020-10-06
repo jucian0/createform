@@ -100,13 +100,25 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }, [refs])
 
 
+   function setRefValue(path: string, value: any) {
+      refs.current[path].current.value = value || null
+   }
 
-   function resetForm() {
+   function setForm(e: Partial<TO['initialValues']>) {
+      values$.set = e
       Object.keys(refs.current).forEach(key => {
-         refs.current[key].current.value = dot.get(options.initialValues, key) || null
+         setRefValue(key, dot.get(e, key) || dot.get(values$.get, key))
       })
    }
 
-   return { register, state, resetForm }
+   function resetForm() {
+      Object.keys(refs.current).forEach(key => {
+         setRefValue(key, dot.get(options.initialValues, key) || null)
+         setForm(dot.set(values$.get, key, dot.get(options.initialValues || {}, key) || null))
+      })
+   }
+
+
+   return { register, state, resetForm, setForm }
 
 }

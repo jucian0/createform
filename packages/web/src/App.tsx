@@ -123,7 +123,14 @@ import Select from 'react-select'
 const App: React.FC = () => {
 
 
-  const { register, state, resetForm } = useFormTest({ debounced: 1000 })
+  const { register, state, resetForm, setForm } = useFormTest({ debounced: 1000 })
+
+  function handleSet() {
+    setForm({
+      name: 'Jose Olimpio',
+      email: 'jose@jose.com'
+    })
+  }
 
 
   useEffect(() => {
@@ -144,8 +151,9 @@ const App: React.FC = () => {
           <input placeholder="Password" {...register('password')} />
         </div>
         <div>
-          {/* <button type="button" onClick={reset}>reset</button>
-          <button type="button" onClick={() => setValues({ name: 'juciano de carvalho', email: 'ze@ze.com' })}>submit</button> */}
+          <button type="button" onClick={resetForm}>reset</button>
+          <button type="button" onClick={handleSet}>set</button>
+          {/*<button type="button" onClick={() => setValues({ name: 'juciano de carvalho', email: 'ze@ze.com' })}>submit</button> */}
         </div>
       </form>
     </section>
