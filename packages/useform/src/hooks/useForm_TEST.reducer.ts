@@ -1,13 +1,14 @@
 
 export type Action = {
-   type: 'error' | 'input' | 'blur',
+   type: 'error' | 'input' | 'blur' | 'isValid',
    payload: any
 }
 
 export type BaseState<T> = {
    error: T,
    values: T,
-   touched: T
+   touched: T,
+   isValid: boolean
 }
 
 
@@ -38,6 +39,12 @@ export function useFormTestReducer<T extends BaseState<T['values']>>(state: T, a
                ...state.touched,
                ...action.payload
             }
+         }
+
+      case 'isValid':
+         return {
+            ...state,
+            isValid: action.payload
          }
 
       default:

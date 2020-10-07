@@ -4,6 +4,7 @@ import { Observable } from "../core/observable";
 import { Action, BaseState, useFormTestReducer } from "./useForm_TEST.reducer";
 import { Reducer } from "react";
 import { debounce } from "../utils";
+import { ValidationError, Schema as YupSchema } from "yup";
 
 
 type Options<T> = {
@@ -11,7 +12,11 @@ type Options<T> = {
    initialErrors?: T,
    initialTouched?: T,
    isControlled?: boolean,
-   debounced?: number
+   debounced?: number,
+   validateOnChange?: boolean
+   validateOnBlur?: boolean
+   validateOnSubmit?: boolean
+   schemaValidation?: YupSchema<T>
 }
 
 type Ref = {
@@ -32,7 +37,8 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       {
          values: options.initialValues || {},
          error: options.initialErrors || {},
-         touched: options.initialTouched || {}
+         touched: options.initialTouched || {},
+         isValid: isValid(options.initialValues)
       })
 
    const dispatchDebounced = React.useCallback(debounce(dispatch, options.debounced || 300), [])
@@ -74,32 +80,6 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       })
    }
 
-   function handleChanges(e: Action) {
-      if (options.isControlled || e.type === 'blur') {
-         return dispatch(e)
-      } else if (options.debounced) {
-         dispatchDebounced(e)
-      }
-   }
-
-   React.useEffect(() => {
-      const valuesSubscriber = values$.subscribe(e => handleChanges({ type: 'input', payload: e }))
-      const touchedSubscriber = touched$.subscribe(e => handleChanges({ type: 'blur', payload: e }))
-
-      return () => {
-         valuesSubscriber()
-         touchedSubscriber()
-      }
-   }, [])
-
-   React.useEffect(() => {
-      addEvents('input', 'blur')
-      return () => {
-         removeEvents('input', 'blur')
-      }
-   }, [refs])
-
-
    function setRefValue(path: string, value: any) {
       refs.current[path].current.value = value || null
    }
@@ -129,6 +109,83 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }
 
 
-   return { register, state, resetForm, setForm, setTouched, resetTouched }
+   function handleChanges(e: Action) {
+      if (options.isControlled) {
+         validate(e.payload)
+         return dispatch(e)
+      } else if (options.debounced) {
+         validate(e.payload)
+         return dispatchDebounced(e)
+      }
+   }
+
+   function onSubmit(fn: (values: TO['initialValues']) => void) {
+      return (e: React.BaseSyntheticEvent) => {
+         e.preventDefault()
+
+         validate(values$.get)
+
+         if (state.isValid) {
+            fn(values$.get)
+         }
+
+      }
+   }
+
+   function isValid(values) {
+      return options.schemaValidation.isValidSync(values)
+   }
+
+   function validate(values) {
+
+
+      // dispatch({
+      //    type: 'isValid',
+      //    payload: isValid(values)
+      // })
+
+
+
+      options.schemaValidation?.validate(values, { abortEarly: false })
+         .then(() => {
+            dispatch({ type: 'error', payload: {} })
+         })
+         .catch((e: ValidationError) => {
+            let errors = {}
+            e.inner.forEach(key => {
+               const path = key.path
+                  .split('[')
+                  .join('.')
+                  .split(']')
+                  .join('')
+
+               errors = dot.set(errors, path, key.message)
+            })
+            dispatch({
+               type: 'error',
+               payload: errors
+            })
+         })
+
+   }
+
+   React.useEffect(() => {
+      const valuesSubscriber = values$.subscribe(e => handleChanges({ type: 'input', payload: e }))
+      const touchedSubscriber = touched$.subscribe(e => handleChanges({ type: 'blur', payload: e }))
+
+      return () => {
+         valuesSubscriber()
+         touchedSubscriber()
+      }
+   }, [])
+
+   React.useEffect(() => {
+      addEvents('input', 'blur')
+      return () => {
+         removeEvents('input', 'blur')
+      }
+   }, [refs])
+
+   return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit }
 
 }

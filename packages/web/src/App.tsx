@@ -120,10 +120,21 @@ import Select from 'react-select'
 // export default App
 
 
+const initialValues = {
+  name: '',
+  email: '',
+  password: ''
+}
+
+const schemaValidation = yup.object().shape({
+  name: yup.string().required("this field is required"),
+  email: yup.string().required("this field is required").email("this field must be a valid email"),
+  password: yup.string()
+});
+
 const App: React.FC = () => {
 
-
-  const { register, state, resetForm, setForm, setTouched, resetTouched } = useFormTest({ debounced: 1000 })
+  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({ initialValues, schemaValidation })
 
   function handleSetForm() {
     setForm({
@@ -137,6 +148,10 @@ const App: React.FC = () => {
       name: false,
       email: true
     })
+  }
+
+  function handleSubmit(e: typeof initialValues) {
+    console.log(e)
   }
 
 
@@ -162,7 +177,7 @@ const App: React.FC = () => {
           <button type="button" onClick={handleSetForm}>setForm</button>
           <button type="button" onClick={handleSetTouched}>setTouched</button>
           <button type="button" onClick={resetTouched}>resetTouched</button>
-          <button type="button" onClick={() => setValues({ name: 'juciano de carvalho', email: 'ze@ze.com' })}>submit</button>
+          <button type="button" onClick={onSubmit(handleSubmit)}>submit</button>
         </div>
       </form>
     </section>
