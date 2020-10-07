@@ -162,7 +162,7 @@ const App: React.FC = () => {
           <button type="button" onClick={handleSetForm}>setForm</button>
           <button type="button" onClick={handleSetTouched}>setTouched</button>
           <button type="button" onClick={resetTouched}>resetTouched</button>
-          {/*<button type="button" onClick={() => setValues({ name: 'juciano de carvalho', email: 'ze@ze.com' })}>submit</button> */}
+          <button type="button" onClick={() => setValues({ name: 'juciano de carvalho', email: 'ze@ze.com' })}>submit</button>
         </div>
       </form>
     </section>
