@@ -129,12 +129,12 @@ const initialValues = {
 const schemaValidation = yup.object().shape({
   name: yup.string().required("this field is required"),
   email: yup.string().required("this field is required").email("this field must be a valid email"),
-  password: yup.string()
+  password: yup.string().required('this field is required')
 });
 
 const App: React.FC = () => {
 
-  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({ initialValues, schemaValidation })
+  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({ initialValues, schemaValidation, isControlled: true })
 
   function handleSetForm() {
     setForm({
@@ -155,9 +155,9 @@ const App: React.FC = () => {
   }
 
 
-  useEffect(() => {
-    console.log(state)
-  }, [state])
+  // useEffect(() => {
+  //   console.log(state)
+  // }, [state])
 
 
   return (

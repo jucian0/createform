@@ -29,6 +29,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    const { current: values$ } = React.useRef(new Observable(options.initialValues || {}))
    const { current: touched$ } = React.useRef(new Observable(options.initialTouched || {}))
+   const { current: errors$ } = React.useRef(new Observable(options.initialErrors || {}))
 
    const refs = React.useRef<{ current: { [key: string]: Ref } }>({} as any)
 
@@ -59,6 +60,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
          return (e: Change) => {
             const nextState = dot.set(values$.get, e.target.name, e.target.value)
             values$.set = nextState
+            validate(nextState)
          }
       }
 
@@ -111,10 +113,8 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    function handleChanges(e: Action) {
       if (options.isControlled) {
-         validate(e.payload)
          return dispatch(e)
       } else if (options.debounced) {
-         validate(e.payload)
          return dispatchDebounced(e)
       }
    }
@@ -122,8 +122,6 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    function onSubmit(fn: (values: TO['initialValues']) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-
-         validate(values$.get)
 
          if (state.isValid) {
             fn(values$.get)
@@ -136,22 +134,18 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       return options.schemaValidation.isValidSync(values)
    }
 
+
+   /**
+    * 
+    *  needs make a object with all properties with value empty
+    */
    function validate(values) {
-
-
-      // dispatch({
-      //    type: 'isValid',
-      //    payload: isValid(values)
-      // })
-
-
-
       options.schemaValidation?.validate(values, { abortEarly: false })
-         .then(() => {
-            dispatch({ type: 'error', payload: {} })
+         .then((e) => {
+
+            errors$.set = {}
          })
          .catch((e: ValidationError) => {
-            let errors = {}
             e.inner.forEach(key => {
                const path = key.path
                   .split('[')
@@ -159,23 +153,28 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
                   .split(']')
                   .join('')
 
-               errors = dot.set(errors, path, key.message)
-            })
-            dispatch({
-               type: 'error',
-               payload: errors
+
+               errors$.set = dot.set({}, path, key.message)
             })
          })
-
    }
+   //
+   //
+   //
+   //
+   //
+   //
+
 
    React.useEffect(() => {
       const valuesSubscriber = values$.subscribe(e => handleChanges({ type: 'input', payload: e }))
       const touchedSubscriber = touched$.subscribe(e => handleChanges({ type: 'blur', payload: e }))
+      const errorsSubscriber = errors$.subscribe(e => { console.log(e) })
 
       return () => {
          valuesSubscriber()
          touchedSubscriber()
+         errorsSubscriber()
       }
    }, [])
 
