@@ -17,10 +17,7 @@ export function useFormTestReducer<T extends BaseState<T['values']>>(state: T, a
       case 'error':
          return {
             ...state,
-            error: {
-               ...state.error,
-               ...action.payload
-            }
+            error: action.payload
          }
 
       case 'input':

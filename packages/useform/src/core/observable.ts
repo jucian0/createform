@@ -18,7 +18,7 @@ export class Observable<T> {
    }
 
    set set(values: T) {
-      this.state = { ...this.state, ...values }
+      this.state = values
       this.notify()
    }
 

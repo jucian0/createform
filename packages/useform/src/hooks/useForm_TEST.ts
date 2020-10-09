@@ -60,7 +60,6 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
          return (e: Change) => {
             const nextState = dot.set(values$.get, e.target.name, e.target.value)
             values$.set = nextState
-            validate(nextState)
          }
       }
 
@@ -134,42 +133,50 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       return options.schemaValidation.isValidSync(values)
    }
 
-
-   /**
-    * 
-    *  needs make a object with all properties with value empty
-    */
    function validate(values) {
       options.schemaValidation?.validate(values, { abortEarly: false })
          .then((e) => {
-
             errors$.set = {}
          })
          .catch((e: ValidationError) => {
+            let errors = {}
             e.inner.forEach(key => {
                const path = key.path
                   .split('[')
                   .join('.')
                   .split(']')
                   .join('')
-
-
-               errors$.set = dot.set({}, path, key.message)
+               errors = dot.set(errors, path, key.message)
             })
+            errors$.set = errors
          })
    }
-   //
-   //
-   //
-   //
-   //
-   //
 
+
+
+   // React.useEffect(() => {
+   //    if (!options.initialErrors) {
+   //       validate(options.initialValues)
+   //    }
+   // }, [])
 
    React.useEffect(() => {
-      const valuesSubscriber = values$.subscribe(e => handleChanges({ type: 'input', payload: e }))
-      const touchedSubscriber = touched$.subscribe(e => handleChanges({ type: 'blur', payload: e }))
-      const errorsSubscriber = errors$.subscribe(e => { console.log(e) })
+      const valuesSubscriber = values$.subscribe(e => {
+         if (options.validateOnChange) {
+            validate(e)
+         }
+
+         return handleChanges({ type: 'input', payload: e })
+      })
+      const touchedSubscriber = touched$.subscribe(e => {
+         if (options.validateOnBlur) {
+            validate(e)
+         }
+
+         return handleChanges({ type: 'blur', payload: e })
+      })
+
+      const errorsSubscriber = errors$.subscribe(e => dispatch({ type: 'error', payload: e }))
 
       return () => {
          valuesSubscriber()
@@ -184,6 +191,8 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
          removeEvents('input', 'blur')
       }
    }, [refs])
+
+
 
    return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit }
 

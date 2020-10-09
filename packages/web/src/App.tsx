@@ -134,7 +134,12 @@ const schemaValidation = yup.object().shape({
 
 const App: React.FC = () => {
 
-  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({ initialValues, schemaValidation, isControlled: true })
+  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({
+    initialValues,
+    schemaValidation,
+    isControlled: true,
+    validateOnBlur: true
+  })
 
   function handleSetForm() {
     setForm({
@@ -155,9 +160,9 @@ const App: React.FC = () => {
   }
 
 
-  // useEffect(() => {
-  //   console.log(state)
-  // }, [state])
+  useEffect(() => {
+    console.log(state)
+  }, [state])
 
 
   return (
@@ -177,7 +182,7 @@ const App: React.FC = () => {
           <button type="button" onClick={handleSetForm}>setForm</button>
           <button type="button" onClick={handleSetTouched}>setTouched</button>
           <button type="button" onClick={resetTouched}>resetTouched</button>
-          <button type="button" onClick={onSubmit(handleSubmit)}>submit</button>
+          <button type="button" disabled={!state.isValid} onClick={onSubmit(handleSubmit)}>submit</button>
         </div>
       </form>
     </section>
