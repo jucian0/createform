@@ -1,50 +1,26 @@
+import dot from "dot-prop-immutable"
 
 export type Action = {
-   type: 'error' | 'input' | 'blur' | 'isValid',
+   type: 'errors' | 'values' | 'touched' | 'isValid',
    payload: any
 }
 
 export type BaseState<T> = {
-   error: T,
+   errors: T,
    values: T,
    touched: T,
    isValid: boolean
 }
 
 
-export function useFormTestReducer<T extends BaseState<T['values']>>(state: T, action: Action): BaseState<T['values']> {
-   switch (action.type) {
-      case 'error':
-         return {
-            ...state,
-            error: action.payload
-         }
+export function useFormTestReducer<T extends BaseState<T['values']>>(state: T, { type, payload }: Action): BaseState<T['values']> {
 
-      case 'input':
-         return {
-            ...state,
-            values: {
-               ...state.values,
-               ...action.payload
-            }
-         }
-
-      case 'blur':
-         return {
-            ...state,
-            touched: {
-               ...state.touched,
-               ...action.payload
-            }
-         }
-
-      case 'isValid':
-         return {
-            ...state,
-            isValid: action.payload
-         }
-
-      default:
-         return state
+   if (type === "errors") {
+      return {
+         ...state,
+         isValid: payload.isValid,
+         errors: payload.errors
+      }
    }
+   return dot.set(state, type, payload)
 }

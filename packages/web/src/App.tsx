@@ -137,8 +137,7 @@ const App: React.FC = () => {
   const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({
     initialValues,
     schemaValidation,
-    isControlled: true,
-    validateOnBlur: true
+    //isControlled: true,
   })
 
   function handleSetForm() {
@@ -157,6 +156,8 @@ const App: React.FC = () => {
 
   function handleSubmit(e: typeof initialValues) {
     console.log(e)
+    console.log(state)
+
   }
 
 
@@ -170,19 +171,22 @@ const App: React.FC = () => {
       <form >
         <div>
           <input placeholder="Name" {...register('name')} />
+          <span className="error">{state.touched.name && state.errors.name}</span>
         </div>
         <div>
           <input placeholder="E-mail" {...register('email')} />
+          <span className="error">{state.touched.email && state.errors.email}</span>
         </div>
         <div>
           <input placeholder="Password" {...register('password')} />
+          <span className="error">{state.touched.password && state.errors.password}</span>
         </div>
         <div>
           <button type="button" onClick={resetForm}>resetForm</button>
           <button type="button" onClick={handleSetForm}>setForm</button>
           <button type="button" onClick={handleSetTouched}>setTouched</button>
           <button type="button" onClick={resetTouched}>resetTouched</button>
-          <button type="button" disabled={!state.isValid} onClick={onSubmit(handleSubmit)}>submit</button>
+          <button type="button" onClick={onSubmit(handleSubmit)}>submit</button>
         </div>
       </form>
     </section>
