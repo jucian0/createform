@@ -137,7 +137,8 @@ const App: React.FC = () => {
   const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({
     initialValues,
     schemaValidation,
-    isControlled: true,
+    //isControlled: true,
+    debounced: 500
   })
 
   function handleSetForm() {
@@ -154,10 +155,8 @@ const App: React.FC = () => {
     })
   }
 
-  function handleSubmit(e: typeof initialValues) {
-    console.log(e)
-    console.log(state)
-
+  function handleSubmit(e: typeof initialValues, isValid) {
+    console.log(e, isValid)
   }
 
 

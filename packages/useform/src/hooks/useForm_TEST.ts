@@ -2,8 +2,9 @@ import React from "react";
 import dot from 'dot-prop-immutable'
 import { Action, BaseState, useFormTestReducer } from "./useForm_TEST.reducer";
 import { Reducer } from "react";
-import { debounce } from "../utils";
+import { debounce, isEmpty } from "../utils";
 import { ValidationError, Schema as YupSchema } from "yup";
+import { useValidation } from "./useValidation";
 
 
 type Options<T> = {
@@ -21,23 +22,25 @@ type Ref = {
 
 type Change = React.ChangeEvent<HTMLInputElement>
 
+
 export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO) {
 
-   const touched = React.useRef<TO["initialTouched"]>(options.initialTouched || {})
-   const values = React.useRef<TO["initialValues"]>(options.initialValues || {})
-   const errors = React.useRef<TO["initialErrors"]>(options.initialErrors || {})
-   const refs = React.useRef<{ current: { [key: string]: Ref } }>({} as any)
+   const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
 
-   const [state, dispatch] = React.useReducer<Reducer<BaseState<TO['initialValues']>, Action>>(
-      useFormTestReducer,
-      {
-         values: options.initialValues || {},
-         errors: options.initialErrors || {},
-         touched: options.initialTouched || {},
-         isValid: isValid(options.initialValues)
-      })
+   const [state, setState] = React.useState({
+      values: options.initialValues || {},
+      errors: options.initialErrors || {},
+      touched: options.initialTouched || {},
+      // isValid: isValid(options.initialValues)
+   })
 
-   const setValueDebounce = React.useCallback(debounce(dispatch, options.debounced || 300), [])
+   //const { errors, isValid } = useValidation(state, options.schemaValidation)
+
+   const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
+
+   function isControlledOrDebounce() {
+      return options.isControlled || !!options.debounced
+   }
 
    function register(path: string) {
       const newRefs = {
@@ -52,26 +55,30 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    function handleEvent(event: string) {
       if (event === 'input') {
          return (e: Change) => {
-            const nextState = dot.set(values.current, e.target.name, e.target.value)
-            values.current = nextState
+            if (options.isControlled) {
+               return setState(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
+            } else if (options.debounced) {
+               return setValueDebounce(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
+            }
          }
       }
 
       return (e: Change) => {
-         const nextState = dot.set(touched.current, e.target.name, true)
-         touched.current = nextState
+         if (isControlledOrDebounce()) {
+            return setState(state => ({ ...state, touched: { ...state.touched, [e.target.name]: true } }))
+         }
       }
    }
 
    function addEvents(...args: Array<string>) {
-      Object.keys(refs.current).forEach(key => {
-         args.forEach(event => refs.current[key].current.addEventListener(event, handleEvent(event)))
+      Object.keys(refs.current).forEach(path => {
+         args.forEach(event => refs.current[path].current.addEventListener(event, handleEvent(event)))
       })
    }
 
    function removeEvents(...args: Array<string>) {
-      Object.keys(refs.current).forEach(key => {
-         args.forEach(event => refs.current[key].current.removeEventListener(event, handleEvent(event)))
+      Object.keys(refs.current).forEach(path => {
+         args.forEach(event => refs.current[path].current.removeEventListener(event, handleEvent(event)))
       })
    }
 
@@ -79,44 +86,53 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       refs.current[path].current.value = value || null
    }
 
-   function setForm(e: Partial<TO['initialValues']>) {
-      values.current = e
-      Object.keys(refs.current).forEach(key => {
-         setRefValue(key, dot.get(e, key) || dot.get(values.current, key))
+   function setForm(nextState: Partial<TO['initialValues']>) {
+      if (isControlledOrDebounce()) {
+         return setState(state => ({ ...state, values: nextState }))
+      }
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(nextState, path) || dot.get(nextState, path))
       })
    }
 
    function resetForm() {
-      Object.keys(refs.current).forEach(key => {
-         setRefValue(key, dot.get(options.initialValues, key) || null)
-         setForm(dot.set(values.current, key, dot.get(options.initialValues || {}, key) || null))
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(options.initialValues, path) || null)
       })
    }
 
-   function setTouched(e: Partial<TO['initialTouched']>) {
-      touched.current = e
+   function setTouched(touched: Partial<TO['initialTouched']>) {
+      setState(state => ({ ...state, touched }))
    }
 
-   function resetTouched(e: Partial<TO['initialTouched']>) {
-      Object.keys(refs.current).forEach(key => {
-         touched.current = dot.set(values.current, key, dot.get(options.initialTouched || {}, key) || false)
-      })
+   function resetTouched(touched: Partial<TO['initialTouched']>) {
+      setTouched(makeResetAllTouchedPayload(touched))
    }
 
+   function makeResetAllTouchedPayload(touched: Partial<TO['initialTouched']>) {
+      return Object.keys(refs.current).reduce((acc, path) => {
+         return dot.set(acc, path, dot.get(options.initialTouched || {}, path) || false)
+      }, {})
+   }
 
-   // function handleChanges(e: Action) {
-   //    if (options.isControlled) {
-   //       return dispatch(e)
-   //    } else if (options.debounced) {
-   //       return dispatchDebounced(e)
-   //    }
-   // }
+   function makeAllTouchedPayload() {
+      return Object.keys(refs.current).reduce((acc, path) => {
+         return dot.set(acc, path, true)
+      }, {})
+   }
 
-   function onSubmit(fn: (values: TO['initialValues']) => void) {
+   function makeFormPayload() {
+      return Object.keys(refs.current).reduce((acc, path) => {
+         return dot.set(acc, path, refs.current[path].current.value)
+      }, {})
+   }
+
+   function onSubmit(fn: (values: TO['initialValues'], isValid: boolean) => void) {
       return (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         validate(values.current)
-         fn(values.current)
+         const values = makeFormPayload()
+         validate(values)
+         fn(values, isValid(values))
       }
    }
 
@@ -127,26 +143,34 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    function validate(values) {
       options.schemaValidation?.validate(values, { abortEarly: false })
          .then((e) => {
-            errors.current = {}
+            if (!isEmpty(state.errors)) {
+               setState(state => ({ ...state, errors: {} }))
+            }
          })
          .catch((e: ValidationError) => {
+            let errors = {}
             e.inner.forEach(key => {
                const path = key.path
                   .split('[')
                   .join('.')
                   .split(']')
                   .join('')
-               errors.current = dot.set(errors, path, key.message)
+               errors = dot.set(errors, path, key.message)
             })
-
+            if (isControlledOrDebounce()) {
+               setState(state => ({ ...state, errors }))
+            }
+            setState(state => ({ ...state, errors, touched: makeAllTouchedPayload() }))
          })
    }
 
    React.useEffect(() => {
-      if (!options.initialErrors) {
-         validate(options.initialValues)
+      if (isControlledOrDebounce()) {
+         validate(state.values)
       }
+   }, [state.values])
 
+   React.useEffect(() => {
       if (options.initialValues) {
          setForm(options.initialValues)
       }
@@ -160,6 +184,6 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }, [refs])
 
 
-   return { register, state: { ...state, touched: touched.current, values: values.current }, resetForm, setForm, setTouched, resetTouched, onSubmit }
+   return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit }
 
 }

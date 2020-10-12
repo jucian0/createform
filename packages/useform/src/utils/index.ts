@@ -1,10 +1,6 @@
 export const isRadio = (type: string) => type === 'radio'
 
-
-
 export const isCheckbox = (type: string) => type === 'checkbox'
-
-
 
 export function debounce<TThis, TFn extends Function>(this: TThis, fn: TFn, wait: number, immediate?: boolean) {
    let timeout: any
@@ -27,8 +23,6 @@ export function debounce<TThis, TFn extends Function>(this: TThis, fn: TFn, wait
    }
 }
 
-
-
 export function deepComparative<TFV, TFS>(firstValue: TFV, secondValue: TFS) {
    let result = false
    if (typeof firstValue === 'object') {
@@ -41,4 +35,8 @@ export function deepComparative<TFV, TFS>(firstValue: TFV, secondValue: TFS) {
       isEqual: () => result === true,
       isDifferent: () => result === false
    }
+}
+
+export function isEmpty(obj: any) {
+   return Object.keys(obj).length > 0
 }

@@ -9,10 +9,10 @@ export type BaseState<T> = {
    errors: T,
    values: T,
    touched: T,
-   isValid: boolean
+   // isValid: boolean
 }
 
 
-export function useFormTestReducer<T extends BaseState<T['values']>>(state: T, { type, payload }: Action): BaseState<T['values']> {
-   return dot.set(state, type, payload)
+export function useFormTestReducer<T extends BaseState<T['values']>>(state: T, nextState: Partial<T>): BaseState<T['values']> {
+   return { ...state, ...nextState }
 }
