@@ -37,7 +37,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
          isValid: isValid(options.initialValues)
       })
 
-   const dispatchDebounced = React.useCallback(debounce(dispatch, options.debounced || 300), [])
+   const setValueDebounce = React.useCallback(debounce(dispatch, options.debounced || 300), [])
 
    function register(path: string) {
       const newRefs = {
@@ -104,13 +104,13 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }
 
 
-   function handleChanges(e: Action) {
-      if (options.isControlled) {
-         return dispatch(e)
-      } else if (options.debounced) {
-         return dispatchDebounced(e)
-      }
-   }
+   // function handleChanges(e: Action) {
+   //    if (options.isControlled) {
+   //       return dispatch(e)
+   //    } else if (options.debounced) {
+   //       return dispatchDebounced(e)
+   //    }
+   // }
 
    function onSubmit(fn: (values: TO['initialValues']) => void) {
       return (e: React.BaseSyntheticEvent) => {
