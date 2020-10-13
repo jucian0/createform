@@ -134,12 +134,14 @@ const schemaValidation = yup.object().shape({
 
 const App: React.FC = () => {
 
-  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit } = useFormTest({
+  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValue } = useFormTest({
     initialValues,
     schemaValidation,
     //isControlled: true,
     //debounced: 500
   })
+
+
 
   function handleSetForm() {
     setForm(state => ({

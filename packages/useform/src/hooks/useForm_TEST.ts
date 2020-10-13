@@ -122,6 +122,10 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       setState({ values: options.initialValues, errors: options.initialValues, touched: options.initialTouched })
    }
 
+   function setValue(path: keyof typeof options.initialValues, value: { T: keyof typeof options.initialValues[T] }) {
+
+   }
+
    function resetValues() {
       Object.keys(refs.current).forEach(path => {
          setRefValue(path, dot.get(options.initialValues, path) || null)
@@ -173,7 +177,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    function validate(values) {
       options.schemaValidation?.validate(values, { abortEarly: false })
          .then((e) => {
-            if (!isEmpty(state.errors)) {
+            if (isControlledOrDebounce()) {
                setState(state => ({ ...state, errors: {} }))
             }
          })
@@ -187,10 +191,11 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
                   .join('')
                errors = dot.set(errors, path, key.message)
             })
+
             if (isControlledOrDebounce()) {
-               setState(state => ({ ...state, errors }))
+               return setState(state => ({ ...state, errors }))
             }
-            setState(state => ({ ...state, errors, touched: makeAllTouchedPayload() }))
+            return setState(state => ({ ...state, errors, touched: makeAllTouchedPayload() }))
          })
    }
 
@@ -202,7 +207,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    React.useEffect(() => {
       if (options.initialValues) {
-         setForm(options.initialValues)
+         setValues(options.initialValues)
       }
    }, [])
 
@@ -214,6 +219,6 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }, [refs])
 
 
-   return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValues, resetValues }
+   return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValues, resetValues, setValue }
 
 }
