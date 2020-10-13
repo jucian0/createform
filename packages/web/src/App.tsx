@@ -138,14 +138,18 @@ const App: React.FC = () => {
     initialValues,
     schemaValidation,
     //isControlled: true,
-    debounced: 500
+    //debounced: 500
   })
 
   function handleSetForm() {
-    setForm({
-      name: 'Jose Olimpio',
-      email: 'jose@jose.com'
-    })
+    setForm(state => ({
+      ...state,
+      values: {
+        ...state.values,
+        name: 'Juciano',
+        email: 'jose@jose.com'
+      }
+    }))
   }
 
   function handleSetTouched() {
@@ -170,15 +174,15 @@ const App: React.FC = () => {
       <form >
         <div>
           <input placeholder="Name" {...register('name')} />
-          <span className="error">{state.touched.name && state.errors.name}</span>
+          <span className="error">{state.touched?.name && state.errors?.name}</span>
         </div>
         <div>
           <input placeholder="E-mail" {...register('email')} />
-          <span className="error">{state.touched.email && state.errors.email}</span>
+          <span className="error">{state.touched?.email && state.errors?.email}</span>
         </div>
         <div>
           <input placeholder="Password" {...register('password')} />
-          <span className="error">{state.touched.password && state.errors.password}</span>
+          <span className="error">{state.touched?.password && state.errors?.password}</span>
         </div>
         <div>
           <button type="button" onClick={resetForm}>resetForm</button>

@@ -16,6 +16,12 @@ type Options<T> = {
    schemaValidation?: YupSchema<T>
 }
 
+type SetForm<T> = {
+   values?: T,
+   errors?: T,
+   touched?: T,
+}
+
 type Ref = {
    current: HTMLInputElement
 }
@@ -86,12 +92,26 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       refs.current[path].current.value = value || null
    }
 
-   function setForm(nextState: Partial<TO['initialValues']>) {
+   function setForm(nextState: SetForm<TO['initialValues']> | ((state: SetForm<TO['initialValues']>) => SetForm<TO['initialValues']>)) {
+
+      const nState = typeof nextState === "function" ? nextState(state) : nextState
+
       if (isControlledOrDebounce()) {
-         return setState(state => ({ ...state, values: nextState }))
+         setState(nState as any)
       }
       Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(nextState, path) || dot.get(nextState, path))
+         setRefValue(path, dot.get(nState.values, path) || dot.get(nState.values, path))
+      })
+   }
+
+   function setValues(nextState: Partial<TO['initialValues']> | ((values: Partial<TO["initialValues"]>) => Partial<TO['initialValues']>)) {
+      const nState = typeof nextState === "function" ? nextState(state) : nextState
+
+      if (isControlledOrDebounce()) {
+         setState(state => ({ ...state, values: nState }))
+      }
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(nState, path) || dot.get(nState, path))
       })
    }
 
@@ -99,6 +119,16 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       Object.keys(refs.current).forEach(path => {
          setRefValue(path, dot.get(options.initialValues, path) || null)
       })
+      setState({ values: options.initialValues, errors: options.initialValues, touched: options.initialTouched })
+   }
+
+   function resetValues() {
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(options.initialValues, path) || null)
+      })
+      if (isControlledOrDebounce()) {
+         setState(state => ({ ...state, values: options.initialValues }))
+      }
    }
 
    function setTouched(touched: Partial<TO['initialTouched']>) {
@@ -184,6 +214,6 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }, [refs])
 
 
-   return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit }
+   return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValues, resetValues }
 
 }
