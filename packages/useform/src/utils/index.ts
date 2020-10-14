@@ -40,3 +40,11 @@ export function deepComparative<TFV, TFS>(firstValue: TFV, secondValue: TFS) {
 export function isEmpty(obj: any) {
    return Object.keys(obj).length > 0
 }
+
+export function makeDotNotation(str: string) {
+   return str
+      .split('[')
+      .join('.')
+      .split(']')
+      .join('')
+}

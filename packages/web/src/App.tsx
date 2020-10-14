@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import * as yup from 'yup'
 import './styles.css'
-import { useForm, create, useCustomInput, useFormTest } from '@forms/useform'
+import { useFormTest } from '@forms/useform'
 import Select from 'react-select'
 
 // const options = [
@@ -137,7 +137,7 @@ const App: React.FC = () => {
   const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValue } = useFormTest({
     initialValues,
     schemaValidation,
-    //isControlled: true,
+    isControlled: true,
     //debounced: 500
   })
 
@@ -185,6 +185,18 @@ const App: React.FC = () => {
         <div>
           <input placeholder="Password" {...register('password')} />
           <span className="error">{state.touched?.password && state.errors?.password}</span>
+        </div>
+        <div>
+          <input placeholder="Score" type="range" {...register('score')} />
+          <span className="error">{state.touched?.score && state.errors?.score}</span>
+        </div>
+        <div>
+          <input placeholder="Date" type="date" {...register('date')} />
+          <span className="error">{state.touched?.date && state.errors?.date}</span>
+        </div>
+        <div>
+          <input placeholder="File" type="file" {...register('file')} />
+          <span className="error">{state.touched?.file && state.errors?.file}</span>
         </div>
         <div>
           <button type="button" onClick={resetForm}>resetForm</button>

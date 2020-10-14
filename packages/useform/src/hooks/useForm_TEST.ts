@@ -1,10 +1,7 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
-import { Action, BaseState, useFormTestReducer } from "./useForm_TEST.reducer";
-import { Reducer } from "react";
-import { debounce, isEmpty } from "../utils";
+import { debounce, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema } from "yup";
-import { useValidation } from "./useValidation";
 
 
 type Options<T> = {
@@ -37,10 +34,8 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
       values: options.initialValues || {},
       errors: options.initialErrors || {},
       touched: options.initialTouched || {},
-      // isValid: isValid(options.initialValues)
    })
 
-   //const { errors, isValid } = useValidation(state, options.schemaValidation)
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
 
@@ -184,11 +179,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
          .catch((e: ValidationError) => {
             let errors = {}
             e.inner.forEach(key => {
-               const path = key.path
-                  .split('[')
-                  .join('.')
-                  .split(']')
-                  .join('')
+               const path = makeDotNotation(key.path)
                errors = dot.set(errors, path, key.message)
             })
 

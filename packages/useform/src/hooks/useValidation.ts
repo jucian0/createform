@@ -1,6 +1,7 @@
 import React from "react"
 import { ValidationError, Schema as YupSchema } from "yup"
 import dot from 'dot-prop-immutable'
+import { makeDotNotation } from "../utils"
 
 export function useValidation<TValues extends {}, Schema extends YupSchema<TValues>>(values: TValues, schema?: Schema) {
    const [errors, setErrors] = React.useState<TValues>({} as TValues)
@@ -14,11 +15,7 @@ export function useValidation<TValues extends {}, Schema extends YupSchema<TValu
          .catch((e: ValidationError) => {
             let errors = {}
             e.inner.forEach(key => {
-               const path = key.path
-                  .split('[')
-                  .join('.')
-                  .split(']')
-                  .join('')
+               const path = makeDotNotation(key.path)
 
                errors = dot.set(errors, path, key.message)
             })
