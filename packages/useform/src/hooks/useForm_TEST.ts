@@ -1,7 +1,7 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
 import { debounce, makeDotNotation } from "../utils";
-import { ValidationError, Schema as YupSchema } from "yup";
+import { ValidationError, Schema as YupSchema, object } from "yup";
 
 
 type Options<T> = {
@@ -56,6 +56,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    function handleEvent(event: string) {
       if (event === 'input') {
          return (e: Change) => {
+            console.log(state)
             if (options.isControlled) {
                return setState(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
             } else if (options.debounced) {
@@ -173,23 +174,15 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }
 
    function validate(values) {
-      options.schemaValidation?.validate(values, { abortEarly: false })
+      return options.schemaValidation?.validate(values, { abortEarly: false })
          .then((e) => {
-            if (isControlledOrDebounce()) {
-               setState(state => ({ ...state, errors: {} }))
-            }
+            return {}
          })
          .catch((e: ValidationError) => {
-            let errors = {}
-            e.inner.forEach(key => {
+            return e.inner.reduce((acc, key) => {
                const path = makeDotNotation(key.path)
-               errors = dot.set(errors, path, key.message)
-            })
-
-            if (isControlledOrDebounce()) {
-               return setState(state => ({ ...state, errors }))
-            }
-            return setState(state => ({ ...state, errors, touched: makeAllTouchedPayload() }))
+               return dot.set(acc, path, key.message)
+            }, {})
          })
    }
 
