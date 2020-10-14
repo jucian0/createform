@@ -118,7 +118,10 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }
 
    function setValue(path: keyof typeof options.initialValues, value: { T: keyof typeof options.initialValues[T] }) {
-
+      if (isControlledOrDebounce()) {
+         setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
+      }
+      setRefValue(path as string, value)
    }
 
    function resetValues() {
