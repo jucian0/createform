@@ -136,9 +136,9 @@ const App: React.FC = () => {
 
   const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValue } = useFormTest({
     initialValues,
-    schemaValidation,
-    //isControlled: true,
-    debounced: 500
+    //schemaValidation,
+    isControlled: true,
+    //debounced: 500
   })
 
 

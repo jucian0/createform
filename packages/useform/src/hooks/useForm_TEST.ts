@@ -201,11 +201,11 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    React.useEffect(() => {
       if (options.initialValues) {
-         setValues(options.initialValues)
+         Object.keys(refs.current).forEach(path => {
+            setRefValue(path, dot.get(options.initialValues, path))
+         })
       }
-   }, [])
 
-   React.useEffect(() => {
       addEvents('input', 'blur')
       return () => {
          removeEvents('input', 'blur')
