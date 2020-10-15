@@ -2,7 +2,7 @@ import React from "react";
 import dot from 'dot-prop-immutable'
 import { debounce, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema, object } from "yup";
-import { Observable } from "../core/observable";
+import { createState } from "../core/observable";
 
 
 type Options<T> = {
@@ -35,13 +35,13 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
 
    const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
 
-   const { current: state$ } = React.useRef(new Observable({
+   const { current: state$ } = React.useRef(createState({
       values: initialValues,
       errors: initialErrors,
       touched: initialTouched,
    }))
 
-   const [state, setState] = React.useState()
+   const [state, setState] = React.useState({})
 
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
@@ -63,19 +63,12 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
    function handleEvent(event: string) {
       if (event === 'input') {
          return async (e: Change) => {
-            //  validate()
-            if (options.isControlled) {
-               return setState(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
-            } else if (options.debounced) {
-               return setValueDebounce(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
-            }
+            return state$.setState(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
          }
       }
 
       return (e: Change) => {
-         if (isControlledOrDebounce()) {
-            return setState(state => ({ ...state, touched: { ...state.touched, [e.target.name]: true } }))
-         }
+         return state$.setState(state => ({ ...state, touched: { ...state.touched, [e.target.name]: true } }))
       }
    }
 
@@ -95,54 +88,47 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       refs.current[path].current.value = value || null
    }
 
-   function setForm(nextState: SetForm<TO['initialValues']> | ((state: SetForm<TO['initialValues']>) => SetForm<TO['initialValues']>)) {
+   function setForm(next: SetForm<TO['initialValues']> | ((state: SetForm<TO['initialValues']>) => SetForm<TO['initialValues']>)) {
 
-      const nState = typeof nextState === "function" ? nextState(state) : nextState
+      const nextState = typeof next === "function" ? next(state) : next
 
-      if (isControlledOrDebounce()) {
-         setState(nState as any)
-      }
+      state$.setState(nextState as any)
       Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(nState.values, path) || dot.get(nState.values, path))
+         setRefValue(path, dot.get(nextState.values, path) || dot.get(nextState.values, path))
       })
    }
 
-   function setValues(nextState: Partial<TO['initialValues']> | ((values: Partial<TO["initialValues"]>) => Partial<TO['initialValues']>)) {
-      const nState = typeof nextState === "function" ? nextState(state) : nextState
+   function setValues(next: Partial<TO['initialValues']> | ((values: Partial<TO["initialValues"]>) => Partial<TO['initialValues']>)) {
+      const nextState = typeof next === "function" ? next(state) : next
 
-      if (isControlledOrDebounce()) {
-         setState(state => ({ ...state, values: nState }))
-      }
+      state$.setState(state => ({ ...state, values: nextState }))
+
       Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(nState, path) || dot.get(nState, path))
+         setRefValue(path, dot.get(nextState, path) || dot.get(nextState, path))
       })
    }
 
    function resetForm() {
       Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(options.initialValues, path) || null)
+         setRefValue(path, dot.get(initialValues, path) || null)
       })
-      setState({ values: options.initialValues, errors: options.initialValues, touched: options.initialTouched })
+      state$.setState({ values: initialValues, errors: initialValues, touched: initialTouched })
    }
 
-   function setValue(path: keyof typeof options.initialValues, value: { T: keyof typeof options.initialValues[T] }) {
-      if (isControlledOrDebounce()) {
-         setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
-      }
+   function setValue(path: keyof typeof initialValues, value: { T: keyof typeof initialValues[T] }) {
+      state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
       setRefValue(path as string, value)
    }
 
    function resetValues() {
       Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(options.initialValues, path) || null)
+         setRefValue(path, dot.get(initialValues, path) || null)
       })
-      if (isControlledOrDebounce()) {
-         setState(state => ({ ...state, values: options.initialValues }))
-      }
+      state$.setState(state => ({ ...state, values: initialValues }))
    }
 
    function setTouched(touched: Partial<TO['initialTouched']>) {
-      setState(state => ({ ...state, touched }))
+      state$.setState(state => ({ ...state, touched }))
    }
 
    function resetTouched(touched: Partial<TO['initialTouched']>) {
@@ -151,7 +137,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
 
    function makeResetAllTouchedPayload(touched: Partial<TO['initialTouched']>) {
       return Object.keys(refs.current).reduce((acc, path) => {
-         return dot.set(acc, path, dot.get(options.initialTouched || {}, path) || false)
+         return dot.set(acc, path, dot.get(initialTouched || {}, path) || false)
       }, {})
    }
 
@@ -176,7 +162,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
             fn(values, true)
          } catch (e) {
             fn(values, false)
-            setState(state => ({ ...state, errors: e, touched: makeAllTouchedPayload() }))
+            state$.setState(state => ({ ...state, errors: e, touched: makeAllTouchedPayload() }))
          }
       }
    }
@@ -202,15 +188,19 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
    }
 
    React.useEffect(() => {
-      if (isControlledOrDebounce()) {
-         //  validate(state.values)
+      const subscriber = state$.subscribe(e => {
+         setState(e)
+      })
+
+      return () => {
+         subscriber()
       }
    }, [])
 
    React.useEffect(() => {
-      if (options.initialValues) {
+      if (initialValues) {
          Object.keys(refs.current).forEach(path => {
-            setRefValue(path, dot.get(options.initialValues, path))
+            setRefValue(path, dot.get(initialValues, path))
          })
       }
 

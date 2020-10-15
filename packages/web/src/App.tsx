@@ -121,7 +121,7 @@ import Select from 'react-select'
 
 
 const initialValues = {
-  name: '',
+  name: 'Joseph',
   email: '',
   password: ''
 }
