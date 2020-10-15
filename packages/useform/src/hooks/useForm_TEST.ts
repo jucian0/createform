@@ -1,7 +1,7 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
 import { debounce, makeDotNotation } from "../utils";
-import { ValidationError, Schema as YupSchema, object } from "yup";
+import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
 
@@ -14,7 +14,7 @@ type Options<T> = {
    schemaValidation?: YupSchema<T>
 }
 
-type SetForm<T> = {
+type State<T> = {
    values?: T,
    errors?: T,
    touched?: T,
@@ -25,6 +25,11 @@ type Ref = {
 }
 
 type Change = React.ChangeEvent<HTMLInputElement>
+
+
+export type UseFormReturnType = {
+
+}
 
 
 export function useFormTest<TO extends Options<TO['initialValues']>>({
@@ -41,7 +46,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       touched: initialTouched,
    }))
 
-   const [state, setState] = React.useState({})
+   const [state, setState] = React.useState<State<TO["initialValues"]>>({})
 
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
@@ -88,11 +93,11 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       refs.current[path].current.value = value || null
    }
 
-   function setForm(next: SetForm<TO['initialValues']> | ((state: SetForm<TO['initialValues']>) => SetForm<TO['initialValues']>)) {
-
+   function setForm(next: State<TO['initialValues']> | ((state: State<TO['initialValues']>) => State<TO['initialValues']>)) {
       const nextState = typeof next === "function" ? next(state) : next
 
       state$.setState(nextState as any)
+
       Object.keys(refs.current).forEach(path => {
          setRefValue(path, dot.get(nextState.values, path) || dot.get(nextState.values, path))
       })
@@ -108,16 +113,16 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       })
    }
 
+   function setValue(path: keyof typeof initialValues, value: any) {
+      state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
+      setRefValue(path as string, value)
+   }
+
    function resetForm() {
       Object.keys(refs.current).forEach(path => {
          setRefValue(path, dot.get(initialValues, path) || null)
       })
       state$.setState({ values: initialValues, errors: initialValues, touched: initialTouched })
-   }
-
-   function setValue(path: keyof typeof initialValues, value: { T: keyof typeof initialValues[T] }) {
-      state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
-      setRefValue(path as string, value)
    }
 
    function resetValues() {
