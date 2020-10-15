@@ -31,3 +31,41 @@ export class Observable<T> {
       this.subscribers.forEach(fn => fn(this.get))
    }
 }
+
+export function createState(initialState = {}) {
+   let state = initialState;
+   let subscribers = [];
+
+   function getState() {
+      return state;
+   }
+
+   function subscribe(fn) {
+      subscribers = [...subscribers, fn];
+
+      return () => {
+         subscribers = subscribers.filter((l) => l !== fn);
+      };
+   };
+
+   function setState(newState) {
+      state = {
+         ...state,
+         ...newState
+      };
+
+      notify()
+   }
+
+   function notify() {
+      subscribers.forEach((fn) => {
+         fn(getState());
+      });
+   }
+
+   return {
+      getState,
+      setState,
+      subscribe,
+   };
+};
