@@ -2,6 +2,7 @@ import React from "react";
 import dot from 'dot-prop-immutable'
 import { debounce, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema, object } from "yup";
+import { Observable } from "../core/observable";
 
 
 type Options<T> = {
@@ -26,15 +27,21 @@ type Ref = {
 type Change = React.ChangeEvent<HTMLInputElement>
 
 
-export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO) {
+export function useFormTest<TO extends Options<TO['initialValues']>>({
+   initialErrors = {},
+   initialValues = {},
+   initialTouched = {},
+   ...options }: TO) {
 
    const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
 
-   const [state, setState] = React.useState({
-      values: options.initialValues || {},
-      errors: options.initialErrors || {},
-      touched: options.initialTouched || {},
-   })
+   const { current: state$ } = React.useRef(new Observable({
+      values: initialValues,
+      errors: initialErrors,
+      touched: initialTouched,
+   }))
+
+   const [state, setState] = React.useState()
 
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
@@ -56,11 +63,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    function handleEvent(event: string) {
       if (event === 'input') {
          return async (e: Change) => {
-
             //  validate()
-
-            console.log(state.values)
-
             if (options.isControlled) {
                return setState(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
             } else if (options.debounced) {
