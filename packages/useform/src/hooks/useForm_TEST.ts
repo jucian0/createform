@@ -55,8 +55,12 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    function handleEvent(event: string) {
       if (event === 'input') {
-         return (e: Change) => {
-            console.log(state)
+         return async (e: Change) => {
+
+            //  validate()
+
+            console.log(state.values)
+
             if (options.isControlled) {
                return setState(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
             } else if (options.debounced) {
@@ -161,16 +165,24 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
    }
 
    function onSubmit(fn: (values: TO['initialValues'], isValid: boolean) => void) {
-      return (e: React.BaseSyntheticEvent) => {
+      return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
          const values = makeFormPayload()
-         validate(values)
-         fn(values, isValid(values))
+         try {
+            await validate(values)
+            fn(values, true)
+         } catch (e) {
+            fn(values, false)
+            setState(state => ({ ...state, errors: e, touched: makeAllTouchedPayload() }))
+         }
       }
    }
 
    function isValid(values) {
-      return options.schemaValidation.isValidSync(values)
+      if (options.schemaValidation) {
+         return options.schemaValidation?.isValidSync(values)
+      }
+      return true
    }
 
    function validate(values) {
@@ -179,7 +191,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
             return {}
          })
          .catch((e: ValidationError) => {
-            return e.inner.reduce((acc, key) => {
+            throw e.inner.reduce((acc, key) => {
                const path = makeDotNotation(key.path)
                return dot.set(acc, path, key.message)
             }, {})
@@ -188,9 +200,9 @@ export function useFormTest<TO extends Options<TO['initialValues']>>(options: TO
 
    React.useEffect(() => {
       if (isControlledOrDebounce()) {
-         validate(state.values)
+         //  validate(state.values)
       }
-   }, [state.values])
+   }, [])
 
    React.useEffect(() => {
       if (options.initialValues) {

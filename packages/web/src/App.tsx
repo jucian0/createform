@@ -136,8 +136,8 @@ const App: React.FC = () => {
 
   const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValue } = useFormTest({
     initialValues,
-    //schemaValidation,
-    isControlled: true,
+    schemaValidation,
+    // isControlled: true,
     //debounced: 500
   })
 
@@ -167,7 +167,7 @@ const App: React.FC = () => {
 
 
   useEffect(() => {
-    //  console.log(state)
+    console.log(state)
   }, [state])
 
 
