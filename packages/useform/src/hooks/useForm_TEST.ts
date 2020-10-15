@@ -160,18 +160,15 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
          try {
             await validate(values)
             fn(values, true)
-         } catch (e) {
+         } catch (errors) {
             fn(values, false)
-            state$.setState(state => ({ ...state, errors: e, touched: makeAllTouchedPayload() }))
+            state$.setState(state => ({ ...state, errors, touched: makeAllTouchedPayload() }))
+
+            if (!isControlledOrDebounce()) {
+               setState(state => ({ ...state, errors, values, touched: makeAllTouchedPayload() }))
+            }
          }
       }
-   }
-
-   function isValid(values) {
-      if (options.schemaValidation) {
-         return options.schemaValidation?.isValidSync(values)
-      }
-      return true
    }
 
    function validate(values) {
@@ -187,10 +184,25 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
          })
    }
 
+   async function handleChange(next) {
+      try {
+         await validate(next.values)
+         if (options.isControlled) {
+            setState(next)
+         } else if (options.debounced) {
+            setValueDebounce(next)
+         }
+      } catch (errors) {
+         if (options.isControlled) {
+            setState({ ...next, errors })
+         } else if (options.debounced) {
+            setValueDebounce({ ...next, errors })
+         }
+      }
+   }
+
    React.useEffect(() => {
-      const subscriber = state$.subscribe(e => {
-         setState(e)
-      })
+      const subscriber = state$.subscribe(handleChange)
 
       return () => {
          subscriber()
