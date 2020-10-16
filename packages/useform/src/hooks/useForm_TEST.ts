@@ -26,9 +26,22 @@ type Ref = {
 
 type Change = React.ChangeEvent<HTMLInputElement>
 
+type ChangeState<T> = State<T> | ((state: State<T>) => State<T>)
 
-export type UseFormReturnType = {
+type PathValue<T> = keyof T
 
+export type UseFormReturnType<T> = {
+   setForm: (next: ChangeState<T>) => void
+   resetForm: () => void
+   setFieldsValue: (next: ChangeState<T>) => void
+   setFieldValue: (path: PathValue<T>, value: any) => void
+   resetFieldsValue: () => void
+   resetFieldValue: (path: PathValue<T>) => void
+   //setFieldsTouched:()
+
+   /**
+    * change setTouched function to turn the same logic of setFieldsValue
+    */
 }
 
 
@@ -93,6 +106,9 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       refs.current[path].current.value = value || null
    }
 
+
+
+
    function setForm(next: State<TO['initialValues']> | ((state: State<TO['initialValues']>) => State<TO['initialValues']>)) {
       const nextState = typeof next === "function" ? next(state) : next
 
@@ -103,7 +119,14 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       })
    }
 
-   function setValues(next: Partial<TO['initialValues']> | ((values: Partial<TO["initialValues"]>) => Partial<TO['initialValues']>)) {
+   function resetForm() {
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(initialValues, path) || null)
+      })
+      state$.setState({ values: initialValues, errors: initialValues, touched: initialTouched })
+   }
+
+   function setFieldsValue(next: Partial<TO['initialValues']> | ((values: Partial<TO["initialValues"]>) => Partial<TO['initialValues']>)) {
       const nextState = typeof next === "function" ? next(state) : next
 
       state$.setState(state => ({ ...state, values: nextState }))
@@ -113,34 +136,62 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       })
    }
 
-   function setValue(path: keyof typeof initialValues, value: any) {
+   function setFieldValue(path: keyof typeof initialValues, value: any) {
       state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
       setRefValue(path as string, value)
    }
 
-   function resetForm() {
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(initialValues, path) || null)
-      })
-      state$.setState({ values: initialValues, errors: initialValues, touched: initialTouched })
-   }
-
-   function resetValues() {
+   function resetFieldsValue() {
       Object.keys(refs.current).forEach(path => {
          setRefValue(path, dot.get(initialValues, path) || null)
       })
       state$.setState(state => ({ ...state, values: initialValues }))
    }
 
-   function setTouched(touched: Partial<TO['initialTouched']>) {
+   function resetFieldValue(path: keyof typeof initialValues) {
+      const value = dot.get(initialValues, path as string) || undefined
+      state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
+      setRefValue(path as string, value)
+   }
+
+   function setFieldsTouched(touched: Partial<TO['initialTouched']>) {
       state$.setState(state => ({ ...state, touched }))
    }
 
-   function resetTouched(touched: Partial<TO['initialTouched']>) {
-      setTouched(makeResetAllTouchedPayload(touched))
+   function setFieldTouched(path: keyof typeof initialValues, value: boolean) {
+      state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
    }
 
-   function makeResetAllTouchedPayload(touched: Partial<TO['initialTouched']>) {
+   function resetFieldsTouched(touched: Partial<TO['initialTouched']>) {
+      setFieldsTouched(makeResetAllTouchedPayload())
+   }
+
+   function resetFieldTouched(path: keyof typeof initialValues) {
+      const value = dot.get(initialTouched, path as string) || false
+      state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
+   }
+
+   function setFieldsError(errors: Partial<TO['initialErrors']>) {
+      state$.setState(state => ({ ...state, errors }))
+   }
+
+   function setFieldError(path: keyof typeof initialValues, value: any) {
+      state$.setState(state => ({ ...state, errors: dot.set(state.errors, path as string, value) }))
+   }
+
+   function resetFieldsError() {
+      state$.setState(state => ({ ...state, errors: initialErrors }))
+   }
+
+   function resetFieldError(path: keyof typeof initialValues) {
+      const value = dot.get(initialErrors, path as string) || false
+      state$.setState(state => ({ ...state, errors: dot.set(state.errors, path as string, value) }))
+   }
+
+
+
+
+   function makeResetAllTouchedPayload() {
       return Object.keys(refs.current).reduce((acc, path) => {
          return dot.set(acc, path, dot.get(initialTouched || {}, path) || false)
       }, {})
