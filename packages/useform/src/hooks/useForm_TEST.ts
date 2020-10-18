@@ -1,24 +1,9 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
 import { debounce, makeDotNotation } from "../utils";
-import { ValidationError, Schema as YupSchema } from "yup";
+import { ValidationError, Schema as YupSchema, boolean } from "yup";
 import { createState } from "../core/observable";
 
-
-export type Options<T> = {
-   initialValues?: T,
-   initialErrors?: T,
-   initialTouched?: T,
-   isControlled?: boolean,
-   debounced?: number,
-   schemaValidation?: YupSchema<T>
-}
-
-export type State<T> = {
-   values?: T,
-   errors?: T,
-   touched?: T,
-}
 
 type Ref = {
    current: HTMLInputElement
@@ -29,12 +14,29 @@ type RegisterReturn = {
    ref: Ref
 }
 
+export type Options<T> = {
+   initialValues?: T,
+   initialErrors?: T,
+   initialTouched?: T,
+   isControlled?: boolean,
+   debounced?: number,
+   schemaValidation?: YupSchema<T>
+}
+
+type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
+type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
+
+export type State<T> = {
+   values?: T,
+   errors?: Errors<T>,
+   touched?: Touched<T>,
+}
+
 type Register = (path: string) => RegisterReturn
 
 type Change = React.ChangeEvent<HTMLInputElement>
 type ChangeState<T> = T | ((state: T) => T)
 type PathValue<T> = keyof T
-
 export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
 
 export type UseFormReturnType<T> = {
@@ -44,12 +46,12 @@ export type UseFormReturnType<T> = {
    setFieldValue: (path: PathValue<T>, value: any) => void
    resetFieldsValue: () => void
    resetFieldValue: (path: PathValue<T>) => void
-   setFieldsTouched: (next: ChangeState<T>) => void
+   setFieldsTouched: (next: ChangeState<Touched<T>>) => void
    setFieldTouched: (path: PathValue<T>, value: boolean) => void
    resetFieldsTouched: () => void
    resetFieldTouched: (path: PathValue<T>) => void
    setFieldError: (path: PathValue<T>, value: any) => void
-   setFieldsError: (next: ChangeState<T>) => void
+   setFieldsError: (next: ChangeState<Errors<T>>) => void
    resetFieldError: (path: PathValue<T>, value: any) => void
    resetFieldsError: () => void
    state: State<T>
@@ -58,10 +60,10 @@ export type UseFormReturnType<T> = {
 }
 
 
-export function useFormTest<TO extends {}>({
-   initialErrors = {},
-   initialValues = {},
-   initialTouched = {},
+export function useFormTest<TO>({
+   initialErrors = {} as TO,
+   initialValues = {} as TO,
+   initialTouched = {} as TO,
    ...options }: Options<TO>): UseFormReturnType<TO> {
 
    const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)

@@ -1,12 +1,32 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import * as yup from 'yup'
 import './styles.css'
 import { FormContext, useContextForm, useFormTest } from '@forms/useform'
 
+type Form = {
+  name: string,
+  email: string,
+  password: string,
+  date: Date,
+  other: {
+    test: string
+  }
+}
+
+const initialValues = {
+  name: 'Joseph',
+  email: '',
+  password: '',
+  date: new Date(),
+  score: 2,
+  other: {
+    test: 'juciano'
+  }
+}
 
 function Form2() {
 
-  const { register, state } = useContextForm<Form>()
+  const { register, state } = useContextForm<typeof initialValues>()
 
   return (
     <>
@@ -18,23 +38,17 @@ function Form2() {
   )
 }
 
-type Form = {
-  name: string,
-  email: string,
-  password: string
-}
 
 
-const initialValues = {
-  name: 'Joseph',
-  email: '',
-  password: ''
-}
 
 const schemaValidation = yup.object().shape({
   name: yup.string().required("this field is required"),
   email: yup.string().required("this field is required").email("this field must be a valid email"),
-  password: yup.string().required('this field is required')
+  password: yup.string().required('this field is required'),
+  date: yup.date(),
+  other: yup.object().shape({
+    test: yup.string()
+  })
 });
 
 const App: React.FC = () => {
@@ -42,9 +56,10 @@ const App: React.FC = () => {
   const { register, state, resetForm, setForm, setFieldsTouched, resetFieldsTouched, onSubmit, setFieldsValue, ...form } = useFormTest<Form>({
     initialValues,
     schemaValidation,
-    //isControlled: true,
+    isControlled: true,
     //debounced: 500
   })
+
 
 
   function handleSetForm() {
@@ -58,9 +73,10 @@ const App: React.FC = () => {
     }))
   }
 
-  function handlesetFieldsTouched() {
-    setFieldsTouched(state => ({ ...state, name: true }))
 
+  function handlesetFieldsTouched() {
+    setFieldsTouched(state => ({ ...state, name: false, other: { test: true } }))
+    form.setFieldsError(state => ({ ...state, name: 'error' }))
   }
 
   function handleSubmit(e: typeof initialValues, isValid) {
