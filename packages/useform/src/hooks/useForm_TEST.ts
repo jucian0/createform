@@ -5,7 +5,7 @@ import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
 
-type Options<T> = {
+export type Options<T> = {
    initialValues?: T,
    initialErrors?: T,
    initialTouched?: T,
@@ -14,7 +14,7 @@ type Options<T> = {
    schemaValidation?: YupSchema<T>
 }
 
-type State<T> = {
+export type State<T> = {
    values?: T,
    errors?: T,
    touched?: T,
@@ -24,32 +24,45 @@ type Ref = {
    current: HTMLInputElement
 }
 
+type RegisterReturn = {
+   name: string,
+   ref: Ref
+}
+
+type Register = (path: string) => RegisterReturn
+
 type Change = React.ChangeEvent<HTMLInputElement>
-
-type ChangeState<T> = State<T> | ((state: State<T>) => State<T>)
-
+type ChangeState<T> = T | ((state: T) => T)
 type PathValue<T> = keyof T
 
+export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
+
 export type UseFormReturnType<T> = {
-   setForm: (next: ChangeState<T>) => void
+   setForm: (next: ChangeState<State<T>>) => void
    resetForm: () => void
    setFieldsValue: (next: ChangeState<T>) => void
    setFieldValue: (path: PathValue<T>, value: any) => void
    resetFieldsValue: () => void
    resetFieldValue: (path: PathValue<T>) => void
-   //setFieldsTouched:()
-
-   /**
-    * change setTouched function to turn the same logic of setFieldsValue
-    */
+   setFieldsTouched: (next: ChangeState<T>) => void
+   setFieldTouched: (path: PathValue<T>, value: boolean) => void
+   resetFieldsTouched: () => void
+   resetFieldTouched: (path: PathValue<T>) => void
+   setFieldError: (path: PathValue<T>, value: any) => void
+   setFieldsError: (next: ChangeState<T>) => void
+   resetFieldError: (path: PathValue<T>, value: any) => void
+   resetFieldsError: () => void
+   state: State<T>
+   register: Register,
+   onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
 }
 
 
-export function useFormTest<TO extends Options<TO['initialValues']>>({
+export function useFormTest<TO extends {}>({
    initialErrors = {},
    initialValues = {},
    initialTouched = {},
-   ...options }: TO) {
+   ...options }: Options<TO>): UseFormReturnType<TO> {
 
    const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
 
@@ -59,7 +72,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       touched: initialTouched,
    }))
 
-   const [state, setState] = React.useState<State<TO["initialValues"]>>({})
+   const [state, setState] = React.useState<State<TO>>({})
 
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
@@ -109,7 +122,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
 
 
 
-   function setForm(next: State<TO['initialValues']> | ((state: State<TO['initialValues']>) => State<TO['initialValues']>)) {
+   function setForm(next: State<TO> | ((state: State<TO>) => State<TO>)) {
       const nextState = typeof next === "function" ? next(state) : next
 
       state$.setState(nextState as any)
@@ -126,8 +139,8 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       state$.setState({ values: initialValues, errors: initialValues, touched: initialTouched })
    }
 
-   function setFieldsValue(next: Partial<TO['initialValues']> | ((values: Partial<TO["initialValues"]>) => Partial<TO['initialValues']>)) {
-      const nextState = typeof next === "function" ? next(state) : next
+   function setFieldsValue(next: Partial<TO> | ((values: TO) => TO)) {
+      const nextState = typeof next === "function" ? next(state.values) : next
 
       state$.setState(state => ({ ...state, values: nextState }))
 
@@ -154,15 +167,16 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       setRefValue(path as string, value)
    }
 
-   function setFieldsTouched(touched: Partial<TO['initialTouched']>) {
-      state$.setState(state => ({ ...state, touched }))
+   function setFieldsTouched(next: Partial<TO> | ((next: TO) => TO)) {
+      const nextState = typeof next === "function" ? next(state.touched) : next
+      state$.setState(state => ({ ...state, touched: nextState }))
    }
 
-   function setFieldTouched(path: keyof typeof initialValues, value: boolean) {
+   function setFieldTouched(path: keyof typeof initialValues, value: boolean = true) {
       state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
    }
 
-   function resetFieldsTouched(touched: Partial<TO['initialTouched']>) {
+   function resetFieldsTouched() {
       setFieldsTouched(makeResetAllTouchedPayload())
    }
 
@@ -171,8 +185,9 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
    }
 
-   function setFieldsError(errors: Partial<TO['initialErrors']>) {
-      state$.setState(state => ({ ...state, errors }))
+   function setFieldsError(next: Partial<TO> | ((next: TO) => TO)) {
+      const nextState = typeof next === "function" ? next(state) : next
+      state$.setState(state => ({ ...state, errors: nextState }))
    }
 
    function setFieldError(path: keyof typeof initialValues, value: any) {
@@ -209,7 +224,7 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
       }, {})
    }
 
-   function onSubmit(fn: (values: TO['initialValues'], isValid: boolean) => void) {
+   function onSubmit(fn: (values: TO, isValid: boolean) => void) {
       return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
          const values = makeFormPayload()
@@ -279,6 +294,30 @@ export function useFormTest<TO extends Options<TO['initialValues']>>({
    }, [refs])
 
 
-   return { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValues, resetValues, setValue }
+   return {
+      register,
+      state,
+      onSubmit,
+
+      setForm,
+      resetForm,
+
+      setFieldValue,
+      setFieldsValue,
+      resetFieldValue,
+      resetFieldsValue,
+
+      setFieldsTouched,
+      setFieldTouched,
+      resetFieldsTouched,
+      resetFieldTouched,
+
+
+      setFieldError,
+      resetFieldError,
+      resetFieldsError,
+      setFieldsError,
+
+   }
 
 }

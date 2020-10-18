@@ -6,7 +6,7 @@ import { FormContext, useContextForm, useFormTest } from '@forms/useform'
 
 function Form2() {
 
-  const { register, state } = useContextForm<typeof initialValues>()
+  const { register, state } = useContextForm<Form>()
 
   return (
     <>
@@ -16,6 +16,12 @@ function Form2() {
       </div>
     </>
   )
+}
+
+type Form = {
+  name: string,
+  email: string,
+  password: string
 }
 
 
@@ -33,13 +39,12 @@ const schemaValidation = yup.object().shape({
 
 const App: React.FC = () => {
 
-  const { register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValue, ...form } = useFormTest({
+  const { register, state, resetForm, setForm, setFieldsTouched, resetFieldsTouched, onSubmit, setFieldsValue, ...form } = useFormTest<Form>({
     initialValues,
     schemaValidation,
     //isControlled: true,
     //debounced: 500
   })
-
 
 
   function handleSetForm() {
@@ -53,24 +58,21 @@ const App: React.FC = () => {
     }))
   }
 
-  function handleSetTouched() {
-    setTouched({
-      name: false,
-      email: true
-    })
+  function handlesetFieldsTouched() {
+    setFieldsTouched(state => ({ ...state, name: true }))
+
   }
 
   function handleSubmit(e: typeof initialValues, isValid) {
     console.log(e, isValid)
   }
 
-
   useEffect(() => {
     console.log(state)
   }, [state])
 
   return (
-    <FormContext.Provider value={{ register, state, resetForm, setForm, setTouched, resetTouched, onSubmit, setValue, ...form }}>
+    <FormContext.Provider value={{ register, state, resetForm, setForm, setFieldsTouched, resetFieldsTouched, onSubmit, setFieldsValue, ...form }}>
       <section>
         <form >
           <div>
@@ -100,8 +102,8 @@ const App: React.FC = () => {
           <div>
             <button type="button" onClick={resetForm}>resetForm</button>
             <button type="button" onClick={handleSetForm}>setForm</button>
-            <button type="button" onClick={handleSetTouched}>setTouched</button>
-            <button type="button" onClick={resetTouched}>resetTouched</button>
+            <button type="button" onClick={handlesetFieldsTouched}>setFieldsTouched</button>
+            <button type="button" onClick={resetFieldsTouched}>resetFieldsTouched</button>
             <button type="button" onClick={onSubmit(handleSubmit)}>submit</button>
           </div>
           <Form2 />
