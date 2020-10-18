@@ -10,7 +10,9 @@ type Form = {
   date: Date,
   other: {
     test: string
-  }
+  },
+  score?: number,
+  file?: any
 }
 
 const initialValues = {
@@ -59,7 +61,6 @@ const App: React.FC = () => {
     isControlled: true,
     //debounced: 500
   })
-
 
 
   function handleSetForm() {

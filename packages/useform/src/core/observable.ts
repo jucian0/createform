@@ -19,7 +19,7 @@ export function createState<T extends object>(initialState: T = Object.assign({}
       };
    };
 
-   function setState(next: T | ((state: T) => T)) {
+   function setState(next: Partial<T> | ((state: T) => T)) {
       const nextState = typeof next === 'function' ? next(getState()) : next
       state = {
          ...state,

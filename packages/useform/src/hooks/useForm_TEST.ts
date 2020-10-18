@@ -14,17 +14,18 @@ type RegisterReturn = {
    ref: Ref
 }
 
+type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
+type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
+
 export type Options<T> = {
    initialValues?: T,
-   initialErrors?: T,
-   initialTouched?: T,
+   initialErrors?: Errors<T>,
+   initialTouched?: Touched<T>,
    isControlled?: boolean,
    debounced?: number,
    schemaValidation?: YupSchema<T>
 }
 
-type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
-type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
 
 export type State<T> = {
    values?: T,
@@ -61,9 +62,9 @@ export type UseFormReturnType<T> = {
 
 
 export function useFormTest<TO>({
-   initialErrors = {} as TO,
-   initialValues = {} as TO,
-   initialTouched = {} as TO,
+   initialErrors = {} as any,
+   initialValues = {} as any,
+   initialTouched = {} as any,
    ...options }: Options<TO>): UseFormReturnType<TO> {
 
    const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
@@ -138,13 +139,13 @@ export function useFormTest<TO>({
       Object.keys(refs.current).forEach(path => {
          setRefValue(path, dot.get(initialValues, path) || null)
       })
-      state$.setState({ values: initialValues, errors: initialValues, touched: initialTouched })
+      state$.setState({ values: initialValues, errors: initialErrors, touched: initialTouched })
    }
 
    function setFieldsValue(next: Partial<TO> | ((values: TO) => TO)) {
       const nextState = typeof next === "function" ? next(state.values) : next
 
-      state$.setState(state => ({ ...state, values: nextState }))
+      state$.setState(state => ({ ...state, values: nextState as TO }))
 
       Object.keys(refs.current).forEach(path => {
          setRefValue(path, dot.get(nextState, path) || dot.get(nextState, path))
@@ -169,9 +170,9 @@ export function useFormTest<TO>({
       setRefValue(path as string, value)
    }
 
-   function setFieldsTouched(next: Partial<TO> | ((next: TO) => TO)) {
+   function setFieldsTouched(next: Partial<Touched<TO>> | ((next: Touched<TO>) => Touched<TO>)) {
       const nextState = typeof next === "function" ? next(state.touched) : next
-      state$.setState(state => ({ ...state, touched: nextState }))
+      state$.setState(state => ({ ...state, touched: nextState as Touched<TO> }))
    }
 
    function setFieldTouched(path: keyof typeof initialValues, value: boolean = true) {
@@ -187,9 +188,9 @@ export function useFormTest<TO>({
       state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
    }
 
-   function setFieldsError(next: Partial<TO> | ((next: TO) => TO)) {
-      const nextState = typeof next === "function" ? next(state) : next
-      state$.setState(state => ({ ...state, errors: nextState }))
+   function setFieldsError(next: Partial<Errors<TO>> | ((next: Errors<TO>) => Errors<TO>)) {
+      const nextState = typeof next === "function" ? next(state.errors) : next
+      state$.setState(state => ({ ...state, errors: nextState as Errors<TO> }))
    }
 
    function setFieldError(path: keyof typeof initialValues, value: any) {
@@ -209,21 +210,21 @@ export function useFormTest<TO>({
 
 
    function makeResetAllTouchedPayload() {
-      return Object.keys(refs.current).reduce((acc, path) => {
+      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
          return dot.set(acc, path, dot.get(initialTouched || {}, path) || false)
-      }, {})
+      }, {} as Touched<TO>)
    }
 
    function makeAllTouchedPayload() {
-      return Object.keys(refs.current).reduce((acc, path) => {
+      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
          return dot.set(acc, path, true)
-      }, {})
+      }, {} as Touched<TO>)
    }
 
    function makeFormPayload() {
-      return Object.keys(refs.current).reduce((acc, path) => {
+      return Object.keys(refs.current).reduce<TO>((acc, path) => {
          return dot.set(acc, path, refs.current[path].current.value)
-      }, {})
+      }, {} as TO)
    }
 
    function onSubmit(fn: (values: TO, isValid: boolean) => void) {
