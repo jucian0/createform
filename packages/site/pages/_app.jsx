@@ -15,9 +15,7 @@ export default ({ Component, pageProps }) => {
     <ThemeContext.Provider value={{theme, setTheme:()=>setTheme(!theme)}}>
       <ThemeProvider theme={theme? lightTheme: darkTheme}>
         <MDXProvider>
-          <Default>
             <Component {...pageProps} />
-          </Default>
         </MDXProvider>
         <GlobalStyle />
       </ThemeProvider>

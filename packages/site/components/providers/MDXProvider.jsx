@@ -4,6 +4,7 @@ import React from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import CodeBlock from '../codeblock'
 import { H1, H2, P, Pre, H3, H4, A, Table, TD, TH, TR } from '../md'
+import Default from './../layouts/layout'
 
 const mdComponents = {
   code: CodeBlock,
@@ -17,7 +18,8 @@ const mdComponents = {
   table: Table,
   td: TD,
   th: TH,
-  tr: TR
+  tr: TR,
+  Default: Default
 }
 
 export default ({ children }) => (

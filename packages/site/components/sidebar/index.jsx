@@ -22,7 +22,7 @@ function Sidebar({open}) {
 
   return (
     <Container open={open}>
-      <ActiveLink href="/index">
+      <ActiveLink href="/">
         Index JS
       </ActiveLink>
       <ActiveLink href="/input">

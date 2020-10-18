@@ -5,14 +5,14 @@ import { FormContext, useContextForm, useFormTest } from '@forms/useform'
 
 type Form = {
   name: string,
-  email: string,
-  password: string,
   date: Date,
   other: {
-    test: string
+    test: string,
+    anything: {
+      test: number
+    }
   },
   score?: number,
-  file?: any
 }
 
 const initialValues = {
