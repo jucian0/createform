@@ -97,12 +97,12 @@ export function useFormTest<TO>({
    function handleEvent(event: string) {
       if (event === 'input') {
          return async (e: Change) => {
-            return state$.setState(state => ({ ...state, values: { ...state.values, [e.target.name]: e.target.value } }))
+            return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, e.target.value) }))
          }
       }
 
       return (e: Change) => {
-         return state$.setState(state => ({ ...state, touched: { ...state.touched, [e.target.name]: true } }))
+         return state$.setState(state => ({ ...state, touched: dot.set(state, e.target.name, true) }))
       }
    }
 
