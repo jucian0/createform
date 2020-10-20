@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Row, Col } from 'react-grid-system'
 import { Input,Range, ContainerJsonView, Button, Buttons} from './../'
 import JSONPretty from 'react-json-pretty';
-import {useFormTest} from '@forms/useform'
+import {useForm} from '@forms/useform'
 
 const initialValues = {
    name:"Jesse",
@@ -13,12 +13,12 @@ const initialValues = {
 }
 
 export default function Demo(){
-   const {register,resetForm,resetFieldValue ,state}= useFormTest({initialValues, isControlled:true})
+   const {register,resetForm,resetFieldValue ,state}= useForm({initialValues, isControlled:true, })
 
    return (
       <>
          <Row justify="center">
-            <Col md={12} style={{textAlign:"center"}}><h1>Demo</h1></Col>
+            <Col md={12} style={{textAlign:"center"}}><h1>Controlled Form Demo</h1></Col>
          </Row>
          <Row>
             <Col sm={6}>
@@ -33,7 +33,7 @@ export default function Demo(){
                   <Button type="button" onClick={()=>resetFieldValue('score')}>Reset Score</Button>
                </Buttons>
             </Col>
-            <Col sm={6}>
+            <Col sm={6} style={{marginTop:10}}>
                <ContainerJsonView>
                   <JSONPretty id="json-pretty" data={state.values}></JSONPretty>
                </ContainerJsonView>

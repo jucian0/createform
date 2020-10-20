@@ -1,291 +1,320 @@
-import React from "react"
-import { create } from "../core/create"
-import { debounce, isCheckbox, isRadio } from "../utils"
-import { Errors, Touched } from "../core/observable"
+import React from "react";
 import dot from 'dot-prop-immutable'
+import { debounce, makeDotNotation } from "../utils";
+import { ValidationError, Schema as YupSchema, boolean } from "yup";
+import { createState } from "../core/observable";
 
-export type TypeForm = ReturnType<typeof create>
-export type TValues<TForm extends TypeForm> = TForm['getValues']
 
-type UseFormOptions<TValues> = {
+type Ref = {
+   current: HTMLInputElement
+}
+
+type RegisterReturn = {
+   name: string,
+   ref: Ref
+}
+
+type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
+type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
+
+export type Options<T> = {
+   initialValues?: T,
+   initialErrors?: Errors<T>,
+   initialTouched?: Touched<T>,
    isControlled?: boolean,
-   debounce?: number,
-   watch?: (values: TValues) => void
+   debounced?: number,
+   schemaValidation?: YupSchema<T>
 }
 
 
-type OnSubmit<TValues> = (fn: (values: TValues) => void) => (e: React.BaseSyntheticEvent) => void
-type Input = (param: FieldParam<InputProps>, ...args: Array<string>) => InputRegisterProps<RefFieldElement>
-type SetValues<TValues> = (e: Partial<TValues> | ((e: TValues) => TValues)) => void
-type SetErrors<TValues> = (e: Partial<Errors<TValues>> | ((e: Errors<TValues>) => Errors<TValues>)) => void
-type SetTouched<TValues> = (e: Partial<Errors<TValues>> | ((e: Touched<TValues>) => Touched<TValues>)) => void
-type Reset = (name?: string) => void
-
-type UseForm<TForm extends TypeForm> = [
-   {
-      values: TValues<TForm>,
-      errors: Errors<TValues<TForm>>,
-      touched: Touched<TValues<TForm>>
-   },
-   {
-      onSubmit: OnSubmit<TValues<TForm>>
-      input: Input
-      setValues: SetValues<TValues<TForm>>
-      setErrors: SetErrors<TValues<TForm>>
-      setTouched: SetTouched<TValues<TForm>>
-      reset: Reset
-   }
-]
-
-export type RefFieldElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-
-export type FieldParam<TInput> = string | TInput
-export interface InputProps extends React.InputHTMLAttributes<RefFieldElement> {
-   name: string
-   type: string
-}
-export interface InputPartialProps {
-   name: string
-   defaultValue?: any
-   value?: any
-   onChange: (...args: Array<any>) => void
-   onBlur?: (...args: Array<any>) => void
-   onTouchStart?: (...args: Array<any>) => void
-   type?: string
-   defaultChecked?: any
-}
-export interface InputRegisterProps<T = RefFieldElement> extends InputPartialProps {
-   ref?: T extends RefFieldElement
-   ? React.RefObject<RefFieldElement extends React.RefObject<infer Ref> ? Ref : never>
-   : React.RefObject<T>
+export type State<T> = {
+   values?: T,
+   errors?: Errors<T>,
+   touched?: Touched<T>,
 }
 
-export type ListInputsRef = {
-   [x: string]: InputRegisterProps<
-      RefFieldElement extends HTMLInputElement ? HTMLInputElement : HTMLTextAreaElement
-   >
+type Register = (path: string) => RegisterReturn
+
+type Change = React.ChangeEvent<HTMLInputElement>
+type ChangeState<T> = T | ((state: T) => T)
+type PathValue<T> = keyof T
+export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
+
+export type UseFormReturnType<T> = {
+   setForm: (next: ChangeState<State<T>>) => void
+   resetForm: () => void
+   setFieldsValue: (next: ChangeState<T>) => void
+   setFieldValue: (path: PathValue<T>, value: any) => void
+   resetFieldsValue: () => void
+   resetFieldValue: (path: PathValue<T>) => void
+   setFieldsTouched: (next: ChangeState<Touched<T>>) => void
+   setFieldTouched: (path: PathValue<T>, value: boolean) => void
+   resetFieldsTouched: () => void
+   resetFieldTouched: (path: PathValue<T>) => void
+   setFieldError: (path: PathValue<T>, value: any) => void
+   setFieldsError: (next: ChangeState<Errors<T>>) => void
+   resetFieldError: (path: PathValue<T>, value: any) => void
+   resetFieldsError: () => void
+   state: State<T>
+   register: Register,
+   onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
 }
 
-function reducer<TState>(state: TState, nextState: Partial<TState>): TState {
-   return { ...state, ...nextState }
-}
 
-export function useForm<TForm extends TypeForm>(
-   form: TForm,
-   options: UseFormOptions<TValues<TForm>> = {}
-): UseForm<TForm> {
+export function useForm<TO>({
+   initialErrors = {} as any,
+   initialValues = {} as any,
+   initialTouched = {} as any,
+   ...options }: Options<TO>): UseFormReturnType<TO> {
 
-   const [state, setState] = React.useReducer(reducer, form.get)
-   const listInputsRef = React.useRef<ListInputsRef>(Object.assign({}))
-   const setValuesDebounce = React.useCallback(debounce(setState, options.debounce), [])
+   const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
 
-   /**
- * The purpose that function is set a new value in value ref of an every input element.
- * @param input is an object with properties like ref input.
- * @param value that value is placed on input ref value
- */
-   function setRefValue(input: InputRegisterProps<any>, value: any) {
-      if (!input?.ref?.current) {
-         return
-      }
+   const { current: state$ } = React.useRef(createState({
+      values: initialValues,
+      errors: initialErrors,
+      touched: initialTouched,
+   }))
 
-      if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-         return input.ref.current?.setNativeProps?.({ text: value || null })
-      }
+   const [state, setState] = React.useState<State<TO>>({})
 
-      const type = input.ref.current.type
 
-      if (isRadio(type)) {
-         return (input.ref.current.checked = input.ref.current.value === value)
-      } else if (isCheckbox(type)) {
-         return (input.ref.current.checked = Boolean(value))
-      }
+   const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
 
-      return input.ref.current.value = value || null
+   function isControlledOrDebounce() {
+      return options.isControlled || !!options.debounced
    }
 
-   function setRefInputsValues() {
-      Object.keys(listInputsRef.current).forEach((key) => {
-         setRefValue(listInputsRef.current[key], dot.get(form.getValues, key))
-      })
-   }
-
-   /**
-    * That function register every inputs, and it return an input props.
-    * @param props {
-    *   name: string
-    *    defaultValue?: any
-    *   value?: any
-    *   onChange: (...args: Array<any>) => void
-    *   onBlur?: (...args: Array<any>) => void
-    *   type?: string
-    *   defaultChecked?: any
-    * }
-    */
-   function registerInput(props: InputPartialProps) {
-      const inputProps = {
-         ...listInputsRef.current,
-         [props.name]: { ...props, ref: React.createRef<HTMLInputElement>() },
-      } as ListInputsRef
-
-      /**
-       * creating an input props a put one on a specific key in listInputsRef.
-       */
-      listInputsRef.current = inputProps
-      return listInputsRef.current[props.name]
-   }
-
-
-   /**
-   *
-   * @param param is a object with the same properties of native input in react like {type, checked, value ...}
-   * @param args get a rest o arguments like type when use approach like this {<input {...input("test", "text")}/>}
-   * this function register a default input with default properties.
-   */
-   function input(
-      param: FieldParam<InputProps>,
-      ...args: Array<string>
-   ): InputRegisterProps<RefFieldElement> {
-      const complementProps =
-         typeof param === 'string' ? { name: param, type: args[0] } : { ...param }
-
-      if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-         return nativeBase(complementProps)
+   function register(path: string) {
+      const newRefs = {
+         ...refs.current,
+         [path]: React.createRef<Ref>()
       }
 
-      /**
-       * To turn logic easier has a function to process input checkbox or radio and defaultInputBase for another kind of input like text, data...
-       */
-      if (isCheckbox(complementProps.type) || isRadio(complementProps.type)) {
-         return checkedBase(complementProps)
-      }
-      return defaultInputBase(complementProps)
+      refs.current = newRefs
+      return { name: path, ref: refs.current[path] }
    }
 
-   function defaultInputBase(complementProps: InputProps) {
-      function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         form.onChange = {
-            path: e.target.name,
-            value: complementProps.type === 'number'
-               ? Number(e.target.value)
-               : complementProps.type === 'date'
-                  ? e.target.value
-                  : complementProps.type === 'file'
-                     ? e.target.files
-                     : e.target.value,
+   function handleEvent(event: string) {
+      if (event === 'input') {
+         return async (e: Change) => {
+            return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, e.target.value) }))
          }
       }
 
-
-      const props = registerInput({
-         defaultValue: dot.get(form.getValues, complementProps.name),
-         onChange,
-         ...complementProps,
-      })
-
-      return props
-   }
-
-   function checkedBase(complementProps: InputProps) {
-      function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-         form.onChange = {
-            path: e.target.name,
-            value: complementProps.type === 'radio' ? e.target.value : e.target.checked,
-         }
+      return (e: Change) => {
+         return state$.setState(state => ({ ...state, touched: dot.set(state, e.target.name, true) }))
       }
-
-      const props = registerInput({
-         defaultChecked:
-            complementProps.type === 'radio'
-               ? form.getValues[complementProps.name] === complementProps.value
-               : form.getValues[complementProps.name],
-         onChange,
-         ...complementProps,
-      })
-      return props
    }
 
-   function nativeBase(complementProps: InputProps) {
-
-      function onChange(e: any) {
-         form.onChange = {
-            path: complementProps.name,
-            value: e.nativeEvent.text
-         }
-      }
-
-      const props = registerInput({
-         defaultValue: dot.get(form.getValues, complementProps.name),
-         onChange,
-         ...complementProps,
+   function addEvents(...args: Array<string>) {
+      Object.keys(refs.current).forEach(path => {
+         args.forEach(event => refs.current[path].current.addEventListener(event, handleEvent(event)))
       })
-      return props
-
    }
 
+   function removeEvents(...args: Array<string>) {
+      Object.keys(refs.current).forEach(path => {
+         args.forEach(event => refs.current[path].current.removeEventListener(event, handleEvent(event)))
+      })
+   }
 
-   function onSubmit(fn: (values: TValues<TForm>) => void) {
-      return (e: React.BaseSyntheticEvent) => {
+   function setRefValue(path: string, value: any) {
+      refs.current[path].current.value = value || null
+   }
+
+   function makeResetAllTouchedPayload() {
+      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
+         return dot.set(acc, path, dot.get(initialTouched || {}, path) || false)
+      }, {} as Touched<TO>)
+   }
+
+   function makeAllTouchedPayload() {
+      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
+         return dot.set(acc, path, true)
+      }, {} as Touched<TO>)
+   }
+
+   function makeFormPayload() {
+      return Object.keys(refs.current).reduce<TO>((acc, path) => {
+         return dot.set(acc, path, refs.current[path].current.value)
+      }, {} as TO)
+   }
+
+   function onSubmit(fn: (values: TO, isValid: boolean) => void) {
+      return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         if (!options.debounce && !options.isControlled) {
-            setState(form.get)
+         const values = makeFormPayload()
+         try {
+            await validate(values)
+            fn(values, true)
+         } catch (errors) {
+            fn(values, false)
+            state$.setState(state => ({ ...state, errors, touched: makeAllTouchedPayload() }))
+
+            if (!isControlledOrDebounce()) {
+               setState(state => ({ ...state, errors, values, touched: makeAllTouchedPayload() }))
+            }
          }
-         fn(form.getValues)
       }
    }
 
-   function setValues(resolve: Partial<TValues<TForm>> | ((e: TValues<TForm>) => TValues<TForm>)) {
-      if (typeof resolve === 'function') {
-         form.setValues = resolve(form.getValues)
-      }
-      form.setValues = resolve
-      setRefInputsValues()
+   function validate(values) {
+      return options.schemaValidation?.validate(values, { abortEarly: false })
+         .then((e) => {
+            return {}
+         })
+         .catch((e: ValidationError) => {
+            throw e.inner.reduce((acc, key) => {
+               const path = makeDotNotation(key.path)
+               return dot.set(acc, path, key.message)
+            }, {})
+         })
    }
 
-   function setErrors(resolve: Partial<Errors<TValues<TForm>>> | ((e: Errors<TValues<TForm>>) => Errors<TValues<TForm>>)) {
-      if (typeof resolve === 'function') {
-         form.setErrors = resolve(form.getErrors)
-      }
-      form.setErrors = resolve
-   }
-
-   function setTouched(resolve: Partial<Touched<TValues<TForm>>> | ((e: Touched<TValues<TForm>>) => Touched<TValues<TForm>>)) {
-      if (typeof resolve === 'function') {
-         form.setTouched = resolve(form.getTouched)
-      }
-      form.setTouched = resolve
-   }
-
-   function reset(path?: string) {
-      form.reset(path)
-      setRefInputsValues()
-      if (!options.debounce && !options.isControlled) {
-         setState(form.get)
-      }
-   }
-
-   const setFormState = React.useCallback(
-      (nextState: TForm['get']) => {
-         options.watch?.(nextState.values)
-         if (JSON.stringify(nextState) === JSON.stringify(state)) {
-            return
+   async function handleChange(next) {
+      try {
+         await validate(next.values)
+         if (options.isControlled) {
+            setState(next)
+         } else if (options.debounced) {
+            setValueDebounce(next)
          }
-         if (options.debounce) {
-            return setValuesDebounce(nextState)
-         } else if (options.isControlled) {
-            return setState(nextState)
+      } catch (errors) {
+         if (options.isControlled) {
+            setState({ ...next, errors })
+         } else if (options.debounced) {
+            setValueDebounce({ ...next, errors })
          }
-      },
-      [options, setValuesDebounce, state]
-   )
+      }
+   }
 
    React.useEffect(() => {
+      const subscriber = state$.subscribe(handleChange)
+
+      return () => {
+         subscriber()
+      }
    }, [])
 
    React.useEffect(() => {
-      const subscriber = form.subscribe(setFormState)
-      return subscriber
-   }, [setFormState])
+      if (initialValues) {
+         Object.keys(refs.current).forEach(path => {
+            setRefValue(path, dot.get(initialValues, path))
+         })
+      }
 
-   return [state, { onSubmit, input, setValues, reset, setErrors, setTouched }]
+      addEvents('input', 'blur')
+      return () => {
+         removeEvents('input', 'blur')
+      }
+   }, [refs])
+
+   function setForm(next: State<TO> | ((state: State<TO>) => State<TO>)) {
+      const nextState = typeof next === "function" ? next(state) : next
+
+      state$.setState(nextState as any)
+
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(nextState.values, path) || dot.get(nextState.values, path))
+      })
+   }
+
+   function resetForm() {
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(initialValues, path) || null)
+      })
+      state$.setState({ values: initialValues, errors: initialErrors, touched: initialTouched })
+   }
+
+   function setFieldsValue(next: Partial<TO> | ((values: TO) => TO)) {
+      const nextState = typeof next === "function" ? next(state.values) : next
+
+      state$.setState(state => ({ ...state, values: nextState as TO }))
+
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(nextState, path) || dot.get(nextState, path))
+      })
+   }
+
+   function setFieldValue(path: keyof typeof initialValues, value: any) {
+      state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
+      setRefValue(path as string, value)
+   }
+
+   function resetFieldsValue() {
+      Object.keys(refs.current).forEach(path => {
+         setRefValue(path, dot.get(initialValues, path) || null)
+      })
+      state$.setState(state => ({ ...state, values: initialValues }))
+   }
+
+   function resetFieldValue(path: keyof typeof initialValues) {
+      const value = dot.get(initialValues, path as string) || undefined
+      state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
+      setRefValue(path as string, value)
+   }
+
+   function setFieldsTouched(next: Partial<Touched<TO>> | ((next: Touched<TO>) => Touched<TO>)) {
+      const nextState = typeof next === "function" ? next(state.touched) : next
+      state$.setState(state => ({ ...state, touched: nextState as Touched<TO> }))
+   }
+
+   function setFieldTouched(path: keyof typeof initialValues, value: boolean = true) {
+      state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
+   }
+
+   function resetFieldsTouched() {
+      setFieldsTouched(makeResetAllTouchedPayload())
+   }
+
+   function resetFieldTouched(path: keyof typeof initialValues) {
+      const value = dot.get(initialTouched, path as string) || false
+      state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
+   }
+
+   function setFieldsError(next: Partial<Errors<TO>> | ((next: Errors<TO>) => Errors<TO>)) {
+      const nextState = typeof next === "function" ? next(state.errors) : next
+      state$.setState(state => ({ ...state, errors: nextState as Errors<TO> }))
+   }
+
+   function setFieldError(path: keyof typeof initialValues, value: any) {
+      state$.setState(state => ({ ...state, errors: dot.set(state.errors, path as string, value) }))
+   }
+
+   function resetFieldsError() {
+      state$.setState(state => ({ ...state, errors: initialErrors }))
+   }
+
+   function resetFieldError(path: keyof typeof initialValues) {
+      const value = dot.get(initialErrors, path as string) || false
+      state$.setState(state => ({ ...state, errors: dot.set(state.errors, path as string, value) }))
+   }
+
+
+   return {
+      register,
+      state,
+      onSubmit,
+
+      setForm,
+      resetForm,
+
+      setFieldValue,
+      setFieldsValue,
+      resetFieldValue,
+      resetFieldsValue,
+
+      setFieldsTouched,
+      setFieldTouched,
+      resetFieldsTouched,
+      resetFieldTouched,
+
+
+      setFieldError,
+      resetFieldError,
+      resetFieldsError,
+      setFieldsError,
+
+   }
+
 }
