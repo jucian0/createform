@@ -1,0 +1,47 @@
+---
+id: quick-start
+title: useForm API
+description: Detaill all resources of useForm hook.
+sidebar_label: UseForm API
+---
+
+# useForm
+
+
+### Function setForm()
+
+Object properties that function receives:
+
+`initialValues` - This optional property receives a object with initial values of form.
+`initialErrors`- This optional property receives a object with initial errors of form.
+`initialTouched`- This optional property receives a object with initial touched fields of form.
+`isControlled`- This optional property determines if the fileds are controlled.
+`debounced`- This optional property determines if the fields are debounced.
+`schemaValidation` - This optional property receives a you schema validation.
+
+This function update the form state, when using this function it's posible to pass a object or a callback function, this function receives a state as param. 
+This aproach turn the  update form state very easy.
+
+
+
+useForm receives a object with some optional properties, and setForm works the same way, it's posible to omit some properties when run setForm, but the object received will replace the current state of form.
+
+```javascript
+
+   const newValues = {...}
+
+   setForm( state => ({
+      ...state,
+      initialValues: newValues
+   }))
+
+   //.....or....//
+
+   setForm({
+      initialValues:newValues,
+      initialErrors:{...},
+      initiaalTouched:{...}
+      ...
+   })
+
+```

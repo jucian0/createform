@@ -25,8 +25,8 @@ function Home() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={useBaseUrl('docs/get-starter')}>
-              Get Started
+              to={useBaseUrl('docs/quick-start')}>
+              Quick Start
             </Link>
           </div>
             <div style={{margin:30}}>
