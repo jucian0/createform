@@ -1,0 +1,60 @@
+---
+id: controlled-form
+description: When using controlled forms, the input value is set to state values and then updated via React events. React form controlled is the most popular aproach in reactjs.
+title: React form with Controled Input
+sidebar_label: Controlled Form
+---
+
+import Controlled from './../src/components/controlled'
+
+## Description
+
+There are two types of form input in React. We have the uncontrolled input and the controlled input.
+When using controlled forms, the input value is set to state values and then updated via React events.
+Defining a form input value via state is considered a controlled component. For controlled inputs, you will need a corresponding state and then a function to update that state with changes.
+
+Controlled inputs are the most popular in the react ecosystem, are easier to write and understanding. But when you think about performance controlled inputs are less powerful than uncontrolled inputs.Every time that component state is updated the component is rendered again and this affects the performance result.
+
+## Usage
+
+`useForm` provides a `register` function, this function return all properties to manager a field.
+
+```javascript
+/*
+ *  initial Values optional
+ */
+const initialValues = {
+  data1: 'test',
+  complextData: [
+    {
+      first: 'testComplexData',
+      score: 45
+    }
+  ]
+}
+
+const { state, register, resetForm, onSubmit } = useForm({
+  isControlled: true,
+  initialValues
+})
+```
+
+Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
+
+```jsx
+
+   function handleSubmit(e, isValid){
+      consolog(e)
+   }
+
+  <input {...register('data1', 'text')} />
+  <input {...register('complexData.0.first', 'text')} />
+  <input type="number" {...register('complexData.0.score')} />
+
+  <button type="submit" onClick={onSubmit(handleSubmit)}>Submit</button>
+  <button type="reset" onClick={resetForm}>Reset</button>
+```
+
+## Demo
+
+<Controlled />
