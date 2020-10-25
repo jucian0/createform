@@ -43,18 +43,22 @@ export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
 export type UseFormReturnType<T> = {
    setForm: (next: ChangeState<State<T>>) => void
    resetForm: () => void
+
    setFieldsValue: (next: ChangeState<T>) => void
    setFieldValue: (path: PathValue<T>, value: any) => void
    resetFieldsValue: () => void
    resetFieldValue: (path: PathValue<T>) => void
+   
    setFieldsTouched: (next: ChangeState<Touched<T>>) => void
    setFieldTouched: (path: PathValue<T>, value: boolean) => void
    resetFieldsTouched: () => void
    resetFieldTouched: (path: PathValue<T>) => void
+
    setFieldError: (path: PathValue<T>, value: any) => void
    setFieldsError: (next: ChangeState<Errors<T>>) => void
    resetFieldError: (path: PathValue<T>, value: any) => void
    resetFieldsError: () => void
+   
    state: State<T>
    register: Register,
    onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit

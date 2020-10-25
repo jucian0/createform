@@ -5,43 +5,121 @@ description: Detaill all resources of useForm hook.
 sidebar_label: UseForm API
 ---
 
-# useForm
+## Form
 
-### Function setForm()
+### useForm
 
 Object properties that function receives:
 
 | Property           |                                  Description                                  |
 | ------------------ | :---------------------------------------------------------------------------: |
-| `initialValues`    |     This optional property receives a object with initial values of form.     |
-| `initialErrors`    |     This optional property receives a object with initial errors of form.     |
+| `initialValues`    |    This optional property receives an object with initial values of form.     |
+| `initialErrors`    |    This optional property receives an object with initial errors of form.     |
 | `initialTouched`   | This optional property receives a object with initial touched fields of form. |
 | `isControlled`     |        This optional property determines if the fields are controlled.        |
 | `debounced`        |        This optional property determines if the fields are debounced.         |
-| `schemaValidation` |           This optional property receives a you schema validation.            |
+| `schemaValidation` |           This optional property receives a yup schema validation.            |
 
-This function update the form state, when using this function it's possible to pass an object or a callback function, this function receives a state as param.
+This function update the form state, when using this function it's possible to pass an object or a callback function, this function receives a state as parameter.
 This aproach turn the form state update straightforward.
 
-useForm receives a object with some optional properties, and setForm works the same way, it's posible to omit some properties when run setForm,
+useForm receives a object with some optional properties, and setForm works the same way, it's possible to omit some properties when run setForm,
 but the object received will replace the current state of form.
 
 ```javascript
 
-   const newValues = {...}
+const newValues = {...}
 
-   setForm( state => ({
-      ...state,
-      initialValues: newValues
-   }))
+setForm( state => ({
+   ...state,
+   initialValues: newValues
+}))
 
-   //.....or....//
+//.....or....//
 
-   setForm({
-      initialValues:newValues,
-      initialErrors:{...},
-      initiaalTouched:{...}
-      ...
-   })
+setForm({
+   initialValues:newValues,
+   initialErrors:{...},
+   initiaalTouched:{...}
+   ...
+})
+
+```
+
+### resetForm
+
+This is a void function that reset all form state to initial state values, validations, errors, and touched fields,
+resetForm doesn't receive any parameters.
+
+```javascript
+resetForm()
+```
+
+## FieldValues
+
+### setFieldsValue
+
+This function receives a new values object or a callback function that receives the current state by parameter.
+If uses a callback function is expected that this function return an object with the same shape of the state, if pass an object by parameter,
+this object can be a partial object of initial values, but this object will replace all object properties of the current state of form
+
+```javascript
+
+const newValues = {...}
+
+setFieldValues( state => ({
+   ...state,
+    ...newValues
+})) // callback functiton should return a object with the same shape of initialValues.
+
+//.....or....//
+
+setForm(newValues)  // newValues can be a partial object of initialValues.
+
+```
+
+### setFieldValue
+
+This function sets the value received by parameter to a specific field. The first parameter is the field name and the second parameter is the next value.
+
+```javascript
+setFieldValue('name', 'jesse james')
+```
+
+### resetFieldsValue
+
+This is a void function that reset all fields values to initial fields values,
+resetFieldsValue doesn't receive any parameters. If a specific field was not declared in `initialValues` this field will receive `null` as a value.
+
+```javascript
+resetFieldsValue()
+```
+
+### resetFieldValue
+
+This function resets the value of a specific field. Should receive a field name, if the field was not declared in `initialValues` this field will receive `null` as a value.
+
+```javascript
+resetFieldValue('name')
+```
+
+## FieldTouched
+
+### setFieldsTouched
+
+This function will set all fields as touched, setFieldsTouched accept a partial object or a callback function that returns a new state of touched.
+
+```javascript
+
+const newTouched = {...}
+
+setFieldsTouched( state => ({
+   ...state,
+...newTouched
+})) // callback functiton should return a object with the same shape of initialTouched.
+
+//.....or....//
+
+setFieldsTouched(newTouched)  // newValues can be a partial object of initialTouched.
 
 ```
