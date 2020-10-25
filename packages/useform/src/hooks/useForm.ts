@@ -54,9 +54,9 @@ export type UseFormReturnType<T> = {
    resetFieldsTouched: () => void
    resetFieldTouched: (path: PathValue<T>) => void
 
-   setFieldError: (path: PathValue<T>, value: any) => void
+   setFieldError: (path: PathValue<T>, error: any) => void
    setFieldsError: (next: ChangeState<Errors<T>>) => void
-   resetFieldError: (path: PathValue<T>, value: any) => void
+   resetFieldError: (path: PathValue<T>) => void
    resetFieldsError: () => void
    
    state: State<T>

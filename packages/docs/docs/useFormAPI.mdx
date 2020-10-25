@@ -123,3 +123,74 @@ setFieldsTouched( state => ({
 setFieldsTouched(newTouched)  // newValues can be a partial object of initialTouched.
 
 ```
+
+### setFieldTouched
+
+This function sets the specific field as touched.
+
+```javascript
+setFieldTouched('name')
+```
+
+### resetFieldsTouched
+
+This is a void function that reset all fields touched to initial fields touched,
+resetFieldsTouched doesn't receive any parameters. If a specific field was not declared in `initialTouched` this field will receive `false` as a touched.
+
+```javascript
+resetFieldsTouched()
+```
+
+### resetFieldTouched
+
+This function resets the touched property of a specific field. Should receive a field name, if the field was not declared in `initialTouched` this field will receive `false` as a touched property.
+
+```javascript
+resetFieldTouched('name')
+```
+
+## FieldError
+
+### setFieldsErrors
+
+This function will set all fields errors, setFieldsErrors accept a partial error's object or a callback function that returns a new state of error's object.
+
+```javascript
+
+const newErrors = {...}
+
+setFieldsError( state => ({
+   ...state,
+...newErrors
+})) // callback functiton should return a object with the same shape of formik initial errors.
+
+//.....or....//
+
+setFieldsError(newErrors)  // newValues can be a partial object of initialErrors.
+
+```
+
+### setFieldError
+
+This function sets an error in a specific field. The first parameter is a field name, if using a object with many layers should use a dot notation to specific correct path of field, `ex: 'person.name'` and the second parameter is a message error.
+
+```javascript
+setFieldError('person.name', 'This Field is required')
+```
+
+### resetFieldsError
+
+This is a void function that reset all fields errors to initial fields errors,
+resetFieldsErrors doesn't receive any parameters.
+
+```javascript
+resetFieldsError()
+```
+
+### resetFieldError
+
+This function resets the error of a specific field. Should receive a field name.
+
+```javascript
+resetFieldError('person.name')
+```
