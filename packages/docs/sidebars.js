@@ -1,6 +1,6 @@
 module.exports = {
   someSidebar: {
-    Introduction:['quick-start'],
-    API:['useFormAPI']
-  },
-};
+    Introduction: ['quick-start'],
+    API: ['useFormAPI']
+  }
+}
