@@ -4,6 +4,7 @@ title: Quick Start
 description: useForm provides the better way to create advanceds forms easily.also provides a simple way to validate form inputs. Try this!!!
 sidebar_label: Quick Start
 ---
+
 import QuickStartDemo from './../src/components/quick-start-demo'
 
 ## Description
@@ -13,19 +14,20 @@ react hooks are a game-changer when we think about forms, with hooks is very sim
 But when we wanna complex forms with many validations and complex objects with several layer and properties is appropriate to use a library form to manager the state of inputs and its validations.  
 For this reason, there is useForm, with useForm we can make greats forms and complex validations with less line code.
 
-UseForm provides a way to create complex forms easily, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore, 
-it does not matter if the object is complex or has many properties or array, 
-the result is the same. This process turns very easily to create forms from an object with several layers, 
-the same layers and properties are replicated in the final object, 
+UseForm provides a way to create complex forms easily, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore,
+it does not matter if the object is complex or has many properties or array,
+the result is the same. This process turns very easily to create forms from an object with several layers,
+the same layers and properties are replicated in the final object,
 this approach prevents you to type more code to convert an object from form to backend object type. The same process is realized with errors object and touched object.
 
-
 ## What to expect with useForm
+
 - Performer forms - useForm provides a way to complete a form and submit it without any rerender, by default useForm creates uncontrolled forms.
 - Easy to write - useForm has an easy way to write forms with less code. register function return necessary input's properties and it is all we need to manage all events in a native HTML `input`. Writhe forms without form tag.
 - Easy validation - By default useform uses yup validation, we can write complex validation without effort.
 
 ## Instalation
+
 ```
   npm install useforms
 ```
@@ -38,22 +40,25 @@ this approach prevents you to type more code to convert an object from form to b
 
 `useForm` provides a `register` function, this function as a link with input and a object property of form state.
 
-<QuickStartDemo/>
-<br/>
+<QuickStartDemo />
+<br />
 
 ```javascript
-  import {useForm} from 'useforms'
+import { useForm } from 'useforms'
 
-   /*
-   *  initial Values optional
-   */
-   const initialValues = {
-      name:"Jesse",
-      email:"jesse@jesse.com",
-      score:25
-   }
+/*
+ *  initial Values optional
+ */
+const initialValues = {
+  name: 'Jesse',
+  email: 'jesse@jesse.com',
+  score: 25
+}
 
-  const {register, state:{values}} = useForm({initialValues,isControlled:true})
+const {
+  register,
+  state: { values }
+} = useForm({ initialValues, isControlled: true })
 ```
 
 Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.

@@ -1,6 +1,6 @@
 module.exports = {
   someSidebar: {
     Introduction: ['quick-start'],
-    API: ['useFormAPI']
+    API: ['useFormAPI', 'ContextFormAPI', 'useValidation']
   }
 }
