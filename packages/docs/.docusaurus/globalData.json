@@ -1,0 +1,46 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/docs",
+          "mainDocId": "quick-start",
+          "docs": [
+            {
+              "id": "ContextFormAPI",
+              "path": "/docs/ContextFormAPI"
+            },
+            {
+              "id": "controlled-form",
+              "path": "/docs/controlled-form"
+            },
+            {
+              "id": "debounce-form",
+              "path": "/docs/debounce-form"
+            },
+            {
+              "id": "quick-start",
+              "path": "/docs/quick-start"
+            },
+            {
+              "id": "uncontrolled-form",
+              "path": "/docs/uncontrolled-form"
+            },
+            {
+              "id": "useFormAPI",
+              "path": "/docs/useFormAPI"
+            },
+            {
+              "id": "useValidation",
+              "path": "/docs/useValidation"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

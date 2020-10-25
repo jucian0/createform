@@ -1,0 +1,12 @@
+{
+  "unversionedId": "custom-input",
+  "id": "custom-input",
+  "isDocsHomePage": false,
+  "title": "React form with Custom Input",
+  "description": "useForm provides a way to use custom inputs like react-date-picker or react-select. The custom inputs receive generics properties, onChange, value, and property to simulate onBlur event. Use React Select, React Datepicker.",
+  "source": "@site/docs/custom-input.mdx",
+  "slug": "/custom-input",
+  "permalink": "/docs/custom-input",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/custom-input.mdx",
+  "version": "current"
+}

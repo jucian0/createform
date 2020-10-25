@@ -1,0 +1,252 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "loadedVersions": [
+        {
+          "versionName": "current",
+          "versionLabel": "Next",
+          "versionPath": "/docs",
+          "isLast": true,
+          "routePriority": -1,
+          "sidebarFilePath": "/home/barbosa/javascript/useform/packages/docs/sidebars.js",
+          "docsDirPath": "/home/barbosa/javascript/useform/packages/docs/docs",
+          "mainDocId": "quick-start",
+          "sidebars": {
+            "someSidebar": [
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "Introduction",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "quick-start"
+                  }
+                ]
+              },
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "API",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "useFormAPI"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "ContextFormAPI"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "useValidation"
+                  }
+                ]
+              },
+              {
+                "collapsed": true,
+                "type": "category",
+                "label": "Examples",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "controlled-form"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "debounce-form"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "uncontrolled-form"
+                  }
+                ]
+              }
+            ]
+          },
+          "permalinkToSidebar": {
+            "/docs/ContextFormAPI": "someSidebar",
+            "/docs/controlled-form": "someSidebar",
+            "/docs/debounce-form": "someSidebar",
+            "/docs/quick-start": "someSidebar",
+            "/docs/uncontrolled-form": "someSidebar",
+            "/docs/useFormAPI": "someSidebar",
+            "/docs/useValidation": "someSidebar"
+          },
+          "docs": [
+            {
+              "unversionedId": "ContextFormAPI",
+              "id": "ContextFormAPI",
+              "isDocsHomePage": false,
+              "title": "ContextForm",
+              "description": "Detail all resources of useContextForm hook and ContextForm.",
+              "source": "@site/docs/context-form-api.mdx",
+              "slug": "/ContextFormAPI",
+              "permalink": "/docs/ContextFormAPI",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/context-form-api.mdx",
+              "version": "current",
+              "sidebar_label": "ContextForm",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "useForm",
+                "permalink": "/docs/useFormAPI"
+              },
+              "next": {
+                "title": "useValidation",
+                "permalink": "/docs/useValidation"
+              }
+            },
+            {
+              "unversionedId": "controlled-form",
+              "id": "controlled-form",
+              "isDocsHomePage": false,
+              "title": "React form with Controlled Form",
+              "description": "When using controlled forms, the input value is set to state values and then updated via React events. React form controlled is the most popular aproach in reactjs.",
+              "source": "@site/docs/controlled-form.mdx",
+              "slug": "/controlled-form",
+              "permalink": "/docs/controlled-form",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/controlled-form.mdx",
+              "version": "current",
+              "sidebar_label": "Controlled Form",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "useValidation",
+                "permalink": "/docs/useValidation"
+              },
+              "next": {
+                "title": "React form with Debounce Form",
+                "permalink": "/docs/debounce-form"
+              }
+            },
+            {
+              "unversionedId": "debounce-form",
+              "id": "debounce-form",
+              "isDocsHomePage": false,
+              "title": "React form with Debounce Form",
+              "description": "When you use debounced form the debounce parameter delays the updating of the state until the user has stopped changing inputs for a predetermined amount of time.",
+              "source": "@site/docs/debounced-form.mdx",
+              "slug": "/debounce-form",
+              "permalink": "/docs/debounce-form",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/debounced-form.mdx",
+              "version": "current",
+              "sidebar_label": "Debounce Form",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "React form with Controlled Form",
+                "permalink": "/docs/controlled-form"
+              },
+              "next": {
+                "title": "React form with Uncontrolled Input",
+                "permalink": "/docs/uncontrolled-form"
+              }
+            },
+            {
+              "unversionedId": "quick-start",
+              "id": "quick-start",
+              "isDocsHomePage": false,
+              "title": "Quick Start",
+              "description": "useForm provides the better way to create advanceds forms easily.also provides a simple way to validate form inputs. Try this!!!",
+              "source": "@site/docs/quick-start.mdx",
+              "slug": "/quick-start",
+              "permalink": "/docs/quick-start",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/quick-start.mdx",
+              "version": "current",
+              "sidebar_label": "Quick Start",
+              "sidebar": "someSidebar",
+              "next": {
+                "title": "useForm",
+                "permalink": "/docs/useFormAPI"
+              }
+            },
+            {
+              "unversionedId": "uncontrolled-form",
+              "id": "uncontrolled-form",
+              "isDocsHomePage": false,
+              "title": "React form with Uncontrolled Input",
+              "description": "Uncontrolled forms are the most performant way to create react forms. With uncontrolled input values, there is no updating or changing of any states. What you submit is what you get.",
+              "source": "@site/docs/uncontrolled-form.mdx",
+              "slug": "/uncontrolled-form",
+              "permalink": "/docs/uncontrolled-form",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/uncontrolled-form.mdx",
+              "version": "current",
+              "sidebar_label": "Uncontrolled Form",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "React form with Debounce Form",
+                "permalink": "/docs/debounce-form"
+              }
+            },
+            {
+              "unversionedId": "useFormAPI",
+              "id": "useFormAPI",
+              "isDocsHomePage": false,
+              "title": "useForm",
+              "description": "Detail all resources of useForm hook.",
+              "source": "@site/docs/use-form-api.mdx",
+              "slug": "/useFormAPI",
+              "permalink": "/docs/useFormAPI",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/use-form-api.mdx",
+              "version": "current",
+              "sidebar_label": "UseForm",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "Quick Start",
+                "permalink": "/docs/quick-start"
+              },
+              "next": {
+                "title": "ContextForm",
+                "permalink": "/docs/ContextFormAPI"
+              }
+            },
+            {
+              "unversionedId": "useValidation",
+              "id": "useValidation",
+              "isDocsHomePage": false,
+              "title": "useValidation",
+              "description": "Detail all resources of useValidation.",
+              "source": "@site/docs/use-validation.mdx",
+              "slug": "/useValidation",
+              "permalink": "/docs/useValidation",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/use-validation.mdx",
+              "version": "current",
+              "sidebar_label": "UseValidation",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "ContextForm",
+                "permalink": "/docs/ContextFormAPI"
+              },
+              "next": {
+                "title": "React form with Controlled Form",
+                "permalink": "/docs/controlled-form"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "docusaurus-plugin-content-blog": {
+    "default": null
+  },
+  "docusaurus-plugin-content-pages": {
+    "default": [
+      {
+        "type": "jsx",
+        "permalink": "/",
+        "source": "@site/src/pages/index.js"
+      }
+    ]
+  },
+  "docusaurus-plugin-debug": {
+    "default": null
+  },
+  "docusaurus-theme-classic": {
+    "default": null
+  },
+  "docusaurus-plugin-google-analytics": {
+    "plugin-google-analytics": null
+  },
+  "docusaurus-plugin-sitemap": {
+    "plugin-sitemap": null
+  }
+}

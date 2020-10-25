@@ -1,0 +1,22 @@
+{
+  "unversionedId": "ContextFormAPI",
+  "id": "ContextFormAPI",
+  "isDocsHomePage": false,
+  "title": "ContextForm",
+  "description": "Detail all resources of useContextForm hook and ContextForm.",
+  "source": "@site/docs/context-form-api.mdx",
+  "slug": "/ContextFormAPI",
+  "permalink": "/docs/ContextFormAPI",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/context-form-api.mdx",
+  "version": "current",
+  "sidebar_label": "ContextForm",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "useForm",
+    "permalink": "/docs/useFormAPI"
+  },
+  "next": {
+    "title": "useValidation",
+    "permalink": "/docs/useValidation"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "unversionedId": "old/register-input",
+  "id": "old/register-input",
+  "isDocsHomePage": false,
+  "title": "Register Input with useForm.",
+  "description": "Normally when we want to make a form we should think about which approach we are going to use; controlled or uncontrolled or debounce input.",
+  "source": "@site/docs/old/register-input.mdx",
+  "slug": "/old/register-input",
+  "permalink": "/docs/old/register-input",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/old/register-input.mdx",
+  "version": "current"
+}
