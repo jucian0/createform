@@ -1,7 +1,7 @@
 ---
 id: useFormAPI
 title: useForm API
-description: Detaill all resources of useForm hook.
+description: Detail all resources of useForm hook.
 sidebar_label: UseForm API
 ---
 
@@ -60,7 +60,7 @@ resetForm()
 ### setFieldsValue
 
 This function receives a new values object or a callback function that receives the current state by parameter.
-If uses a callback function is expected that this function return an object with the same shape of the state, if pass an object by parameter,
+If uses a callback function is expected that this function returns an object with the same shape of the state, if pass an object by parameter,
 this object can be a partial object of initial values, but this object will replace all object properties of the current state of form
 
 ```javascript
@@ -80,7 +80,7 @@ setForm(newValues)  // newValues can be a partial object of initialValues.
 
 ### setFieldValue
 
-This function sets the value received by parameter to a specific field. The first parameter is the field name and the second parameter is the next value.
+This function sets the value received by parameter to a specific field. The first parameter is the field name and the second parameter is the next value. If using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`.
 
 ```javascript
 setFieldValue('name', 'jesse james')
@@ -97,7 +97,7 @@ resetFieldsValue()
 
 ### resetFieldValue
 
-This function resets the value of a specific field. Should receive a field name, if the field was not declared in `initialValues` this field will receive `null` as a value.
+This function resets the value of a specific field. Should receive a field name, if using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`,if the field was not declared in `initialValues` this field will receive `null` as a value.
 
 ```javascript
 resetFieldValue('name')
@@ -126,7 +126,7 @@ setFieldsTouched(newTouched)  // newValues can be a partial object of initialTou
 
 ### setFieldTouched
 
-This function sets the specific field as touched.
+This function sets the specific field as touched. If using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`.
 
 ```javascript
 setFieldTouched('name')
@@ -143,7 +143,7 @@ resetFieldsTouched()
 
 ### resetFieldTouched
 
-This function resets the touched property of a specific field. Should receive a field name, if the field was not declared in `initialTouched` this field will receive `false` as a touched property.
+This function resets the touched property of a specific field. Should receive a field name,if using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`, if the field was not declared in `initialTouched` this field will receive `false` as a touched property.
 
 ```javascript
 resetFieldTouched('name')
@@ -172,7 +172,7 @@ setFieldsError(newErrors)  // newValues can be a partial object of initialErrors
 
 ### setFieldError
 
-This function sets an error in a specific field. The first parameter is a field name, if using a object with many layers should use a dot notation to specific correct path of field, `ex: 'person.name'` and the second parameter is a message error.
+This function sets an error in a specific field. The first parameter is a field name, if using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`, and the second parameter is a message error.
 
 ```javascript
 setFieldError('person.name', 'This Field is required')
@@ -189,8 +189,66 @@ resetFieldsError()
 
 ### resetFieldError
 
-This function resets the error of a specific field. Should receive a field name.
+This function resets the error of a specific field. Should receive a field name. If using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`
 
 ```javascript
 resetFieldError('person.name')
 ```
+
+## state
+
+This object contains all properties of form state, values, errors, and touched. When using a controlled form this object is updated whenever errors, touched or values are changed, the same situations happen when uses debounce form,
+but if using an uncontrolled form this object is updated only when the form is submitted just if have some error in one of the field.
+
+```jsx
+
+const {state} = useForm(...)
+
+<Input placeholder="Name" {register('name')}/>
+<span class="error">{state.touched.name && state.error.name}</span>
+
+```
+
+## register
+
+This function will register an input form whit necessary properties. Register receives just one parameter, this parameter is a path of the field.
+
+```jsx
+const {register} = useForm(...)
+
+
+<Input placeholder="Name" {register('name')}/>
+```
+
+If using an object with many layers should use a dot notation to specify a correct path of an object property.
+
+```jsx
+const initialValues = {
+  person: {
+    name: ''
+  }
+}
+
+<Input placeholder="Name" {register('person.name')}/>
+```
+
+## onSubmit
+
+onSubmit will be called when the form is submitted, this function receives a callback function, the callback function should receive two parameters, the first parameter is the input values, and the second parameter is the state of validations if using any validation schema.
+
+```jsx
+const {register, onSubmit} = useForm(...)
+
+
+function handleSubmit(e, isValid){
+
+   e// form values
+   isValid // boolean value
+   ...
+}
+
+<Input placeholder="Name" {register('person.name')}/>
+<Button onClick={onSubmit(handleSubmimt)}>Send</Button>
+```
+
+If has any form errors the state of errors will change even if using the uncontrolled form.
