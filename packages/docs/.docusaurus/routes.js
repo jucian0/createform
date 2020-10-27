@@ -44,7 +44,7 @@ export default [
 },
 {
   path: '/docs',
-  component: ComponentCreator('/docs','7f9'),
+  component: ComponentCreator('/docs','1cc'),
   
   routes: [
 {
@@ -55,6 +55,11 @@ export default [
 {
   path: '/docs/controlled-form',
   component: ComponentCreator('/docs/controlled-form','878'),
+  exact: true,
+},
+{
+  path: '/docs/custom-fields',
+  component: ComponentCreator('/docs/custom-fields','bfd'),
   exact: true,
 },
 {

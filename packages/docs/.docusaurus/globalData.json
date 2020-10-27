@@ -19,6 +19,10 @@
               "path": "/docs/controlled-form"
             },
             {
+              "id": "custom-fields",
+              "path": "/docs/custom-fields"
+            },
+            {
               "id": "debounce-form",
               "path": "/docs/debounce-form"
             },

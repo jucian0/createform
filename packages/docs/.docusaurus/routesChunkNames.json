@@ -25,7 +25,7 @@
   "/__docusaurus/debug/routes-244": {
     "component": "component---theme-debug-routes-946-699"
   },
-  "/docs-7f9": {
+  "/docs-1cc": {
     "component": "component---theme-doc-page-1-be-9be",
     "versionMetadata": "versionMetadata---docs-935-398"
   },
@@ -36,6 +36,10 @@
   "/docs/controlled-form-878": {
     "component": "component---theme-doc-item-178-a40",
     "content": "content---docs-controlled-formc-63-331"
+  },
+  "/docs/custom-fields-bfd": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-custom-fields-05-d-d12"
   },
   "/docs/debounce-form-6c5": {
     "component": "component---theme-doc-item-178-a40",

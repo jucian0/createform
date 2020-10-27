@@ -6,7 +6,8 @@ module.exports = {
       'controlled-form',
       'debounce-form',
       'uncontrolled-form',
-      'validation'
+      'validation',
+      'custom-fields'
     ]
   }
 }
