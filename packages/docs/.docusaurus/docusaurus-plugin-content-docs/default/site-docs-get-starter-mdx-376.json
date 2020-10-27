@@ -1,0 +1,13 @@
+{
+  "unversionedId": "get-starter",
+  "id": "get-starter",
+  "isDocsHomePage": false,
+  "title": "Get Starter",
+  "description": "useForm provides the better way to create advanceds forms easily.also provides a simple way to validate form inputs. Try this!!!",
+  "source": "@site/docs/get-starter.mdx",
+  "slug": "/get-starter",
+  "permalink": "/docs/get-starter",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/get-starter.mdx",
+  "version": "current",
+  "sidebar_label": "Get Starter with useForm"
+}

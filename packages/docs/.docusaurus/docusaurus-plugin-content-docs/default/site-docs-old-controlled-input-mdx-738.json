@@ -1,0 +1,12 @@
+{
+  "unversionedId": "old/controlled-input",
+  "id": "old/controlled-input",
+  "isDocsHomePage": false,
+  "title": "React form with Controled Input",
+  "description": "When using controlled forms, the input value is set to state values and then updated via React events. React form controlled is the most popular aproach in reactjs.",
+  "source": "@site/docs/old/controlled-input.mdx",
+  "slug": "/old/controlled-input",
+  "permalink": "/docs/old/controlled-input",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/old/controlled-input.mdx",
+  "version": "current"
+}

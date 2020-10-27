@@ -1,0 +1,75 @@
+---
+id: uncontrolled-form
+title: React form with Uncontrolled Input
+description: Uncontrolled forms are the most performant way to create react forms. With uncontrolled input values, there is no updating or changing of any states. What you submit is what you get.
+sidebar_label: Uncontrolled Form
+---
+
+import Uncontrolled from './../src/components/uncontrolled'
+
+## Description
+
+There are two types of form input in React. We have the uncontrolled input and the controlled input. Uncontrolled inputs are like traditional HTML form inputs:
+
+```html
+<div>
+  <input type="text" />
+</div>
+```
+
+With uncontrolled input, there is no updating or changing of any states. When we use uncontrolled input is necessary to set a reference in input for manipulating and receives events, but with userForm it isn't necessary because userForm makes this for us.
+Uncontrolled inputs are useful when performance is essential. But if the forms turn very complex debounce forms are the best option.
+
+Ps \* You can use uncontrolled form with custom inputs but custom inputs use state in your internal logic.
+If you want to use uncontrolled form with custom inputs and native inputs the uncontrolled approach is applied only native inputs.
+
+React Docs
+
+By default, `useForm` use uncontrolled form, isn't necessary to pass any value to useForm hook if you want to use this kind.
+But when you use this kind of form, it is necessary to realize that values and events validation are available only when onSubmit event is dispatched.
+
+With this approach, it's possible to complete a form without any extra renders.
+
+## Usage
+
+`useForm` provides a `register` function, this function returns all properties to manager a field.
+
+```javascript
+import { useForm } from 'useforms'
+
+/*
+ *  initial Values optional
+ */
+const initialValues = {
+  data1: 'test',
+  complextData: [
+    {
+      first: 'testComplexData',
+      score: 45
+    }
+  ]
+}
+
+const { state, resetForm, onSubmit, register } = useForm(...)
+```
+
+Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
+
+```jsx
+
+function handleSubmit(e, isValid){
+...
+}
+
+<form onSubmit={onSubmit(handleSubmit)} onReset={resetForm}>
+  <input {...register('data1')} />
+  <input {...inregisterput('complexData.0.first')} />
+  <input type="number" {...register('complexData.0.score')} />
+  <button type="submit">Submit</button>
+  <button type="reset">Reset</button>
+</form>
+```
+
+## Demo
+
+<Uncontrolled />

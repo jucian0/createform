@@ -1,0 +1,39 @@
+---
+id: ContextFormAPI
+title: ContextForm
+description: Detail all resources of useContextForm hook and ContextForm.
+sidebar_label: ContextForm
+---
+
+## FormContext
+
+FormContext provides a way to share a form state to anothers componente in the tree.
+
+```jsx
+
+const form = useForm(...)
+
+
+<ContextForm.Provider value={form}>
+
+ {/* ....another components */}
+
+</ContextForm.Provider>
+
+```
+
+## useFormContext
+
+`useFormContext` is a custom hook, this hook provides the same useForm hook API. If using typescript should pass type of the values.
+
+This hook only will work if there is a parent with FormContext.
+
+More details about React context https://reactjs.org/docs/context.html.
+
+```jsx
+
+const {register, ...form} = useFormContext(...)
+
+
+<Input placeholder="Name" {register('otherPerson.name')}/>
+```

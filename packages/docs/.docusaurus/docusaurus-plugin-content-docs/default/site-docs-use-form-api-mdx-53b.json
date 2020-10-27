@@ -1,0 +1,22 @@
+{
+  "unversionedId": "useFormAPI",
+  "id": "useFormAPI",
+  "isDocsHomePage": false,
+  "title": "useForm",
+  "description": "Detail all resources of useForm hook.",
+  "source": "@site/docs/use-form-api.mdx",
+  "slug": "/useFormAPI",
+  "permalink": "/docs/useFormAPI",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/use-form-api.mdx",
+  "version": "current",
+  "sidebar_label": "UseForm",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "Quick Start",
+    "permalink": "/docs/quick-start"
+  },
+  "next": {
+    "title": "ContextForm",
+    "permalink": "/docs/ContextFormAPI"
+  }
+}

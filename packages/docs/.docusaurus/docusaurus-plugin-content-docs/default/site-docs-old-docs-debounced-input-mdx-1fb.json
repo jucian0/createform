@@ -1,0 +1,12 @@
+{
+  "unversionedId": "old_docs/debounced-input",
+  "id": "old_docs/debounced-input",
+  "isDocsHomePage": false,
+  "title": "React form with Debounced Input",
+  "description": "When you use debounced form the debounce parameter delays the updating of the state until the user has stopped changing inputs for a predetermined amount of time.",
+  "source": "@site/docs/old_docs/debounced-input.mdx",
+  "slug": "/old_docs/debounced-input",
+  "permalink": "/docs/old_docs/debounced-input",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/old_docs/debounced-input.mdx",
+  "version": "current"
+}

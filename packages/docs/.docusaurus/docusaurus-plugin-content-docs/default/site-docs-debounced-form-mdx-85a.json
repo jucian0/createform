@@ -1,0 +1,22 @@
+{
+  "unversionedId": "debounce-form",
+  "id": "debounce-form",
+  "isDocsHomePage": false,
+  "title": "React form with Debounce Form",
+  "description": "When you use debounced form the debounce parameter delays the updating of the state until the user has stopped changing inputs for a predetermined amount of time.",
+  "source": "@site/docs/debounced-form.mdx",
+  "slug": "/debounce-form",
+  "permalink": "/docs/debounce-form",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/debounced-form.mdx",
+  "version": "current",
+  "sidebar_label": "Debounce Form",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "React form with Controlled Form",
+    "permalink": "/docs/controlled-form"
+  },
+  "next": {
+    "title": "React form with Uncontrolled Input",
+    "permalink": "/docs/uncontrolled-form"
+  }
+}

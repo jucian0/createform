@@ -1,0 +1,22 @@
+{
+  "unversionedId": "uncontrolled-form",
+  "id": "uncontrolled-form",
+  "isDocsHomePage": false,
+  "title": "React form with Uncontrolled Input",
+  "description": "Uncontrolled forms are the most performant way to create react forms. With uncontrolled input values, there is no updating or changing of any states. What you submit is what you get.",
+  "source": "@site/docs/uncontrolled-form.mdx",
+  "slug": "/uncontrolled-form",
+  "permalink": "/docs/uncontrolled-form",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/uncontrolled-form.mdx",
+  "version": "current",
+  "sidebar_label": "Uncontrolled Form",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "React form with Debounce Form",
+    "permalink": "/docs/debounce-form"
+  },
+  "next": {
+    "title": "React form Validation",
+    "permalink": "/docs/validation"
+  }
+}

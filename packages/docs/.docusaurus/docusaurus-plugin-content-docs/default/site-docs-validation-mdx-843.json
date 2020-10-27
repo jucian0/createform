@@ -1,0 +1,22 @@
+{
+  "unversionedId": "validation",
+  "id": "validation",
+  "isDocsHomePage": false,
+  "title": "React form Validation",
+  "description": "By default, useForm work with yup validation schema, and you can pass a validation schema as a parameter in useForm hook.",
+  "source": "@site/docs/validation.mdx",
+  "slug": "/validation",
+  "permalink": "/docs/validation",
+  "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/validation.mdx",
+  "version": "current",
+  "sidebar_label": "Validation",
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "React form with Uncontrolled Input",
+    "permalink": "/docs/uncontrolled-form"
+  },
+  "next": {
+    "title": "React form with Custom Input",
+    "permalink": "/docs/custom-fields"
+  }
+}

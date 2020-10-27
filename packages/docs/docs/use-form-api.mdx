@@ -1,0 +1,254 @@
+---
+id: useFormAPI
+title: useForm
+description: Detail all resources of useForm hook.
+sidebar_label: UseForm
+---
+
+## Form
+
+### useForm
+
+Object properties that function receives:
+
+| Property           |                                  Description                                  |
+| ------------------ | :---------------------------------------------------------------------------: |
+| `initialValues`    |    This optional property receives an object with initial values of form.     |
+| `initialErrors`    |    This optional property receives an object with initial errors of form.     |
+| `initialTouched`   | This optional property receives a object with initial touched fields of form. |
+| `isControlled`     |        This optional property determines if the fields are controlled.        |
+| `debounced`        |        This optional property determines if the fields are debounced.         |
+| `schemaValidation` |           This optional property receives a yup schema validation.            |
+
+This function update the form state, when using this function it's possible to pass an object or a callback function, this function receives a state as parameter.
+This aproach turn the form state update straightforward.
+
+useForm receives a object with some optional properties, and setForm works the same way, it's possible to omit some properties when run setForm,
+but the object received will replace the current state of form.
+
+```javascript
+
+const newValues = {...}
+
+setForm( state => ({
+   ...state,
+   initialValues: newValues
+}))
+
+//.....or....//
+
+setForm({
+   initialValues:newValues,
+   initialErrors:{...},
+   initiaalTouched:{...}
+   ...
+})
+
+```
+
+### resetForm
+
+This is a void function that reset all form state to initial state values, validations, errors, and touched fields,
+resetForm doesn't receive any parameters.
+
+```javascript
+resetForm()
+```
+
+## FieldValues
+
+### setFieldsValue
+
+This function receives a new values object or a callback function that receives the current state by parameter.
+If uses a callback function is expected that this function returns an object with the same shape of the state, if pass an object by parameter,
+this object can be a partial object of initial values, but this object will replace all object properties of the current state of form
+
+```javascript
+
+const newValues = {...}
+
+setFieldValues( state => ({
+   ...state,
+    ...newValues
+})) // callback functiton should return a object with the same shape of initialValues.
+
+//.....or....//
+
+setForm(newValues)  // newValues can be a partial object of initialValues.
+
+```
+
+### setFieldValue
+
+This function sets the value received by parameter to a specific field. The first parameter is the field name and the second parameter is the next value. If using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`.
+
+```javascript
+setFieldValue('name', 'jesse james')
+```
+
+### resetFieldsValue
+
+This is a void function that reset all fields values to initial fields values,
+resetFieldsValue doesn't receive any parameters. If a specific field was not declared in `initialValues` this field will receive `null` as a value.
+
+```javascript
+resetFieldsValue()
+```
+
+### resetFieldValue
+
+This function resets the value of a specific field. Should receive a field name, if using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`,if the field was not declared in `initialValues` this field will receive `null` as a value.
+
+```javascript
+resetFieldValue('name')
+```
+
+## FieldTouched
+
+### setFieldsTouched
+
+This function will set all fields as touched, setFieldsTouched accept a partial object or a callback function that returns a new state of touched.
+
+```javascript
+
+const newTouched = {...}
+
+setFieldsTouched( state => ({
+   ...state,
+...newTouched
+})) // callback functiton should return a object with the same shape of initialTouched.
+
+//.....or....//
+
+setFieldsTouched(newTouched)  // newValues can be a partial object of initialTouched.
+
+```
+
+### setFieldTouched
+
+This function sets the specific field as touched. If using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`.
+
+```javascript
+setFieldTouched('name')
+```
+
+### resetFieldsTouched
+
+This is a void function that reset all fields touched to initial fields touched,
+resetFieldsTouched doesn't receive any parameters. If a specific field was not declared in `initialTouched` this field will receive `false` as a touched.
+
+```javascript
+resetFieldsTouched()
+```
+
+### resetFieldTouched
+
+This function resets the touched property of a specific field. Should receive a field name,if using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`, if the field was not declared in `initialTouched` this field will receive `false` as a touched property.
+
+```javascript
+resetFieldTouched('name')
+```
+
+## FieldError
+
+### setFieldsErrors
+
+This function will set all fields errors, setFieldsErrors accept a partial error's object or a callback function that returns a new state of error's object.
+
+```javascript
+
+const newErrors = {...}
+
+setFieldsError( state => ({
+   ...state,
+...newErrors
+})) // callback functiton should return a object with the same shape of formik initial errors.
+
+//.....or....//
+
+setFieldsError(newErrors)  // newValues can be a partial object of initialErrors.
+
+```
+
+### setFieldError
+
+This function sets an error in a specific field. The first parameter is a field name, if using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`, and the second parameter is a message error.
+
+```javascript
+setFieldError('person.name', 'This Field is required')
+```
+
+### resetFieldsError
+
+This is a void function that reset all fields errors to initial fields errors,
+resetFieldsErrors doesn't receive any parameters.
+
+```javascript
+resetFieldsError()
+```
+
+### resetFieldError
+
+This function resets the error of a specific field. Should receive a field name. If using an object with many layers should use a dot notation to specify the correct path of the field, `ex: 'person.name'`
+
+```javascript
+resetFieldError('person.name')
+```
+
+## state
+
+This object contains all properties of form state, values, errors, and touched. When using a controlled form this object is updated whenever errors, touched or values are changed, the same situations happen when uses debounce form,
+but if using an uncontrolled form this object is updated only when the form is submitted just if have some error in one of the field.
+
+```jsx
+
+const {state} = useForm(...)
+
+<Input placeholder="Name" {register('name')}/>
+<span class="error">{state.touched.name && state.error.name}</span>
+
+```
+
+## register
+
+This function will register an input form whit necessary properties. Register receives just one parameter, this parameter is a path of the field.
+
+```jsx
+const {register} = useForm(...)
+
+
+<Input placeholder="Name" {register('name')}/>
+```
+
+If using an object with many layers should use a dot notation to specify a correct path of an object property.
+
+```jsx
+const initialValues = {
+  person: {
+    name: ''
+  }
+}
+
+<Input placeholder="Name" {register('person.name')}/>
+```
+
+## onSubmit
+
+onSubmit will be called when the form is submitted, this function receives a callback function, the callback function should receive two parameters, the first parameter is the input values, and the second parameter is the state of validations if using any validation schema.
+
+```jsx
+const {register, onSubmit} = useForm(...)
+
+
+function handleSubmit(e, isValid){
+
+   e// form values
+   isValid // boolean value
+   ...
+}
+
+<Input placeholder="Name" {register('person.name')}/>
+<Button onClick={onSubmit(handleSubmimt)}>Send</Button>
+```
+
+If has any form errors the state of errors will change even if using the uncontrolled form.
