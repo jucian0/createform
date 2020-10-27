@@ -37,6 +37,10 @@
             {
               "id": "useValidation",
               "path": "/docs/useValidation"
+            },
+            {
+              "id": "validation",
+              "path": "/docs/validation"
             }
           ]
         }

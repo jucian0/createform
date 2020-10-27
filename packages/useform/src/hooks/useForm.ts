@@ -23,7 +23,7 @@ export type Options<T> = {
    initialTouched?: Touched<T>,
    isControlled?: boolean,
    debounced?: number,
-   schemaValidation?: YupSchema<T>
+   validationSchema?: YupSchema<T>
 }
 
 
@@ -163,7 +163,7 @@ export function useForm<TO>({
    }
 
    function validate(values) {
-      return options.schemaValidation?.validate(values, { abortEarly: false })
+      return options.validationSchema?.validate(values, { abortEarly: false })
          .then((e) => {
             return {}
          })

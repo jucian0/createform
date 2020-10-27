@@ -44,7 +44,7 @@ export default [
 },
 {
   path: '/docs',
-  component: ComponentCreator('/docs','841'),
+  component: ComponentCreator('/docs','7f9'),
   
   routes: [
 {
@@ -80,6 +80,11 @@ export default [
 {
   path: '/docs/useValidation',
   component: ComponentCreator('/docs/useValidation','a1e'),
+  exact: true,
+},
+{
+  path: '/docs/validation',
+  component: ComponentCreator('/docs/validation','ea2'),
   exact: true,
 },
 ]

@@ -14,5 +14,9 @@
   "previous": {
     "title": "React form with Debounce Form",
     "permalink": "/docs/debounce-form"
+  },
+  "next": {
+    "title": "React form Validation",
+    "permalink": "/docs/validation"
   }
 }

@@ -57,6 +57,11 @@
             "type": "link",
             "label": "Uncontrolled Form",
             "href": "/docs/uncontrolled-form"
+          },
+          {
+            "type": "link",
+            "label": "Validation",
+            "href": "/docs/validation"
           }
         ]
       }
@@ -69,6 +74,7 @@
     "/docs/quick-start": "someSidebar",
     "/docs/uncontrolled-form": "someSidebar",
     "/docs/useFormAPI": "someSidebar",
-    "/docs/useValidation": "someSidebar"
+    "/docs/useValidation": "someSidebar",
+    "/docs/validation": "someSidebar"
   }
 }
