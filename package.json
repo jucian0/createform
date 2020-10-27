@@ -1,18 +1,14 @@
 {
-  "name": "forms",
-  "private": true,
+  "name": "useForms",
+  "private": false,
   "version": "1.0.4",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "MIT",
   "author": "Jucian0 <juciano@outlook.com.br>",
   "scripts": {
     "test": "jest"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
+ 
   "devDependencies": {
     "@types/jest": "^26.0.5",
     "@forms/eslint-config": "*",
@@ -20,6 +16,19 @@
     "jest-environment-jsdom": "^26.0.1",
     "lerna": "^3.22.1",
     "ts-jest": "^26.1.3",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "@typescript-eslint/eslint-plugin": "^3.7.0",
+    "@typescript-eslint/parser": "^3.7.0",
+    "eslint": "^7.5.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-standard": "^4.0.1",
+    "prettier": "^2.0.5"
   }
 }
