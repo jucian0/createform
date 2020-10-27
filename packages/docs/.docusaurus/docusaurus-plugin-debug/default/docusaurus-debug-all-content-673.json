@@ -63,6 +63,10 @@
                   {
                     "type": "doc",
                     "id": "validation"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "custom-fields"
                   }
                 ]
               }
@@ -71,6 +75,7 @@
           "permalinkToSidebar": {
             "/docs/ContextFormAPI": "someSidebar",
             "/docs/controlled-form": "someSidebar",
+            "/docs/custom-fields": "someSidebar",
             "/docs/debounce-form": "someSidebar",
             "/docs/quick-start": "someSidebar",
             "/docs/uncontrolled-form": "someSidebar",
@@ -121,6 +126,24 @@
               "next": {
                 "title": "React form with Debounce Form",
                 "permalink": "/docs/debounce-form"
+              }
+            },
+            {
+              "unversionedId": "custom-fields",
+              "id": "custom-fields",
+              "isDocsHomePage": false,
+              "title": "React form with Custom Input",
+              "description": "useForm provides a way to use custom inputs like react-date-picker or react-select. The custom inputs receive generics properties, onChange, value, and property to simulate onBlur event. Use React Select, React Datepicker.",
+              "source": "@site/docs/custom-field.mdx",
+              "slug": "/custom-fields",
+              "permalink": "/docs/custom-fields",
+              "editUrl": "https://github.com/Jucian0/useform/tree/docs/docs/custom-field.mdx",
+              "version": "current",
+              "sidebar_label": "Custom Field",
+              "sidebar": "someSidebar",
+              "previous": {
+                "title": "React form Validation",
+                "permalink": "/docs/validation"
               }
             },
             {
@@ -245,6 +268,10 @@
               "previous": {
                 "title": "React form with Uncontrolled Input",
                 "permalink": "/docs/uncontrolled-form"
+              },
+              "next": {
+                "title": "React form with Custom Input",
+                "permalink": "/docs/custom-fields"
               }
             }
           ]

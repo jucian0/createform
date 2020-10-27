@@ -14,5 +14,9 @@
   "previous": {
     "title": "React form with Uncontrolled Input",
     "permalink": "/docs/uncontrolled-form"
+  },
+  "next": {
+    "title": "React form with Custom Input",
+    "permalink": "/docs/custom-fields"
   }
 }

@@ -62,6 +62,11 @@
             "type": "link",
             "label": "Validation",
             "href": "/docs/validation"
+          },
+          {
+            "type": "link",
+            "label": "Custom Field",
+            "href": "/docs/custom-fields"
           }
         ]
       }
@@ -70,6 +75,7 @@
   "permalinkToSidebar": {
     "/docs/ContextFormAPI": "someSidebar",
     "/docs/controlled-form": "someSidebar",
+    "/docs/custom-fields": "someSidebar",
     "/docs/debounce-form": "someSidebar",
     "/docs/quick-start": "someSidebar",
     "/docs/uncontrolled-form": "someSidebar",
