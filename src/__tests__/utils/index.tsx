@@ -1,6 +1,6 @@
-import React from 'react'
+import React from '../../../../src/hooks/node_modules/react'
 import { render } from '@testing-library/react';
-import { useForm } from '../../src/index'
+import { useForm } from '../../index'
 import DatePicker from "react-datepicker";
 
 export function setup({ hookParams, inputParams, onSubmit }: any) {
