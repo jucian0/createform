@@ -1,7 +1,7 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
 import { debounce, makeDotNotation } from "../utils";
-import { ValidationError, Schema as YupSchema, boolean } from "yup";
+import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
 
@@ -28,9 +28,9 @@ export type Options<T> = {
 
 
 export type State<T> = {
-   values?: T,
-   errors?: Errors<T>,
-   touched?: Touched<T>,
+   values: T,
+   errors: Errors<T>,
+   touched: Touched<T>,
 }
 
 type Register = (path: string) => RegisterReturn
@@ -79,8 +79,7 @@ export function useForm<TO>({
       touched: initialTouched,
    }))
 
-   const [state, setState] = React.useState<State<TO>>({})
-
+   const [state, setState] = React.useState<State<TO>>({} as any)
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
 
@@ -162,9 +161,9 @@ export function useForm<TO>({
       }
    }
 
-   function validate(values) {
+   function validate(values:State<TO>['values']) {
       return options.validationSchema?.validate(values, { abortEarly: false })
-         .then((e) => {
+         .then(() => {
             return {}
          })
          .catch((e: ValidationError) => {
@@ -175,7 +174,7 @@ export function useForm<TO>({
          })
    }
 
-   async function handleChange(next) {
+   async function handleChange(next:State<TO>) {
       try {
          await validate(next.values)
          if (options.isControlled) {
