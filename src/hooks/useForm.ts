@@ -105,7 +105,7 @@ export function useForm<TO>({
       }
 
       return (e: Change) => {
-         return state$.setState(state => ({ ...state, touched: dot.set(state, e.target.name, true) }))
+         return state$.setState(state => ({ ...state, touched: dot.set(state.touched, e.target.name, true) }))
       }
    }
 
