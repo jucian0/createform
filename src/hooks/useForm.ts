@@ -1,6 +1,6 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
-import { debounce, isCheckbox, makeDotNotation } from "../utils";
+import { debounce, isCheckbox, isRadio, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
@@ -103,7 +103,6 @@ export function useForm<TO>({
 
    function handleChangeEvent(e:Change){
       const value = isCheckbox(e.target.type)? e.target.checked: e.target.value
-      console.log(value)
       return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, value) }))
    }
 
@@ -111,27 +110,27 @@ export function useForm<TO>({
       return state$.setState(state => ({ ...state, touched: dot.set(state.touched, e.target.name, true) }))
    }
 
-   function handleEvent(event: string) {
-      if (event === 'input') {
-         return handleInputEvent
-      }
-      
-      else if(event === 'change'){
-         return handleChangeEvent
-      }
-
-      return handleBlurEvent
-   }
-
-   function addEvents(...args: Array<string>) {
+   function addEvents() {
       Object.keys(refs.current).forEach(path => {
-         args.forEach(event => refs.current[path].current.addEventListener(event, handleEvent(event)))
+         if(isCheckbox(refs.current[path].current.type)|| isRadio(refs.current[path].current.type)){
+            refs.current[path].current.addEventListener('change', handleChangeEvent)
+            refs.current[path].current.addEventListener('blur', handleBlurEvent)
+         }else{
+            refs.current[path].current.addEventListener('input', handleInputEvent)
+            refs.current[path].current.addEventListener('blur', handleBlurEvent)
+         }
       })
    }
 
-   function removeEvents(...args: Array<string>) {
+   function removeEvents() {
       Object.keys(refs.current).forEach(path => {
-         args.forEach(event => refs.current[path].current.removeEventListener(event, handleEvent(event)))
+         if(isCheckbox(refs.current[path].current.type)|| isRadio(refs.current[path].current.type)){
+            refs.current[path].current.removeEventListener('change', handleChangeEvent)
+            refs.current[path].current.removeEventListener('blur', handleBlurEvent)
+         }else{
+            refs.current[path].current.removeEventListener('input', handleInputEvent)
+            refs.current[path].current.removeEventListener('blur', handleBlurEvent)
+         }
       })
    }
 
@@ -153,13 +152,6 @@ export function useForm<TO>({
          return dot.set(acc, path, true)
       }, {} as Touched<TO>)
    }
-
-   // function makeFormPayload() {
-   //    console.log(refs.current)
-   //    return Object.keys(refs.current).reduce<TO>((acc, path) => {
-   //       return dot.set(acc, path, refs.current[path].current.value)
-   //    }, {} as TO)
-   // }
 
    function onSubmit(fn: (values: TO, isValid: boolean) => void) {
       return async (e: React.BaseSyntheticEvent) => {
@@ -224,9 +216,9 @@ export function useForm<TO>({
          })
       }
 
-      addEvents('input', 'blur','change')
+      addEvents()
       return () => {
-         removeEvents('input', 'blur','change')
+         removeEvents()
       }
    }, [refs])
 
