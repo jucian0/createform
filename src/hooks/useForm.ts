@@ -1,6 +1,6 @@
 import React from "react";
 import dot from 'dot-prop-immutable'
-import { debounce, makeDotNotation } from "../utils";
+import { debounce, isCheckbox, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
@@ -97,16 +97,30 @@ export function useForm<TO>({
       return { name: path, ref: refs.current[path] }
    }
 
+   function handleInputEvent(e:Change){
+      return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, e.target.value) }))
+   }
+
+   function handleChangeEvent(e:Change){
+      const value = isCheckbox(e.target.type)? e.target.checked: e.target.value
+      console.log(value)
+      return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, value) }))
+   }
+
+   function handleBlurEvent(e:Change){
+      return state$.setState(state => ({ ...state, touched: dot.set(state.touched, e.target.name, true) }))
+   }
+
    function handleEvent(event: string) {
       if (event === 'input') {
-         return async (e: Change) => {
-            return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, e.target.value) }))
-         }
+         return handleInputEvent
+      }
+      
+      else if(event === 'change'){
+         return handleChangeEvent
       }
 
-      return (e: Change) => {
-         return state$.setState(state => ({ ...state, touched: dot.set(state.touched, e.target.name, true) }))
-      }
+      return handleBlurEvent
    }
 
    function addEvents(...args: Array<string>) {
@@ -122,7 +136,10 @@ export function useForm<TO>({
    }
 
    function setRefValue(path: string, value: any) {
-      refs.current[path].current.value = value || null
+      if(isCheckbox(refs.current[path].current.type)){
+        return refs.current[path].current.checked = value
+      }
+      return refs.current[path].current.value = value || null
    }
 
    function makeResetAllTouchedPayload() {
@@ -137,16 +154,17 @@ export function useForm<TO>({
       }, {} as Touched<TO>)
    }
 
-   function makeFormPayload() {
-      return Object.keys(refs.current).reduce<TO>((acc, path) => {
-         return dot.set(acc, path, refs.current[path].current.value)
-      }, {} as TO)
-   }
+   // function makeFormPayload() {
+   //    console.log(refs.current)
+   //    return Object.keys(refs.current).reduce<TO>((acc, path) => {
+   //       return dot.set(acc, path, refs.current[path].current.value)
+   //    }, {} as TO)
+   // }
 
    function onSubmit(fn: (values: TO, isValid: boolean) => void) {
       return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         const values = makeFormPayload()
+         const values = state$.getState().values
          try {
             await validate(values)
             fn(values, true)
@@ -206,9 +224,9 @@ export function useForm<TO>({
          })
       }
 
-      addEvents('input', 'blur')
+      addEvents('input', 'blur','change')
       return () => {
-         removeEvents('input', 'blur')
+         removeEvents('input', 'blur','change')
       }
    }, [refs])
 
@@ -224,7 +242,7 @@ export function useForm<TO>({
 
    function resetForm() {
       Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(initialValues, path) || null)
+         setRefValue(path, dot.get(initialValues, path))
       })
       state$.setState({ values: initialValues, errors: initialErrors, touched: initialTouched })
    }
