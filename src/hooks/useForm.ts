@@ -135,8 +135,13 @@ export function useForm<TO>({
    }
 
    function setRefValue(path: string, value: any) {
+
       if(isCheckbox(refs.current[path].current.type)){
-        return refs.current[path].current.checked = value
+         return refs.current[path].current.checked = value
+      }else if (refs.current[path]?.current?.children ){
+         Array.from(refs.current[path]?.current?.children).forEach((element:any) => {
+            element.checked =  element.value === value
+         });
       }
       return refs.current[path].current.value = value || null
    }
