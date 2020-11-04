@@ -39,13 +39,10 @@
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts",
     "start": "rollup -c rollup.config.ts -w",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --coverage --watch",
-    "test:prod": "npm run lint && npm run test -- --no-cache",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "test": "jest"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -58,26 +55,6 @@
       "path": "node_modules/cz-conventional-changelog"
     }
   },
-  "jest": {
-    "testEnvironment": "jest-environment-jsdom-fourteen",
-    "testRegex": "(/tests/.*|\\.(test|spec))\\.(ts|tsx)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
-      }
-    }
-  },
   "prettier": {
     "semi": false,
     "singleQuote": true
@@ -88,9 +65,10 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.12.3",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.10.1",
-    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
     "@commitlint/cli": "^8.3.5",
@@ -104,7 +82,7 @@
     "@types/react": "^16.9.55",
     "@types/react-dom": "^16.9.8",
     "@types/yup": "^0.29.0",
-    "babel-jest": "^26.0.1",
+    "babel-jest": "^26.6.2",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "colors": "^1.4.0",
     "commitizen": "^4.1.2",
@@ -112,7 +90,7 @@
     "cross-env": "^7.0.2",
     "cz-conventional-changelog": "^3.2.0",
     "husky": "^4.2.5",
-    "jest": "^26.0.1",
+    "jest": "^26.6.2",
     "jest-config": "^26.0.1",
     "jest-environment-jsdom": "^26.0.1",
     "jest-environment-jsdom-fourteen": "^1.0.1",
