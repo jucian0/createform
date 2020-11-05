@@ -3,7 +3,7 @@ import { setup } from "../utils"
 
 describe('Test input', ()=>{
 
-   test("should change input's value when dispatch input event",()=>{
+   test("should change input's value when dispatch input event",async()=>{
       const hookParams = {
          initialValues: { 'test-name': 'my-name-test' },
          isControlled: true,
@@ -14,14 +14,14 @@ describe('Test input', ()=>{
          type: 'text',
        }
 
-      const {} = setup({hookParams, inputParams})
-
       const result = setup({ hookParams, inputParams })
+      
       act(() => {
         fireEvent.change(screen.getByTestId(inputParams.name), { target: { value: 'new-name-test' } })
+        console.log(result)
       })
   
-      expect(result.values).toEqual({ 'test-name': 'new-name-test' })
+     await expect(result.values).toEqual({ 'test-name': 'new-name-test' })
    })
 
 })

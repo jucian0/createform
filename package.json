@@ -42,7 +42,7 @@
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
     "precommit": "lint-staged",
-    "test": "jest"
+    "test": "jest --watchAll"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [

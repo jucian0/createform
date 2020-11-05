@@ -1,5 +1,5 @@
-import React from "react";
-import dot from 'dot-prop-immutable'
+import * as React from "react";
+import * as dot from 'dot-prop-immutable'
 import { debounce, isCheckbox, isRadio, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";

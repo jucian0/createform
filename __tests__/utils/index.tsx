@@ -8,12 +8,14 @@ export function setup({ hookParams, inputParams, onSubmit }: any) {
 
    function InputComponent() {
 
-      const {state:{values}, register,...rest} = useForm(hookParams)
+      const {state, register,...rest} = useForm({
+         initialValues:{test:'juciano'}
+      })
 
-      Object.assign(returnVal, { values, ...rest })
+      Object.assign(returnVal, { state, ...rest })
       return (
          <form onSubmit={rest.onSubmit(onSubmit)} onReset={rest.resetForm}>
-            <input {...register(inputParams)} data-testid={inputParams.name} />
+            <input {...register(inputParams.name)} type={inputParams.type} data-testid={inputParams.name} />
             <button type="submit" data-testid="on-submit"></button>
             <button type="reset" data-testid="on-reset"></button>
          </form>
