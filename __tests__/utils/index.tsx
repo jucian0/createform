@@ -8,9 +8,10 @@ export function setup({ hookParams, inputParams, onSubmit }: any) {
 
    function InputComponent() {
 
-      const {state, register,...rest} = useForm({
-         initialValues:{test:'juciano'}
-      })
+      const {state, register,setFieldValue,...rest} = useForm<any>(hookParams)
+
+
+      setFieldValue('test-name','jose')
 
       Object.assign(returnVal, { state, ...rest })
       return (

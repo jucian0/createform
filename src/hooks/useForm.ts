@@ -79,7 +79,11 @@ export function useForm<TO>({
       touched: initialTouched,
    }))
 
-   const [state, setState] = React.useState<State<TO>>({} as any)
+   const [state, setState] = React.useState<State<TO>>({
+      values:initialValues, 
+      errors:initialErrors, 
+      touched:initialTouched
+   })
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
 
@@ -136,14 +140,16 @@ export function useForm<TO>({
 
    function setRefValue(path: string, value: any) {
 
-      if(isCheckbox(refs.current[path].current.type)){
+      if(isCheckbox(refs.current[path]?.current.type)){
          return refs.current[path].current.checked = value
       }else if (refs.current[path]?.current?.children ){
-         Array.from(refs.current[path]?.current?.children).forEach((element:any) => {
+        return Array.from(refs.current[path]?.current?.children).forEach((element:any) => {
             element.checked =  element.value === value
          });
       }
-      return refs.current[path].current.value = value || null
+      if(refs.current[path]?.current.value){
+         return refs.current[path].current.value = value || null
+      }
    }
 
    function makeResetAllTouchedPayload() {
@@ -214,7 +220,7 @@ export function useForm<TO>({
       }
    }, [])
 
-   React.useEffect(() => {
+   React.useLayoutEffect(() => {
       if (initialValues) {
          Object.keys(refs.current).forEach(path => {
             setRefValue(path, dot.get(initialValues, path))
@@ -332,7 +338,6 @@ export function useForm<TO>({
       resetFieldError,
       resetFieldsError,
       setFieldsError,
-
    }
 
 }

@@ -5,7 +5,7 @@
 
 export default {
 
-  clearMocks: true,
+ // clearMocks: true,
 
   coverageDirectory: "coverage",
   transform: {
