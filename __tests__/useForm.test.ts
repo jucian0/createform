@@ -4,7 +4,7 @@ import { act } from "react-test-renderer"
 import { setup } from "./utils"
 
 describe('Set initial options', () => {
-  test('should set initial properties', async () => {
+  it('should set initial properties', async () => {
     const hookParams = {
       initialValues: {
         name: 'value-1'
@@ -190,5 +190,32 @@ describe('Test inputs events', () => {
       expect(result.state.touched).toEqual({ blur: true })
     })
   })
+})
+
+describe('Test useForm API', () => {
+
+  // it('should change input value when run setFieldValue', async () => {
+  //   const hookParams = {
+  //     isControlled: true,
+  //   }
+
+  //   const inputParams = {
+  //     name: 'text',
+  //     type: 'text',
+  //   }
+
+  //   const result = setup({ hookParams, inputParams })
+
+  //   screen.getByTestId(inputParams.name)
+
+  //   await act(() => {
+  //     console.log(result)
+  //     result.setFieldValue('test', 'novo-valor')
+  //   })
+
+  //   await waitFor(() => {
+  //     expect(result.state.touched).toEqual({ blur: true })
+  //   })
+  // })
 
 })
