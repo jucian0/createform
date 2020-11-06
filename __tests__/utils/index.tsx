@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { useForm } from '../../src/index'
 // import DatePicker from "react-datepicker";
 
-export async function setup({ hookParams, inputParams, onSubmit }: any) {
+export  function setup({ hookParams, inputParams, onSubmit }: any) {
    const returnVal: any = {}
 
    function InputComponent() {
@@ -23,16 +23,16 @@ export async function setup({ hookParams, inputParams, onSubmit }: any) {
             {
               ready && <span data-testid="ready"></span>
             }
-            <input {...register(inputParams.name)} type={inputParams.type} data-testid={inputParams.name} />
+            <input {...register(inputParams.name)} {...inputParams} data-testid={inputParams.name} />
             <button type="submit" id="22" data-testid="on-submit"></button>
             <button type="reset" data-testid="on-reset"></button>
          </form>
       )
    }
   
-   await render(<InputComponent />).rerender(<InputComponent/>)
+    render(<InputComponent />)
 
-   return Promise.resolve(Object.assign(returnVal, {input: inputParams.name}))
+   return Object.assign(returnVal, {input: inputParams.name})
 }
 
 // export function customSetup({ hookParams, inputParams, onSubmit }: any) {

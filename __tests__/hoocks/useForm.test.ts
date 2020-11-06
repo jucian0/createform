@@ -23,7 +23,7 @@ describe('Set initial options', () => {
       type: 'text',
     }
 
-    const result = await setup({ hookParams, inputParams })
+    const result = setup({ hookParams, inputParams })
 
     expect(result.state).toEqual({
       values: {
@@ -41,30 +41,76 @@ describe('Set initial options', () => {
 
 describe('Test input', () => {
 
-  jest.useFakeTimers()
-
-  it("should change input's value when dispatch input event", async () => {
+  it("should change text input's value when dispatch input event", async () => {
     const hookParams = {
-      initialValues: { name: 'my-name-test' },
+      initialValues: { text: 'my-name-test' },
       isControlled: true,
     }
 
     const inputParams = {
-      name: 'name',
+      name: 'text',
       type: 'text',
     }
 
-    const result = await setup({ hookParams, inputParams })
+    const result = setup({ hookParams, inputParams })
 
-    const input = await screen.findByTestId(inputParams.name)
-
+    const input = screen.getByTestId(inputParams.name)
 
     act(() => {
       fireEvent.input(input, { target: { value: 'new-name-test' } })
     })
 
     await waitFor(() => {
-      expect(result.state.values).toEqual({ name: 'new-name-test' })
+      expect(result.state.values).toEqual({ text: 'new-name-test' })
+    })
+  })
+
+  it("should change checkbox input's value when dispatch change event", async () => {
+    const hookParams = {
+      initialValues: { checkbox: false },
+      isControlled: true,
+    }
+
+    const inputParams = {
+      name: 'checkbox',
+      type: 'checkbox',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    const input = screen.getByTestId(inputParams.name)
+
+    act(() => {
+      fireEvent.change(input, { target: { checked: true } })
+    })
+
+    await waitFor(() => {
+      expect(result.state.values).toEqual({ checkbox: true })
+    })
+  })
+
+  it("should change radio input's value when dispatch change event", async () => {
+    const hookParams = {
+      initialValues: { radio: 'radio-1' },
+      isControlled: true,
+    }
+
+    const inputParams = {
+      name: 'radio',
+      type: 'radio',
+      value: 'radio',
+    }
+
+    const result = setup({ hookParams, inputParams })
+
+    const input = screen.getByTestId(inputParams.name)
+
+    act(() => {
+      fireEvent.change(input, { target: { checked: true } })
+    })
+
+    await waitFor(() => {
+      expect(result.state.values).toEqual({ radio: 'radio' })
     })
   })
 
