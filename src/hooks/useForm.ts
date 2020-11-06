@@ -48,7 +48,7 @@ export type UseFormReturnType<T> = {
    setFieldValue: (path: PathValue<T>, value: any) => void
    resetFieldsValue: () => void
    resetFieldValue: (path: PathValue<T>) => void
-   
+
    setFieldsTouched: (next: ChangeState<Touched<T>>) => void
    setFieldTouched: (path: PathValue<T>, value: boolean) => void
    resetFieldsTouched: () => void
@@ -58,7 +58,7 @@ export type UseFormReturnType<T> = {
    setFieldsError: (next: ChangeState<Errors<T>>) => void
    resetFieldError: (path: PathValue<T>) => void
    resetFieldsError: () => void
-   
+
    state: State<T>
    register: Register,
    onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
@@ -80,9 +80,9 @@ export function useForm<TO>({
    }))
 
    const [state, setState] = React.useState<State<TO>>({
-      values:initialValues, 
-      errors:initialErrors, 
-      touched:initialTouched
+      values: initialValues,
+      errors: initialErrors,
+      touched: initialTouched
    })
 
    const setValueDebounce = React.useCallback(debounce(setState, options.debounced || 300), [])
@@ -101,25 +101,25 @@ export function useForm<TO>({
       return { name: path, ref: refs.current[path] }
    }
 
-   function handleInputEvent(e:Change){
+   function handleInputEvent(e: Change) {
       return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, e.target.value) }))
    }
 
-   function handleChangeEvent(e:Change){
-      const value = isCheckbox(e.target.type)? e.target.checked: e.target.value
+   function handleChangeEvent(e: Change) {
+      const value = isCheckbox(e.target.type) ? e.target.checked : e.target.value
       return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, value) }))
    }
 
-   function handleBlurEvent(e:Change){
+   function handleBlurEvent(e: Change) {
       return state$.setState(state => ({ ...state, touched: dot.set(state.touched, e.target.name, true) }))
    }
 
    function addEvents() {
       Object.keys(refs.current).forEach(path => {
-         if(isCheckbox(refs.current[path].current.type)|| isRadio(refs.current[path].current.type)){
+         if (isCheckbox(refs.current[path].current.type) || isRadio(refs.current[path].current.type)) {
             refs.current[path].current.addEventListener('change', handleChangeEvent)
             refs.current[path].current.addEventListener('blur', handleBlurEvent)
-         }else{
+         } else {
             refs.current[path].current.addEventListener('input', handleInputEvent)
             refs.current[path].current.addEventListener('blur', handleBlurEvent)
          }
@@ -128,10 +128,10 @@ export function useForm<TO>({
 
    function removeEvents() {
       Object.keys(refs.current).forEach(path => {
-         if(isCheckbox(refs.current[path].current.type)|| isRadio(refs.current[path].current.type)){
+         if (isCheckbox(refs.current[path].current.type) || isRadio(refs.current[path].current.type)) {
             refs.current[path].current.removeEventListener('change', handleChangeEvent)
             refs.current[path].current.removeEventListener('blur', handleBlurEvent)
-         }else{
+         } else {
             refs.current[path].current.removeEventListener('input', handleInputEvent)
             refs.current[path].current.removeEventListener('blur', handleBlurEvent)
          }
@@ -140,16 +140,14 @@ export function useForm<TO>({
 
    function setRefValue(path: string, value: any) {
 
-      if(isCheckbox(refs.current[path]?.current.type)){
+      if (isCheckbox(refs.current[path].current.type)) {
          return refs.current[path].current.checked = value
-      }else if (refs.current[path]?.current?.children ){
-        return Array.from(refs.current[path]?.current?.children).forEach((element:any) => {
-            element.checked =  element.value === value
+      } else if (refs.current[path]?.current?.children) {
+         Array.from(refs.current[path]?.current?.children).forEach((element: any) => {
+            element.checked = element.value === value
          });
       }
-      if(refs.current[path]?.current.value){
-         return refs.current[path].current.value = value || null
-      }
+      return refs.current[path].current.value = value || null
    }
 
    function makeResetAllTouchedPayload() {
@@ -182,7 +180,7 @@ export function useForm<TO>({
       }
    }
 
-   function validate(values:State<TO>['values']) {
+   function validate(values: State<TO>['values']) {
       return options.validationSchema?.validate(values, { abortEarly: false })
          .then(() => {
             return {}
@@ -195,7 +193,7 @@ export function useForm<TO>({
          })
    }
 
-   async function handleChange(next:State<TO>) {
+   async function handleChange(next: State<TO>) {
       try {
          await validate(next.values)
          if (options.isControlled) {

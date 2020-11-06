@@ -4,11 +4,18 @@
  */
 
 export default {
-
- // clearMocks: true,
-
+  clearMocks: true,
   coverageDirectory: "coverage",
   transform: {
     "^.+\\.(ts|tsx|js|jsx)?$": "ts-jest"
   },
+  testRegex: "(/tests/.*|\\.(test|spec))\\.(ts|tsx)$",
+  moduleFileExtensions: [
+    "ts",
+    "tsx",
+    "js"
+  ],
+  collectCoverageFrom: [
+    "src/**/*.{ts,tsx}"
+  ],
 };

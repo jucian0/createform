@@ -1,71 +1,71 @@
 // import {act,  fireEvent,screen } from "@testing-library/react"
-import { fireEvent,screen, waitFor, waitForElement } from "@testing-library/react"
+import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { act } from "react-test-renderer"
 import { setup } from "../utils"
 
-describe('Set initial options',()=>{
-  test('should set initial properties',()=>{
+describe('Set initial options', () => {
+  test('should set initial properties', async () => {
     const hookParams = {
-      initialValues: { 
-        name: 'value-1' 
+      initialValues: {
+        name: 'value-1'
       },
-      initialErrors:{
-        name:'invalid value'
+      initialErrors: {
+        name: 'invalid value'
       },
-      initialTouched:{
-        name:false
+      initialTouched: {
+        name: false
       },
       isControlled: true,
     }
 
     const inputParams = {
-      name:'name',
+      name: 'name',
       type: 'text',
     }
 
-   const result = setup({ hookParams, inputParams })
+    const result = await setup({ hookParams, inputParams })
 
-   expect(result.state).toEqual({ 
-    values: { 
-      name: 'value-1' 
-    },
-    errors:{
-      name:'invalid value'
-    },
-    touched:{
-      name:false
-    },
+    expect(result.state).toEqual({
+      values: {
+        name: 'value-1'
+      },
+      errors: {
+        name: 'invalid value'
+      },
+      touched: {
+        name: false
+      },
     })
   })
 })
 
-describe('Test input', ()=>{
+describe('Test input', () => {
 
-   test("should change input's value when dispatch input event",async()=>{
-      const hookParams = {
-         initialValues: { name: 'my-name-test' },
-         isControlled: true,
-       }
-   
-       const inputParams = {
-         name:'name',
-         type: 'text',
-       }
+  jest.useFakeTimers()
 
-      const result = setup({ hookParams, inputParams })
+  it("should change input's value when dispatch input event", async () => {
+    const hookParams = {
+      initialValues: { name: 'my-name-test' },
+      isControlled: true,
+    }
 
-      await waitForElement(() => screen.getByTestId(inputParams.name))
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
 
-      
-      act(() => {
-        fireEvent.change(screen.getByTestId(inputParams.name), { target: { value: 'new-name-test' } })
-      })
+    const result = await setup({ hookParams, inputParams })
 
-      console.log(screen.getByTestId(inputParams.name))
+    const input = await screen.findByTestId(inputParams.name)
 
-      await waitFor(()=>{
-        expect(result.state.values).toEqual({ name: 'new-name-test' })
-      })
-   })
+
+    act(() => {
+      fireEvent.input(input, { target: { value: 'new-name-test' } })
+    })
+
+    await waitFor(() => {
+      expect(result.state.values).toEqual({ name: 'new-name-test' })
+    })
+  })
 
 })
