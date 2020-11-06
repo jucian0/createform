@@ -1,6 +1,8 @@
 // import {act,  fireEvent,screen } from "@testing-library/react"
 import { fireEvent, screen, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react-hooks"
 import { act } from "react-test-renderer"
+import { useForm } from "../src"
 import { setup } from "./utils"
 
 describe('Set initial options', () => {
@@ -194,28 +196,37 @@ describe('Test inputs events', () => {
 
 describe('Test useForm API', () => {
 
-  // it('should change input value when run setFieldValue', async () => {
-  //   const hookParams = {
-  //     isControlled: true,
-  //   }
+  it('should change input value when run setFieldValue', async () => {
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
 
-  //   const inputParams = {
-  //     name: 'text',
-  //     type: 'text',
-  //   }
 
-  //   const result = setup({ hookParams, inputParams })
+    const { result } = renderHook(() => useForm(hookParams))
 
-  //   screen.getByTestId(inputParams.name)
+    await act(() => {
+      result.current.setFieldValue('name', 'james')
+    })
 
-  //   await act(() => {
-  //     console.log(result)
-  //     result.setFieldValue('test', 'novo-valor')
-  //   })
+    console.log(result.current.state.values)
 
-  //   await waitFor(() => {
-  //     expect(result.state.touched).toEqual({ blur: true })
-  //   })
-  // })
+
+    // const result = setup({ hookParams, inputParams })
+
+    // screen.getByTestId(inputParams.name)
+
+    // await act(() => {
+    //   console.log(result)
+    //   result.setFieldValue('test', 'novo-valor')
+    // })
+
+    // await waitFor(() => {
+    //   expect(result.state.touched).toEqual({ blur: true })
+    // })
+
+  })
 
 })
