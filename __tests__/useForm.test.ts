@@ -41,7 +41,7 @@ describe('Set initial options', () => {
 
 
 
-describe('Test input', () => {
+describe('Test inputs events', () => {
 
   it("should change text input's value when dispatch input event", async () => {
     const hookParams = {
@@ -168,9 +168,27 @@ describe('Test input', () => {
     })
   })
 
-})
+  it("should change text input's touched state when dispatch blur event", async () => {
+    const hookParams = {
+      isControlled: true,
+    }
 
+    const inputParams = {
+      name: 'blur',
+      type: 'text',
+    }
 
-describe('Test touched inputs', () => {
+    const result = setup({ hookParams, inputParams })
+
+    const input = screen.getByTestId(inputParams.name)
+
+    act(() => {
+      fireEvent.blur(input)
+    })
+
+    await waitFor(() => {
+      expect(result.state.touched).toEqual({ blur: true })
+    })
+  })
 
 })

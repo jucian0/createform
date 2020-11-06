@@ -128,10 +128,10 @@ export function useForm<TO>({
 
    function removeEvents() {
       Object.keys(refs.current).forEach(path => {
-         if (isCheckbox(refs.current[path].current.type) || isRadio(refs.current[path].current.type)) {
+         if (isCheckbox(refs.current[path].current?.type) || isRadio(refs.current[path].current?.type)) {
             refs.current[path].current.removeEventListener('change', handleChangeEvent)
             refs.current[path].current.removeEventListener('blur', handleBlurEvent)
-         } else {
+         } else if (refs.current[path].current?.removeEventListener) {
             refs.current[path].current.removeEventListener('input', handleInputEvent)
             refs.current[path].current.removeEventListener('blur', handleBlurEvent)
          }

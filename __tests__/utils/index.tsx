@@ -30,9 +30,9 @@ export  function setup({ hookParams, inputParams, onSubmit }: any) {
       )
    }
   
-    render(<InputComponent />)
+    const unmount = render(<InputComponent />)
 
-   return Object.assign(returnVal, {input: inputParams.name})
+   return Object.assign(returnVal, {input: inputParams.name},unmount)
 }
 
 // export function customSetup({ hookParams, inputParams, onSubmit }: any) {
