@@ -24,7 +24,7 @@ export type Options<T> = {
    isControlled?: boolean,
    debounced?: number,
    validationSchema?: YupSchema<T>
-   watch: (e: T) => void
+   watch?: (e: T) => void
 }
 
 

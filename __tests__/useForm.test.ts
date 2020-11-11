@@ -1,8 +1,6 @@
 // import {act,  fireEvent,screen } from "@testing-library/react"
 import { fireEvent, screen, waitFor } from "@testing-library/react"
-import { renderHook } from "@testing-library/react-hooks"
 import { act } from "react-test-renderer"
-import { useForm } from "../src"
 import { setup } from "./utils"
 
 describe('Set initial options', () => {
@@ -154,7 +152,7 @@ describe('Test inputs events', () => {
     const inputParams = {
       name: 'radio',
       type: 'radio',
-      value: 'radio',
+      value: 'radio-2',
     }
 
     const result = setup({ hookParams, inputParams })
@@ -162,11 +160,11 @@ describe('Test inputs events', () => {
     const input = screen.getByTestId(inputParams.name)
 
     act(() => {
-      fireEvent.change(input, { target: { checked: true } })
+      fireEvent.click(input)
     })
 
     await waitFor(() => {
-      expect(result.state.values).toEqual({ radio: 'radio' })
+      expect(result.state.values).toEqual({ radio: 'radio-2' })
     })
   })
 
@@ -197,6 +195,7 @@ describe('Test inputs events', () => {
 describe('Test useForm API', () => {
 
   it('should change input value when run setFieldValue', async () => {
+
     const hookParams = {
       isControlled: true,
       initialValues: {
@@ -204,29 +203,47 @@ describe('Test useForm API', () => {
       }
     }
 
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
 
-    const { result } = renderHook(() => useForm(hookParams))
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
 
-    await act(() => {
-      result.current.setFieldValue('name', 'james')
+    act(() => {
+      result.setFieldValue('name', 'james')
     })
 
-    console.log(result.current.state.values)
+    waitFor(() => {
+      expect(result.state.values).toEqual({ name: 'james' })
+    })
+  })
 
+  it('should change input value when run setFieldsValue', async () => {
 
-    // const result = setup({ hookParams, inputParams })
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
 
-    // screen.getByTestId(inputParams.name)
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
 
-    // await act(() => {
-    //   console.log(result)
-    //   result.setFieldValue('test', 'novo-valor')
-    // })
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
 
-    // await waitFor(() => {
-    //   expect(result.state.touched).toEqual({ blur: true })
-    // })
+    act(() => {
+      result.setFieldsValue({ 'name': 'james' })
+    })
 
+    waitFor(() => {
+      expect(result.state.values).toEqual({ name: 'james' })
+    })
   })
 
 })
