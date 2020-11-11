@@ -1,8 +1,8 @@
 ![Logo](img/logo3.png)
+
 <h1 align="center">Welcome to useForm 👋</h1>
 
-
-[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/Jucian0/useform/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/useforms) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/useforms) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/useforms) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/Jucian0/useform&hashtags=reactjs,hook,javascript,forms)
+[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/use-form/use-form/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/@use-form/use-form) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@use-form/use-form) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/@use-form/use-form) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/use-form/use-form&hashtags=reactjs,hook,javascript,forms)
 
 > useFom provide a way to create complex forms easily.
 
@@ -25,7 +25,7 @@ UseForm provides a way to create complex forms easily, this hook returns an obje
 it does not matter if the object is complex or has many properties or array,
 the result is the same. This process turns very easily to create forms from an object with several layers,
 the same layers and properties are replicated in the final object,
-this approach prevents you to type more code to convert an object from form to backend object type. The same process is realized with errors object and touched object.
+this approach prevents you to type more code to convert an object from form to backend object type. The same process is realized with errors object and touched objects.
 
 ## What to expect with useForm
 
@@ -59,12 +59,12 @@ import { useForm } from 'useforms'
 const initialValues = {
   name: 'Jesse',
   email: 'jesse@jesse.com',
-  score: 25
+  score: 25,
 }
 
 const {
   register,
-  state: { values }
+  state: { values },
 } = useForm({ initialValues, isControlled: true })
 ```
 
