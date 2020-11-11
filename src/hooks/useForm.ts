@@ -24,6 +24,7 @@ export type Options<T> = {
    isControlled?: boolean,
    debounced?: number,
    validationSchema?: YupSchema<T>
+   watch: (e: T) => void
 }
 
 
@@ -102,10 +103,16 @@ export function useForm<TO>({
    }
 
    function handleInputEvent(e: Change) {
+      if (options.watch) {
+         options.watch(state.values)
+      }
       return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, e.target.value) }))
    }
 
    function handleChangeEvent(e: Change) {
+      if (options.watch) {
+         options.watch(state.values)
+      }
       const value = isCheckbox(e.target.type) ? e.target.checked : e.target.value
       return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, value) }))
    }
