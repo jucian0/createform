@@ -194,6 +194,93 @@ describe('Test inputs events', () => {
 
 describe('Test useForm API', () => {
 
+  it('should set form state when run setForm', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setForm({
+        values: {
+          name: "Jesse James"
+        },
+        errors: {
+          name: 'name is required'
+        },
+        touched: {
+          name: true
+        }
+      })
+    })
+
+    waitFor(() => {
+      expect(result.state).toEqual({
+        values: { name: 'Jesse James' },
+        errors: { name: 'name is required' },
+        touched: { name: true }
+      })
+    })
+  })
+
+  it('should reset form state when run resetForm', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setForm({
+        values: {
+          name: "Jesse James"
+        },
+        errors: {
+          name: 'name is required'
+        },
+        touched: {
+          name: true
+        }
+      })
+    })
+
+    waitFor(() => {
+      expect(result.state).toEqual({
+        values: { name: 'Jesse James' },
+        errors: { name: 'name is required' },
+        touched: { name: true }
+      })
+    })
+
+    act(() => {
+      result.resetForm()
+    })
+
+    expect(result.state).toEqual({ values: { name: 'jesse' }, errors: {}, touched: {} })
+  })
+
+
   it('should change input value when run setFieldValue', async () => {
 
     const hookParams = {
@@ -244,6 +331,80 @@ describe('Test useForm API', () => {
     waitFor(() => {
       expect(result.state.values).toEqual({ name: 'james' })
     })
+  })
+
+
+  it('should reset field state when run resetFieldValue', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setForm({
+        values: {
+          name: "Jesse James"
+        }
+      })
+    })
+
+    waitFor(() => {
+      expect(result.state.values).toEqual({ name: 'Jesse James' })
+    })
+
+    act(() => {
+      result.resetFieldValue('name')
+    })
+
+    expect(result.state).toEqual({ values: { name: 'jesse' }, errors: {}, touched: {} })
+  })
+
+
+  it('should reset fields state when run resetFieldsValue', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setForm({
+        values: {
+          name: "Jesse James"
+        }
+      })
+    })
+
+    waitFor(() => {
+      expect(result.state.values).toEqual({ name: 'Jesse James' })
+    })
+
+    act(() => {
+      result.resetFieldsValue()
+    })
+
+    expect(result.state).toEqual({ values: { name: 'jesse' }, errors: {}, touched: {} })
   })
 
 })
