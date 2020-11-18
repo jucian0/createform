@@ -225,7 +225,7 @@ describe('Test useForm API', () => {
       })
     })
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.state).toEqual({
         values: { name: 'Jesse James' },
         errors: { name: 'name is required' },
@@ -265,7 +265,7 @@ describe('Test useForm API', () => {
       })
     })
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.state).toEqual({
         values: { name: 'Jesse James' },
         errors: { name: 'name is required' },
@@ -302,7 +302,7 @@ describe('Test useForm API', () => {
       result.setFieldValue('name', 'james')
     })
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.state.values).toEqual({ name: 'james' })
     })
   })
@@ -328,7 +328,7 @@ describe('Test useForm API', () => {
       result.setFieldsValue({ 'name': 'james' })
     })
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.state.values).toEqual({ name: 'james' })
     })
   })
@@ -359,7 +359,7 @@ describe('Test useForm API', () => {
       })
     })
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.state.values).toEqual({ name: 'Jesse James' })
     })
 
@@ -396,7 +396,7 @@ describe('Test useForm API', () => {
       })
     })
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.state.values).toEqual({ name: 'Jesse James' })
     })
 
@@ -405,6 +405,165 @@ describe('Test useForm API', () => {
     })
 
     expect(result.state).toEqual({ values: { name: 'jesse' }, errors: {}, touched: {} })
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  it('should change input touched when run setFieldTouched', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      },
+      initialTouched:{
+        name:true
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldTouched('name', false)
+    })
+
+   await waitFor(() => {
+      expect(result.state.touched).toEqual({ name: true})
+    })
+  })
+
+  it('should change inputs touched when run setFieldsTouched', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse',
+        email:'jesse@jasse.com'
+      },
+      initialTouched:{
+        name:false,
+        email:false
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldsTouched({
+        name:true,
+        email:true
+      })
+    })
+
+    await waitFor(() => {
+      console.log(result.state)
+      expect(result.state.touched).toEqual({ name: true, email:true })
+    })
+  })
+
+
+  it('should reset field touched when run resetFieldsTouched', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldsTouched({name:true})
+    })
+
+    await waitFor(() => {
+      console.log(result.state.touched)
+      expect(result.state.touched).toEqual({ name: true })
+    })
+
+    act(() => {
+      result.resetFieldsTouched()
+    })
+
+    await waitFor(() => {
+      expect(result.state.touched).toEqual({ name: false })
+    })  
+  })
+
+
+  it.only('should reset field touched when run resetFieldTouched', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldTouched('name', true)
+    })
+
+    await waitFor(() => {
+      console.log(result.state.touched)
+      expect(result.state.touched).toEqual({ name: true })
+    })
+
+    act(() => {
+      result.resetFieldTouched('name')
+    })
+
+    await waitFor(() => {
+      expect(result.state.touched).toEqual({ name: false })
+    })  
   })
 
 })
