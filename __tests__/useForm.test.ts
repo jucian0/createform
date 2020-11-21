@@ -39,8 +39,6 @@ describe('Set initial options', () => {
   })
 })
 
-
-
 describe('Test inputs events', () => {
 
   it("should change text input's value when dispatch input event", async () => {
@@ -407,29 +405,6 @@ describe('Test useForm API', () => {
     expect(result.state).toEqual({ values: { name: 'jesse' }, errors: {}, touched: {} })
   })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   it('should change input touched when run setFieldTouched', async () => {
 
     const hookParams = {
@@ -489,7 +464,6 @@ describe('Test useForm API', () => {
     })
 
     await waitFor(() => {
-      console.log(result.state)
       expect(result.state.touched).toEqual({ name: true, email:true })
     })
   })
@@ -517,7 +491,6 @@ describe('Test useForm API', () => {
     })
 
     await waitFor(() => {
-      console.log(result.state.touched)
       expect(result.state.touched).toEqual({ name: true })
     })
 
@@ -531,7 +504,7 @@ describe('Test useForm API', () => {
   })
 
 
-  it.only('should reset field touched when run resetFieldTouched', async () => {
+  it('should reset field touched when run resetFieldTouched', async () => {
 
     const hookParams = {
       isControlled: true,
@@ -553,7 +526,6 @@ describe('Test useForm API', () => {
     })
 
     await waitFor(() => {
-      console.log(result.state.touched)
       expect(result.state.touched).toEqual({ name: true })
     })
 
@@ -563,6 +535,148 @@ describe('Test useForm API', () => {
 
     await waitFor(() => {
       expect(result.state.touched).toEqual({ name: false })
+    })  
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  it('should change input error when run setFieldError', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldError('name', 'this field is valid')
+    })
+
+   await waitFor(() => {
+      expect(result.state.errors).toEqual({ name: 'this field is valid'})
+    })
+  })
+
+  it('should change inputs touched when run setFieldsErrors', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse',
+        email:'jesse@jasse.com'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldsError({
+        name:'this field is required',
+        email:'this field is invalid'
+      })
+    })
+
+    await waitFor(() => {
+      expect(result.state.errors).toEqual({ name: 'this field is required', email:'this field is invalid' })
+    })
+  })
+
+
+  it.only('should reset field error when run resetFieldsError', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldsError({name:'this field is required'})
+    })
+
+    await waitFor(() => {
+      expect(result.state.errors).toEqual({ name: 'this field is required' })
+    })
+
+    act(() => {
+      result.resetFieldsError()
+    })
+
+    await waitFor(() => {
+      expect(result.state.errors).toEqual({ })
+    })  
+  })
+
+
+  it('should reset field error when run resetFieldError', async () => {
+
+    const hookParams = {
+      isControlled: true,
+      initialValues: {
+        name: 'jesse'
+      }
+    }
+
+    const inputParams = {
+      name: 'name',
+      type: 'text',
+    }
+
+    const result = setup({ hookParams, inputParams })
+    await screen.findAllByTestId('name')
+
+    act(() => {
+      result.setFieldError('name', 'this field is required')
+    })
+
+    await waitFor(() => {
+      expect(result.state.touched).toEqual({ name: 'this field is required' })
+    })
+
+    act(() => {
+      result.resetFieldTouched('name')
+    })
+
+    await waitFor(() => {
+      expect(result.state.touched).toEqual({})
     })  
   })
 

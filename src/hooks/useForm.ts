@@ -340,9 +340,9 @@ export function useForm<TO>({
 
 
       setFieldError,
+      setFieldsError,
       resetFieldError,
       resetFieldsError,
-      setFieldsError,
    }
 
 }
