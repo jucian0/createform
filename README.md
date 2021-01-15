@@ -36,11 +36,11 @@ this approach prevents you to type more code to convert an object from form to b
 ## Instalation
 
 ```
-  npm install useforms
+  npm i @use-form/use-form
 ```
 
 ```
-  yarn add useforms
+  yarn add @use-form/use-form
 ```
 
 ## Usage
