@@ -8,8 +8,6 @@
 
 ### 🏠 [Homepage](https://useform.org)
 
-### [Posts]([https://dev.to/jucian0/building-forms-with-useform-1cna)
-
 ### ✨ [Demo](https://codesandbox.io/s/useform-2u2ju)
 
 <a href="https://codesandbox.io/s/useform-2u2ju">
@@ -77,6 +75,8 @@ Use dot notation to create advanced objects or to map object values. Type an ent
    <Input placeholder="E-mail" type="email" {...register("email")}/>
    <Range {...register("score")}/>
 ```
+
+### Post https://dev.to/jucian0/building-forms-with-useform-1cna
 
 ## 🤝 Contributing
 
