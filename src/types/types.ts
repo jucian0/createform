@@ -4,17 +4,17 @@ import { Schema as YupSchema } from "yup";
 
 export type Ref = {
    current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
-}
+};
 
 type RegisterReturn = {
    name: string,
    ref: Ref
-}
+};
 
-export type InputsRef = { [path: string]: Ref }
+export type InputsRef = { [path: string]: Ref };
 
-export type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
-export type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
+export type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> };
+export type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> };
 
 export type Options<T> = {
    initialValues?: T,
@@ -24,25 +24,25 @@ export type Options<T> = {
    debounced?: number,
    validationSchema?: YupSchema<T>
    watch?: (e: T) => void
-}
+};
 
 
 export type State<T> = {
    values: T,
    errors: Errors<T>,
    touched: Touched<T>,
-}
+};
 
-export type Register = (path: string) => RegisterReturn
+export type Register = (path: string) => RegisterReturn;
 
-export type Change = React.ChangeEvent<HTMLInputElement>
+export type Change = React.ChangeEvent<HTMLInputElement>;
 
-export type ChangeState<T> = T | ((state: T) => T)
-export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
+export type ChangeState<T> = T | ((state: T) => T);
+export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>;
 
 
 type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-   11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]]
+   11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]];
 
 type Join<K, P> = K extends string | number ?
    P extends string | number ?
@@ -53,7 +53,7 @@ export type Paths<T, D extends number = 10> = [D] extends [never] ? never : T ex
    { [K in keyof T]-?: K extends string | number ?
       `${K}` | Join<K, Paths<T[K], Prev[D]>>
       : never
-   }[keyof T] : ""
+   }[keyof T] : "";
 
 
 export type UseFormReturnType<T> = {

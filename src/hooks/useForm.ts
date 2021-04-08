@@ -3,32 +3,9 @@ import * as dot from 'dot-prop-immutable';
 import { debounce, isCheckbox, isRadio, makeDotNotation } from "../utils";
 import { ValidationError } from "yup";
 import { createState } from "../core/observable";
-import { Change, ChangeState, Errors, HandleSubmit, InputsRef, Options, Paths, Ref, Register, State, Touched } from "../types";
+import { Change, Errors, InputsRef, Options, Paths, Ref, State, Touched, UseFormReturnType } from "../types/types";
 
 
-export type UseFormReturnType<T> = {
-   setForm: (next: ChangeState<State<T>>) => void
-   resetForm: () => void
-
-   setFieldsValue: (next: ChangeState<T>) => void
-   setFieldValue: (path: Paths<T>, value: any) => void
-   resetFieldsValue: () => void
-   resetFieldValue: (path: Paths<T>) => void
-
-   setFieldsTouched: (next: ChangeState<Touched<T>>) => void
-   setFieldTouched: (path: Paths<T>, value: boolean) => void
-   resetFieldsTouched: () => void
-   resetFieldTouched: (path: Paths<T>) => void
-
-   setFieldError: (path: Paths<T>, error: any) => void
-   setFieldsError: (next: ChangeState<Errors<T>>) => void
-   resetFieldError: (path: Paths<T>) => void
-   resetFieldsError: () => void
-
-   state: State<T>
-   register: Register,
-   onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
-}
 
 
 export function useForm<TO>({
