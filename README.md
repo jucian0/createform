@@ -1,92 +1,103 @@
-![Logo](img/logo3.png)
+# TSDX User Guide
 
-<h1 align="center">Welcome to useForm 👋</h1>
+Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
 
-[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/use-form/use-form/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/@use-form/use-form) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@use-form/use-form) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/@use-form/use-form) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/use-form/use-form&hashtags=reactjs,hook,javascript,forms)
+> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
 
-> useFom provide a way to create complex forms easily.
+> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
 
-### 🏠 [Homepage](https://useform.org)
+## Commands
 
-### ✨ [Demo](https://codesandbox.io/s/useform-2u2ju)
+TSDX scaffolds your new library inside `/src`.
 
-<a href="https://codesandbox.io/s/useform-2u2ju">
-  <img width="150" alt="Example in CodeSandbox" src="https://codesandbox.io/static/img/play-codesandbox.svg">
-</a>
+To run TSDX, use:
 
-## Description
-
-Forms are an important part of web applications, and with react it's possible to create greats forms,  
-react hooks are a game-changer when we think about forms, with hooks is very simple to create forms, and you can go on without libraries.  
-But when we wanna complex forms with many validations and complex objects with several layer and properties is appropriate to use a library form to manager the state of inputs and its validations.  
-For this reason, there is useForm, with useForm we can make greats forms and complex validations with less line code.
-
-UseForm provides a way to create complex forms easily, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore,
-it does not matter if the object is complex or has many properties or array,
-the result is the same. This process turns very easily to create forms from an object with several layers,
-the same layers and properties are replicated in the final object,
-this approach prevents you to type more code to convert an object from form to backend object type. The same process is realized with errors object and touched objects.
-
-## What to expect with useForm
-
-- Performer forms - useForm provides a way to complete a form and submit it without any rerender, by default useForm creates uncontrolled forms.
-- Easy to write - useForm has an easy way to write forms with less code. register function return necessary input's properties and it is all we need to manage all events in a native HTML `input`. Writhe forms without form tag.
-- Easy validation - By default useform uses yup validation, we can write complex validation without effort.
-
-## Instalation
-
-```
-  npm i @use-form/use-form
+```bash
+npm start # or yarn start
 ```
 
+This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+
+To do a one-off build, use `npm run build` or `yarn build`.
+
+To run tests, use `npm test` or `yarn test`.
+
+## Configuration
+
+Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
+
+### Jest
+
+Jest tests are set up to run with `npm test` or `yarn test`.
+
+### Bundle Analysis
+
+[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
+
+#### Setup Files
+
+This is the folder structure we set up for you:
+
+```txt
+/src
+  index.tsx       # EDIT THIS
+/test
+  blah.test.tsx   # EDIT THIS
+.gitignore
+package.json
+README.md         # EDIT THIS
+tsconfig.json
 ```
-  yarn add @use-form/use-form
-```
 
-## Usage
+### Rollup
 
-`useForm` provides a `register` function, this function as a link with input and a object property of form state.
+TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
 
-<QuickStartDemo />
-<br />
+### TypeScript
 
-```javascript
-import { useForm } from "@use-form/use-form";
+`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
 
-/*
- *  initial Values optional
- */
-const initialValues = {
-  name: 'Jesse',
-  email: 'jesse@jesse.com',
-  score: 25,
+## Continuous Integration
+
+### GitHub Actions
+
+Two actions are added by default:
+
+- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
+- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
+
+## Optimizations
+
+Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
+
+```js
+// ./types/index.d.ts
+declare var __DEV__: boolean;
+
+// inside your code...
+if (__DEV__) {
+  console.log('foo');
 }
-
-const {
-  register,
-  state: { values },
-} = useForm({ initialValues, isControlled: true })
 ```
 
-Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
+You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
 
-```jsx
-   <Input placeholder="Name" {...register("name")}/>
-   <Input placeholder="E-mail" type="email" {...register("email")}/>
-   <Range {...register("score")}/>
-```
+## Module Formats
 
-### Post https://dev.to/jucian0/building-forms-with-useform-1cna
+CJS, ESModules, and UMD module formats are supported.
 
-## 🤝 Contributing
+The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/Jucian0/useform/issues). You can also take a look at the [contributing guide](https://github.com/Jucian0/useform/blob/master/CONTRIBUTING.md).
+## Named Exports
 
-## Show your support
+Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
 
-Give a ⭐️ if this project helped you!
+## Including Styles
 
-## 📝 License
+There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
 
-Copyright © 2020 [Jucian0](https://github.com/useform).<br />
-This project is [MIT](https://github.com/useform/useform/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
+For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
+
+## Publishing to NPM
+
+We recommend using [np](https://github.com/sindresorhus/np).

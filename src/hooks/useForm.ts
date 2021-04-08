@@ -5,17 +5,32 @@ import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
 
-type Ref = {
-   current: HTMLInputElement
+type RefFieldElement =
+   | HTMLInputElement
+   | HTMLSelectElement
+   | HTMLTextAreaElement
+
+interface InputRegisterProps<T = RefFieldElement> {
+   ref?: T extends RefFieldElement ? React.RefObject<RefFieldElement extends React.RefObject<infer Ref> ? Ref : never> : React.RefObject<T>
 }
 
-type RegisterReturn = {
-   name: string,
-   ref: Ref
+type Ref = {
+   current: InputRegisterProps
 }
+
+type InputRefs = { [path: string]: Ref }
 
 type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
+
 type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
+
+type Register = (path: string) => InputRegisterProps
+
+type Change = React.ChangeEvent<HTMLInputElement>
+
+type ChangeState<T> = T | ((state: T) => T)
+
+type PathValue<T> = keyof T
 
 export type Options<T> = {
    initialValues?: T,
@@ -27,18 +42,13 @@ export type Options<T> = {
    watch?: (e: T) => void
 }
 
-
 export type State<T> = {
    values: T,
    errors: Errors<T>,
    touched: Touched<T>,
 }
 
-type Register = (path: string) => RegisterReturn
 
-type Change = React.ChangeEvent<HTMLInputElement>
-type ChangeState<T> = T | ((state: T) => T)
-type PathValue<T> = keyof T
 export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
 
 export type UseFormReturnType<T> = {
@@ -65,14 +75,13 @@ export type UseFormReturnType<T> = {
    onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
 }
 
-
 export function useForm<TO>({
    initialErrors = {} as any,
    initialValues = {} as any,
    initialTouched = {} as any,
    ...options }: Options<TO>): UseFormReturnType<TO> {
 
-   const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
+   const refs = React.useRef<InputRefs>(Object.assign({}))
 
    const { current: state$ } = React.useRef(createState({
       values: initialValues,
@@ -93,13 +102,14 @@ export function useForm<TO>({
    }
 
    function register(path: string) {
-      const newRefs = {
+
+      const newRefs: InputRefs = {
          ...refs.current,
-         [path]: React.createRef<Ref>()
+         [path]: React.createRef<InputRegisterProps>() as Ref
       }
 
       refs.current = newRefs
-      return { name: path, ref: refs.current[path] }
+      return { name: path, ref: (refs as any).current[path] }
    }
 
    function handleInputEvent(e: Change) {
@@ -122,6 +132,7 @@ export function useForm<TO>({
    }
 
    function addEvents() {
+      console.log(refs.current)
       Object.keys(refs.current).forEach(path => {
          if (isCheckbox(refs.current[path].current.type) || isRadio(refs.current[path].current.type)) {
             refs.current[path].current.addEventListener('change', handleChangeEvent)
