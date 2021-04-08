@@ -24,7 +24,12 @@ const initialValues = {
    address: [
       {
          street: "",
-         number: 70
+         number: 70,
+         john: [
+            {
+               name: 'john'
+            }
+         ]
       }
    ],
    options: "value 1",
@@ -34,9 +39,26 @@ const initialValues = {
 
 const Controlled: React.FC = () => {
 
-   const { state, register, resetForm, resetFieldValue } = useForm({ initialValues, validationSchema })
+   const { state, register, resetForm, resetFieldValue, setFieldsTouched } = useForm({ initialValues, validationSchema })
 
    console.log('<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>')
+
+   setFieldsTouched(state => ({
+      ...state,
+      name: true,
+      address: [
+         {
+            street: false,
+            number: true,
+            john: [
+               {
+                  name: true
+               }
+            ]
+         }
+      ]
+   }
+   ))
 
    return (
       <div className="row">
@@ -89,6 +111,8 @@ const Controlled: React.FC = () => {
 
          <div className="col-lg-6">
             <button type="button" className="btn btn-primary" onClick={() => resetFieldValue("address.0.number")}>Reset number</button>
+            <button type="button" className="btn btn-primary" onClick={() => resetFieldValue("address.0.john.0.name")}>Reset number</button>
+
          </div>
          <div className="col-lg-6">
             <button type="button" className="btn btn-primary" onClick={() => resetForm()}>Reset All</button>
