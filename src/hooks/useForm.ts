@@ -1,18 +1,20 @@
 import * as React from "react";
-import * as dot from 'dot-prop-immutable'
+import * as dot from 'dot-prop-immutable';
 import { debounce, isCheckbox, isRadio, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
 
 type Ref = {
-   current: HTMLInputElement
+   current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
 }
 
 type RegisterReturn = {
    name: string,
    ref: Ref
 }
+
+type InputsRef = { [path: string]: Ref }
 
 type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
 type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
@@ -24,7 +26,7 @@ export type Options<T> = {
    isControlled?: boolean,
    debounced?: number,
    validationSchema?: YupSchema<T>
-   watch: (e: T) => void
+   watch?: (e: T) => void
 }
 
 
@@ -37,27 +39,43 @@ export type State<T> = {
 type Register = (path: string) => RegisterReturn
 
 type Change = React.ChangeEvent<HTMLInputElement>
+
 type ChangeState<T> = T | ((state: T) => T)
-type PathValue<T> = keyof T
 export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
+
+
+type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+   11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]]
+
+type Join<K, P> = K extends string | number ?
+   P extends string | number ?
+   `${K}${"" extends P ? "" : "."}${P}`
+   : never : never;
+
+type Paths<T, D extends number = 10> = [D] extends [never] ? never : T extends object ?
+   { [K in keyof T]-?: K extends string | number ?
+      `${K}` | Join<K, Paths<T[K], Prev[D]>>
+      : never
+   }[keyof T] : ""
+
 
 export type UseFormReturnType<T> = {
    setForm: (next: ChangeState<State<T>>) => void
    resetForm: () => void
 
    setFieldsValue: (next: ChangeState<T>) => void
-   setFieldValue: (path: PathValue<T>, value: any) => void
+   setFieldValue: (path: Paths<T>, value: any) => void
    resetFieldsValue: () => void
-   resetFieldValue: (path: PathValue<T>) => void
+   resetFieldValue: (path: Paths<T>) => void
 
    setFieldsTouched: (next: ChangeState<Touched<T>>) => void
-   setFieldTouched: (path: PathValue<T>, value: boolean) => void
+   setFieldTouched: (path: Paths<T>, value: boolean) => void
    resetFieldsTouched: () => void
-   resetFieldTouched: (path: PathValue<T>) => void
+   resetFieldTouched: (path: Paths<T>) => void
 
-   setFieldError: (path: PathValue<T>, error: any) => void
+   setFieldError: (path: Paths<T>, error: any) => void
    setFieldsError: (next: ChangeState<Errors<T>>) => void
-   resetFieldError: (path: PathValue<T>) => void
+   resetFieldError: (path: Paths<T>) => void
    resetFieldsError: () => void
 
    state: State<T>
@@ -72,7 +90,7 @@ export function useForm<TO>({
    initialTouched = {} as any,
    ...options }: Options<TO>): UseFormReturnType<TO> {
 
-   const refs = React.useRef<{ current: { [path: string]: Ref } }>({} as any)
+   const refs = React.useRef<InputsRef>({} as any)
 
    const { current: state$ } = React.useRef(createState({
       values: initialValues,
@@ -93,32 +111,35 @@ export function useForm<TO>({
    }
 
    function register(path: string) {
-      const newRefs = {
+      const newRefs: InputsRef = {
          ...refs.current,
-         [path]: React.createRef<Ref>()
+         [path]: React.createRef<HTMLInputElement>() as Ref
       }
 
       refs.current = newRefs
       return { name: path, ref: refs.current[path] }
    }
 
-   function handleInputEvent(e: Change) {
+   function handleInputEvent(e: Event) {
+      const target = e.target as Change['target']
       if (options.watch) {
          options.watch(state.values)
       }
-      return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, e.target.value) }))
+      return state$.setState(state => ({ ...state, values: dot.set(state.values, target.name, target.value) }))
    }
 
-   function handleChangeEvent(e: Change) {
+   function handleChangeEvent(e: Event) {
+      const target = e.target as Change['target']
       if (options.watch) {
          options.watch(state.values)
       }
-      const value = isCheckbox(e.target.type) ? e.target.checked : e.target.value
-      return state$.setState(state => ({ ...state, values: dot.set(state.values, e.target.name, value) }))
+      const value = isCheckbox(target.type) ? target.checked : target.value
+      return state$.setState(state => ({ ...state, values: dot.set(state.values, target.name, value) }))
    }
 
-   function handleBlurEvent(e: Change) {
-      return state$.setState(state => ({ ...state, touched: dot.set(state.touched, e.target.name, true) }))
+   function handleBlurEvent(e: Event) {
+      const target = e.target as Change['target']
+      return state$.setState(state => ({ ...state, touched: dot.set(state.touched, target.name, true) }))
    }
 
    function addEvents() {
@@ -138,7 +159,7 @@ export function useForm<TO>({
          if (isCheckbox(refs.current[path].current?.type) || isRadio(refs.current[path].current?.type)) {
             refs.current[path].current.removeEventListener('change', handleChangeEvent)
             refs.current[path].current.removeEventListener('blur', handleBlurEvent)
-         } else if (refs.current[path].current?.removeEventListener) {
+         } else if ((refs as any).current[path].current?.removeEventListener) {
             refs.current[path].current.removeEventListener('input', handleInputEvent)
             refs.current[path].current.removeEventListener('blur', handleBlurEvent)
          }
@@ -265,7 +286,7 @@ export function useForm<TO>({
       })
    }
 
-   function setFieldValue(path: keyof typeof initialValues, value: any) {
+   function setFieldValue(path: Paths<typeof initialValues>, value: any) {
       state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
       setRefValue(path as string, value)
    }
@@ -277,7 +298,7 @@ export function useForm<TO>({
       state$.setState(state => ({ ...state, values: initialValues }))
    }
 
-   function resetFieldValue(path: keyof typeof initialValues) {
+   function resetFieldValue(path: Paths<typeof initialValues>) {
       const value = dot.get(initialValues, path as string) || undefined
       state$.setState(state => ({ ...state, values: dot.set(state.values, path as string, value) }))
       setRefValue(path as string, value)
@@ -288,7 +309,7 @@ export function useForm<TO>({
       state$.setState(state => ({ ...state, touched: nextState as Touched<TO> }))
    }
 
-   function setFieldTouched(path: keyof typeof initialValues, value: boolean = true) {
+   function setFieldTouched(path: Paths<typeof initialValues>, value: boolean = true) {
       state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
    }
 
@@ -296,7 +317,7 @@ export function useForm<TO>({
       setFieldsTouched(makeResetAllTouchedPayload())
    }
 
-   function resetFieldTouched(path: keyof typeof initialValues) {
+   function resetFieldTouched(path: Paths<typeof initialValues>) {
       const value = dot.get(initialTouched, path as string) || false
       state$.setState(state => ({ ...state, touched: dot.set(state.touched, path as string, value) }))
    }
@@ -306,7 +327,7 @@ export function useForm<TO>({
       state$.setState(state => ({ ...state, errors: nextState as Errors<TO> }))
    }
 
-   function setFieldError(path: keyof typeof initialValues, value: any) {
+   function setFieldError(path: Paths<typeof initialValues>, value: any) {
       state$.setState(state => ({ ...state, errors: dot.set(state.errors, path as string, value) }))
    }
 
@@ -314,7 +335,7 @@ export function useForm<TO>({
       state$.setState(state => ({ ...state, errors: initialErrors }))
    }
 
-   function resetFieldError(path: keyof typeof initialValues) {
+   function resetFieldError(path: Paths<typeof initialValues>) {
       const value = dot.get(initialErrors, path as string) || false
       state$.setState(state => ({ ...state, errors: dot.set(state.errors, path as string, value) }))
    }
@@ -340,9 +361,9 @@ export function useForm<TO>({
 
 
       setFieldError,
+      setFieldsError,
       resetFieldError,
       resetFieldsError,
-      setFieldsError,
    }
 
 }
