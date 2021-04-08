@@ -4,13 +4,20 @@ import { debounce, isCheckbox, isRadio, makeDotNotation } from "../utils";
 import { ValidationError, Schema as YupSchema } from "yup";
 import { createState } from "../core/observable";
 
+export interface InputPartialProps {
+   addEventListener: any,
+   type: string,
+   removeEventListener: any
+   checked: boolean
+   value: any
+}
 
 type RefFieldElement =
    | HTMLInputElement
    | HTMLSelectElement
    | HTMLTextAreaElement
 
-interface InputRegisterProps<T = RefFieldElement> {
+interface InputRegisterProps<T = RefFieldElement> extends InputPartialProps {
    ref?: T extends RefFieldElement ? React.RefObject<RefFieldElement extends React.RefObject<infer Ref> ? Ref : never> : React.RefObject<T>
 }
 
