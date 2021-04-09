@@ -32,6 +32,12 @@
   },
   "name": "@use-form/use-form",
   "author": "Jucian0 <juciano@outlook.com.br>",
+  "description": "UseFom provides a way to create complex forms easily.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/use-form/use-form",
+    "homepage": "https://useform.org/"
+  },
   "module": "dist/use-form.esm.js",
   "size-limit": [
     {
