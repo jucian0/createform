@@ -1,15 +1,15 @@
-import * as React from 'react'
+import React from 'react'
 import { render } from '@testing-library/react';
 import { useForm } from '../../src/index'
 
 
-export  function setup({ hookParams, inputParams, onSubmit }: any) {
+export function setup({ hookParams, inputParams, onSubmit }: any) {
    const returnVal: any = {}
 
    function InputComponent() {
       // const [ready, setReady] = React.useState(false)
 
-      const {state, register,...rest} = useForm<any>(hookParams)
+      const { state, register, ...rest } = useForm<any>(hookParams)
 
       Object.assign(returnVal, { state, ...rest })
 
@@ -29,7 +29,7 @@ export  function setup({ hookParams, inputParams, onSubmit }: any) {
          </form>
       )
    }
-  
+
    render(<InputComponent />)
 
    return returnVal
