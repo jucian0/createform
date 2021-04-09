@@ -3,9 +3,7 @@ import * as dot from 'dot-prop-immutable';
 import { debounce, isCheckbox, isRadio, makeDotNotation } from "../utils";
 import { ValidationError } from "yup";
 import { createState } from "../core/observable";
-import { Change, Errors, InputsRef, Options, Paths, Ref, State, Touched, UseFormReturnType } from "../types/types";
-
-
+import { Change, Errors, InputsRef, Options, Paths, Ref, State, Touched, UseFormReturnType } from "../types";
 
 
 export function useForm<TO>({

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { UseFormReturnType } from "..";
 import { FormContext } from "../core/contextForm";
+import { UseFormReturnType } from "../types";
 
 export function useFormContext<T>() {
 
