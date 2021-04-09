@@ -1,5 +1,5 @@
 {
-  "version": "1.0.10",
+  "version": "1.0.11",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -18,7 +18,9 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "react": "17.0.2"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -68,7 +70,6 @@
   },
   "dependencies": {
     "dot-prop-immutable": "^2.1.0",
-    "react": "17.0.2",
     "yup": "^0.29.0"
   }
 }
