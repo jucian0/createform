@@ -5,6 +5,9 @@
   "homepage": "https://useform.org/",
   "version": "0.0.0-development",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/use-form/use-form",
