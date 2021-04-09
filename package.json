@@ -3,7 +3,7 @@
   "author": "Jucian0 <juciano@outlook.com.br>",
   "description": "UseFom provides a way to create complex forms easily.",
   "homepage": "https://useform.org/",
-  "version": "1.0.11",
+  "version": "0.0.0-development",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -47,7 +47,8 @@
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "semantic-release": "semantic-release"
   },
   "husky": {
     "hooks": {
