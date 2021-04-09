@@ -1,22 +1,26 @@
-name: Release
+name: Semantic Release
+
 on:
   push:
     branches:
-      - "main"
+      - "master"
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
       - uses: actions/setup-node@v1
         with:
-          node-version: "12"
+          node-version: "12.x"
       - run: yarn install
-      - run: yarn test
       - run: yarn build
-      - name: Release
+      - run: yarn test
+      - run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: yarn semantic-release
