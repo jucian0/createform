@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UseFormReturnType } from "../hooks/useForm";
+import { UseFormReturnType } from "../types";
 
 
 export const FormContext = React.createContext<UseFormReturnType<any>>(undefined as any)

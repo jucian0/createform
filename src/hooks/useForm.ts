@@ -1,87 +1,9 @@
 import * as React from "react";
 import * as dot from 'dot-prop-immutable';
 import { debounce, isCheckbox, isRadio, makeDotNotation } from "../utils";
-import { ValidationError, Schema as YupSchema } from "yup";
+import { ValidationError } from "yup";
 import { createState } from "../core/observable";
-
-
-type Ref = {
-   current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
-}
-
-type RegisterReturn = {
-   name: string,
-   ref: Ref
-}
-
-type InputsRef = { [path: string]: Ref }
-
-type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> }
-type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> }
-
-export type Options<T> = {
-   initialValues?: T,
-   initialErrors?: Errors<T>,
-   initialTouched?: Touched<T>,
-   isControlled?: boolean,
-   debounced?: number,
-   validationSchema?: YupSchema<T>
-   watch?: (e: T) => void
-}
-
-
-export type State<T> = {
-   values: T,
-   errors: Errors<T>,
-   touched: Touched<T>,
-}
-
-type Register = (path: string) => RegisterReturn
-
-type Change = React.ChangeEvent<HTMLInputElement>
-
-type ChangeState<T> = T | ((state: T) => T)
-export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
-
-
-type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-   11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]]
-
-type Join<K, P> = K extends string | number ?
-   P extends string | number ?
-   `${K}${"" extends P ? "" : "."}${P}`
-   : never : never;
-
-type Paths<T, D extends number = 10> = [D] extends [never] ? never : T extends object ?
-   { [K in keyof T]-?: K extends string | number ?
-      `${K}` | Join<K, Paths<T[K], Prev[D]>>
-      : never
-   }[keyof T] : ""
-
-
-export type UseFormReturnType<T> = {
-   setForm: (next: ChangeState<State<T>>) => void
-   resetForm: () => void
-
-   setFieldsValue: (next: ChangeState<T>) => void
-   setFieldValue: (path: Paths<T>, value: any) => void
-   resetFieldsValue: () => void
-   resetFieldValue: (path: Paths<T>) => void
-
-   setFieldsTouched: (next: ChangeState<Touched<T>>) => void
-   setFieldTouched: (path: Paths<T>, value: boolean) => void
-   resetFieldsTouched: () => void
-   resetFieldTouched: (path: Paths<T>) => void
-
-   setFieldError: (path: Paths<T>, error: any) => void
-   setFieldsError: (next: ChangeState<Errors<T>>) => void
-   resetFieldError: (path: Paths<T>) => void
-   resetFieldsError: () => void
-
-   state: State<T>
-   register: Register,
-   onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
-}
+import { Change, Errors, InputsRef, Options, Paths, Ref, State, Touched, UseFormReturnType } from "../types";
 
 
 export function useForm<TO>({

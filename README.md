@@ -36,11 +36,11 @@ this approach prevents you to type more code to convert an object from form to b
 ## Instalation
 
 ```
-  npm install useforms
+  npm i @use-form/use-form
 ```
 
 ```
-  yarn add useforms
+  yarn add @use-form/use-form
 ```
 
 ## Usage
@@ -51,7 +51,7 @@ this approach prevents you to type more code to convert an object from form to b
 <br />
 
 ```javascript
-import { useForm } from 'useforms'
+import { useForm } from "@use-form/use-form";
 
 /*
  *  initial Values optional
@@ -75,6 +75,8 @@ Use dot notation to create advanced objects or to map object values. Type an ent
    <Input placeholder="E-mail" type="email" {...register("email")}/>
    <Range {...register("score")}/>
 ```
+
+### Post https://dev.to/jucian0/building-forms-with-useform-1cna
 
 ## 🤝 Contributing
 
