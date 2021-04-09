@@ -1,11 +1,8 @@
 {
-<<<<<<< HEAD
-=======
   "name": "@use-form/use-form",
   "author": "Jucian0 <juciano@outlook.com.br>",
   "description": "UseFom provides a way to create complex forms easily.",
   "homepage": "https://useform.org/",
->>>>>>> cae7385b9dff6aa3eddc940f0b272fb17e9a74d1
   "version": "1.0.11",
   "license": "MIT",
   "repository": {
@@ -51,12 +48,6 @@
     "size": "size-limit",
     "analyze": "size-limit --why",
     "precommit": "lint-staged"
-<<<<<<< HEAD
-  },
-  "peerDependencies": {
-    "react": "17.0.2"
-=======
->>>>>>> cae7385b9dff6aa3eddc940f0b272fb17e9a74d1
   },
   "husky": {
     "hooks": {
@@ -86,50 +77,14 @@
       "@commitlint/config-conventional"
     ]
   },
-<<<<<<< HEAD
-  "name": "@use-form/use-form",
-  "author": "Jucian0 <juciano@outlook.com.br>",
-  "description": "UseFom provides a way to create complex forms easily.",
-  "homepage": "https://useform.org/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/use-form/use-form",
-    "homepage": "https://github.com/use-form/use-form"
-  },
-  "keywords": [
-    "react",
-    "hooks",
-    "form",
-    "forms",
-    "form-validation",
-    "validation",
-    "typescript",
-    "react-hooks"
-  ],
-  "module": "dist/use-form.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/use-form.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/use-form.esm.js",
-      "limit": "10 KB"
-    }
-  ],
-=======
->>>>>>> cae7385b9dff6aa3eddc940f0b272fb17e9a74d1
   "devDependencies": {
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
     "@size-limit/preset-small-lib": "^4.10.2",
-<<<<<<< HEAD
-=======
     "husky": "^6.0.0",
     "size-limit": "^4.10.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
->>>>>>> cae7385b9dff6aa3eddc940f0b272fb17e9a74d1
     "@testing-library/jest-dom": "^5.8.0",
     "@testing-library/react": "^10.0.4",
     "@testing-library/react-hooks": "^3.2.1",
@@ -137,23 +92,10 @@
     "@types/react": "^16.9.55",
     "@types/react-dom": "16.0.5",
     "@types/yup": "^0.29.0",
-<<<<<<< HEAD
-    "husky": "^6.0.0",
-    "lint-staged": "^10.2.4",
-    "react-dom": "17.0.2",
-    "size-limit": "^4.10.2",
-    "tsdx": "^0.14.1",
-    "cz-conventional-changelog": "^3.2.0",
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
-    "commitizen": "^4.1.2",
-    "tslib": "^2.2.0",
-=======
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
     "lint-staged": "^10.2.4",
     "react-dom": "17.0.2",
->>>>>>> cae7385b9dff6aa3eddc940f0b272fb17e9a74d1
     "typescript": "^4.2.3"
   },
   "dependencies": {
