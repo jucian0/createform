@@ -1,18 +1,26 @@
-name: release
+name: Semantic Release
+
 on:
   push:
     branches:
-      - main
+      - "main"
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      # - name: Install dependencies and build, if needed
-      #   run: npm ci && npm run build
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v2.5.0
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: yarn install
+      - run: yarn build
+      - run: yarn test
+      - run: yarn semantic-release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
