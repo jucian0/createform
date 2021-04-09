@@ -80,6 +80,8 @@
   "devDependencies": {
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/git": "^9.0.0",
     "@size-limit/preset-small-lib": "^4.10.2",
     "@testing-library/jest-dom": "^5.8.0",
     "@testing-library/react": "^10.0.4",
@@ -95,6 +97,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-test-renderer": "^17.0.2",
+    "semantic-release": "^17.4.2",
     "size-limit": "^4.10.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
