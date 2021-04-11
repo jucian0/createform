@@ -10,20 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
         with:
-          persist-credentials: false
+          access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v1
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v2
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
-      - name: Install dependencies
-      - run: yarn install
-      - name: Build
-      - run: yarn build
-      - run: yarn test
-      - name: Release
-      - run: yarn semantic-release
+          node-version: 14
+
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: 🏗 Run build script
+        run: npm run build
+
+      - name: 🚀 Release
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          semantic_version: 17
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
