@@ -10,25 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🛑 Cancel Previous Runs
+      - name: 🛑 - Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.6.0
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ⬇️ Checkout repo
+      - name: ⬇️ - Checkout repo
         uses: actions/checkout@v2
 
-      - name: ⎔ Setup node
+      - name: ⎔ - Setup node
         uses: actions/setup-node@v1
         with:
           node-version: 14
 
-      - name: 📥 Download deps
+      - name: 📥 - Download deps
         uses: bahmutov/npm-install@v1
         with:
           useLockFile: false
 
-      - name: 🏗 Run build script
+      - name: 🏗 - Run build script
         run: npm run build
 
       - name: 🚀 Release
