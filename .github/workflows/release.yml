@@ -3,7 +3,13 @@ name: Semantic Release
 on:
   push:
     branches:
-      - "main"
+      - "+([0-9])?(.{+([0-9]),x}).x"
+      - "master"
+      - "next"
+      - "next-major"
+      - "beta"
+      - "alpha"
+      - "!all-contributors/**"
 
 jobs:
   build:
@@ -35,6 +41,15 @@ jobs:
         uses: cycjimmy/semantic-release-action@v2
         with:
           semantic_version: 17
+          branches: |
+            [
+              '+([0-9])?(.{+([0-9]),x}).x',
+              'master',
+              'next',
+              'next-major',
+              {name: 'beta', prerelease: true},
+              {name: 'alpha', prerelease: true}
+            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
