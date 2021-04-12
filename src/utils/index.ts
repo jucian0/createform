@@ -2,7 +2,12 @@ export const isRadio = (type: string) => type === 'radio'
 
 export const isCheckbox = (type: string) => type === 'checkbox'
 
-export function debounce<TThis, TFn extends Function>(this: TThis, fn: TFn, wait: number, immediate?: boolean) {
+export function debounce<TThis, TFn extends Function>(
+   this: TThis,
+   fn: TFn,
+   wait: number,
+   immediate?: boolean
+) {
    let timeout: any
 
    return <TArgs>(...args: Array<TArgs>) => {
@@ -42,9 +47,5 @@ export function isEmpty(obj: any) {
 }
 
 export function makeDotNotation(str: string) {
-   return str
-      .split('[')
-      .join('.')
-      .split(']')
-      .join('')
+   return str.split('[').join('.').split(']').join('')
 }

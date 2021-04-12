@@ -2,65 +2,65 @@ import * as React from 'react'
 import { Schema as YupSchema } from 'yup'
 
 export type Ref = {
-  current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
+   current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
 }
 
 type RegisterReturn = {
-  name: string
-  ref: Ref
+   name: string
+   ref: Ref
 }
 
 export type InputsRef = { [path: string]: Ref }
 
 export type Touched<T extends {}> = {
-  [k in keyof T]: T[k] extends number | string | boolean | Date
-    ? boolean
-    : Touched<T[k]>
+   [k in keyof T]: T[k] extends number | string | boolean | Date
+      ? boolean
+      : Touched<T[k]>
 }
 export type Errors<T extends {}> = {
-  [k in keyof T]: T[k] extends number | string | boolean | Date
-    ? string
-    : Touched<T[k]>
+   [k in keyof T]: T[k] extends number | string | boolean | Date
+      ? string
+      : Touched<T[k]>
 }
 
 export type Options<T> = {
-  initialValues?: T
-  initialErrors?: Errors<T>
-  initialTouched?: Touched<T>
-  isControlled?: boolean
-  debounced?: number
-  validationSchema?: YupSchema<T>
-  watch?: (e: T) => void
+   initialValues?: T
+   initialErrors?: Errors<T>
+   initialTouched?: Touched<T>
+   isControlled?: boolean
+   debounced?: number
+   validationSchema?: YupSchema<T>
+   watch?: (e: T) => void
 }
 
 export type State<T> = {
-  values: T
-  errors: Errors<T>
-  touched: Touched<T>
+   values: T
+   errors: Errors<T>
+   touched: Touched<T>
 }
 
 export type UseFormReturnType<T> = {
-  setForm: (next: ChangeState<State<T>>) => void
-  resetForm: () => void
+   setForm: (next: ChangeState<State<T>>) => void
+   resetForm: () => void
 
-  setFieldsValue: (next: ChangeState<T>) => void
-  setFieldValue: (path: Paths<T>, value: any) => void
-  resetFieldsValue: () => void
-  resetFieldValue: (path: Paths<T>) => void
+   setFieldsValue: (next: ChangeState<T>) => void
+   setFieldValue: (path: Paths<T>, value: any) => void
+   resetFieldsValue: () => void
+   resetFieldValue: (path: Paths<T>) => void
 
-  setFieldsTouched: (next: ChangeState<Touched<T>>) => void
-  setFieldTouched: (path: Paths<T>, value: boolean) => void
-  resetFieldsTouched: () => void
-  resetFieldTouched: (path: Paths<T>) => void
+   setFieldsTouched: (next: ChangeState<Touched<T>>) => void
+   setFieldTouched: (path: Paths<T>, value: boolean) => void
+   resetFieldsTouched: () => void
+   resetFieldTouched: (path: Paths<T>) => void
 
-  setFieldError: (path: Paths<T>, error: any) => void
-  setFieldsError: (next: ChangeState<Errors<T>>) => void
-  resetFieldError: (path: Paths<T>) => void
-  resetFieldsError: () => void
+   setFieldError: (path: Paths<T>, error: any) => void
+   setFieldsError: (next: ChangeState<Errors<T>>) => void
+   resetFieldError: (path: Paths<T>) => void
+   resetFieldsError: () => void
 
-  state: State<T>
-  register: Register
-  onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
+   state: State<T>
+   register: Register
+   onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
 }
 
 export type Register = (path: string) => RegisterReturn
