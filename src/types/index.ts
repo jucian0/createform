@@ -1,37 +1,43 @@
-import * as React from "react";
-import { Schema as YupSchema } from "yup";
-
+import * as React from 'react'
+import { Schema as YupSchema } from 'yup'
 
 export type Ref = {
    current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
-};
+}
 
 type RegisterReturn = {
-   name: string,
+   name: string
    ref: Ref
-};
+}
 
-export type InputsRef = { [path: string]: Ref };
+export type InputsRef = { [path: string]: Ref }
 
-export type Touched<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? boolean : Touched<T[k]> };
-export type Errors<T extends {}> = { [k in keyof T]: T[k] extends number | string | boolean | Date ? string : Touched<T[k]> };
+export type Touched<T extends {}> = {
+   [k in keyof T]: T[k] extends number | string | boolean | Date
+      ? boolean
+      : Touched<T[k]>
+}
+export type Errors<T extends {}> = {
+   [k in keyof T]: T[k] extends number | string | boolean | Date
+      ? string
+      : Touched<T[k]>
+}
 
 export type Options<T> = {
-   initialValues?: T,
-   initialErrors?: Errors<T>,
-   initialTouched?: Touched<T>,
-   isControlled?: boolean,
-   debounced?: number,
+   initialValues?: T
+   initialErrors?: Errors<T>
+   initialTouched?: Touched<T>
+   isControlled?: boolean
+   debounced?: number
    validationSchema?: YupSchema<T>
    watch?: (e: T) => void
-};
-
+}
 
 export type State<T> = {
-   values: T,
-   errors: Errors<T>,
-   touched: Touched<T>,
-};
+   values: T
+   errors: Errors<T>
+   touched: Touched<T>
+}
 
 export type UseFormReturnType<T> = {
    setForm: (next: ChangeState<State<T>>) => void
@@ -53,19 +59,18 @@ export type UseFormReturnType<T> = {
    resetFieldsError: () => void
 
    state: State<T>
-   register: Register,
+   register: Register
    onSubmit: (fn: (values: T, isValid: boolean) => void) => HandleSubmit
 }
 
-export type Register = (path: string) => RegisterReturn;
+export type Register = (path: string) => RegisterReturn
 
-export type Change = React.ChangeEvent<HTMLInputElement>;
+export type Change = React.ChangeEvent<HTMLInputElement>
 
-export type ChangeState<T> = T | ((state: T) => T);
-export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>;
+export type ChangeState<T> = T | ((state: T) => T)
+export type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
 
 export type Paths<T> = keyof T | string
-
 
 // type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]];
 

@@ -1,14 +1,17 @@
-import * as React from "react"
-import { ValidationError, Schema as YupSchema } from "yup"
+import * as React from 'react'
+import { ValidationError, Schema as YupSchema } from 'yup'
 import * as dot from 'dot-prop-immutable'
-import { makeDotNotation } from "../utils"
+import { makeDotNotation } from '../utils'
 
-export function useValidation<TValues extends {}, Schema extends YupSchema<TValues>>(values: TValues, schema?: Schema) {
+export function useValidation<
+   TValues extends {},
+   Schema extends YupSchema<TValues>
+>(values: TValues, schema?: Schema) {
    const [errors, setErrors] = React.useState<TValues>({} as TValues)
 
    const validate = React.useCallback(() => {
-
-      schema?.validate(values, { abortEarly: false })
+      schema
+         ?.validate(values, { abortEarly: false })
          .then(() => {
             setErrors({} as TValues)
          })
@@ -21,7 +24,6 @@ export function useValidation<TValues extends {}, Schema extends YupSchema<TValu
             })
             setErrors({ ...errors } as TValues)
          })
-
    }, [schema, values])
 
    React.useEffect(() => {

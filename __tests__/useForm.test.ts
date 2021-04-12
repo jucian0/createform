@@ -1,3 +1,4 @@
+// import {act,  fireEvent,screen } from "@testing-library/react"
 import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { act } from "react-test-renderer"
 import { setup } from "./utils"
@@ -411,8 +412,8 @@ describe('Test useForm API', () => {
       initialValues: {
         name: 'jesse'
       },
-      initialTouched: {
-        name: true
+      initialTouched:{
+        name:true
       }
     }
 
@@ -428,8 +429,8 @@ describe('Test useForm API', () => {
       result.setFieldTouched('name', false)
     })
 
-    await waitFor(() => {
-      expect(result.state.touched).toEqual({ name: true })
+   await waitFor(() => {
+      expect(result.state.touched).toEqual({ name: true})
     })
   })
 
@@ -439,11 +440,11 @@ describe('Test useForm API', () => {
       isControlled: true,
       initialValues: {
         name: 'jesse',
-        email: 'jesse@jasse.com'
+        email:'jesse@jasse.com'
       },
-      initialTouched: {
-        name: false,
-        email: false
+      initialTouched:{
+        name:false,
+        email:false
       }
     }
 
@@ -457,13 +458,13 @@ describe('Test useForm API', () => {
 
     act(() => {
       result.setFieldsTouched({
-        name: true,
-        email: true
+        name:true,
+        email:true
       })
     })
 
     await waitFor(() => {
-      expect(result.state.touched).toEqual({ name: true, email: true })
+      expect(result.state.touched).toEqual({ name: true, email:true })
     })
   })
 
@@ -486,7 +487,7 @@ describe('Test useForm API', () => {
     await screen.findAllByTestId('name')
 
     act(() => {
-      result.setFieldsTouched({ name: true })
+      result.setFieldsTouched({name:true})
     })
 
     await waitFor(() => {
@@ -499,7 +500,7 @@ describe('Test useForm API', () => {
 
     await waitFor(() => {
       expect(result.state.touched).toEqual({ name: false })
-    })
+    })  
   })
 
 
@@ -534,7 +535,7 @@ describe('Test useForm API', () => {
 
     await waitFor(() => {
       expect(result.state.touched).toEqual({ name: false })
-    })
+    })  
   })
 
 
@@ -574,8 +575,8 @@ describe('Test useForm API', () => {
       result.setFieldError('name', 'this field is valid')
     })
 
-    await waitFor(() => {
-      expect(result.state.errors).toEqual({ name: 'this field is valid' })
+   await waitFor(() => {
+      expect(result.state.errors).toEqual({ name: 'this field is valid'})
     })
   })
 
@@ -585,7 +586,7 @@ describe('Test useForm API', () => {
       isControlled: true,
       initialValues: {
         name: 'jesse',
-        email: 'jesse@jasse.com'
+        email:'jesse@jasse.com'
       }
     }
 
@@ -599,13 +600,13 @@ describe('Test useForm API', () => {
 
     act(() => {
       result.setFieldsError({
-        name: 'this field is required',
-        email: 'this field is invalid'
+        name:'this field is required',
+        email:'this field is invalid'
       })
     })
 
     await waitFor(() => {
-      expect(result.state.errors).toEqual({ name: 'this field is required', email: 'this field is invalid' })
+      expect(result.state.errors).toEqual({ name: 'this field is required', email:'this field is invalid' })
     })
   })
 
@@ -628,7 +629,7 @@ describe('Test useForm API', () => {
     await screen.findAllByTestId('name')
 
     act(() => {
-      result.setFieldsError({ name: 'this field is required' })
+      result.setFieldsError({name:'this field is required'})
     })
 
     await waitFor(() => {
@@ -640,8 +641,8 @@ describe('Test useForm API', () => {
     })
 
     await waitFor(() => {
-      expect(result.state.errors).toEqual({})
-    })
+      expect(result.state.errors).toEqual({ })
+    })  
   })
 
 
@@ -676,7 +677,7 @@ describe('Test useForm API', () => {
 
     await waitFor(() => {
       expect(result.state.touched).toEqual({})
-    })
+    })  
   })
 
 })
