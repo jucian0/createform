@@ -36,13 +36,12 @@
     "start": "rollup -c rollup.config.ts -w",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
-    "precommit": "lint-staged",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "pretty": "prettier --write --tab-width 3 \"src/**/*.{ts,tsx}\""
   },
   "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write",
-      "git add"
+    "*.{ts,tsx}": [
+      "yarn pretty"
     ]
   },
   "config": {
