@@ -76,7 +76,7 @@ Use dot notation to create advanced objects or to map object values. Type an ent
    <Range {...register("score")}/>
 ```
 
-### [Post] (https://dev.to/jucian0/building-forms-with-useform-1cna)
+### [Post](https://dev.to/jucian0/building-forms-with-useform-1cna)
 
 ## 🤝 Contributing
 
