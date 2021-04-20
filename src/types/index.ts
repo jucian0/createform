@@ -1,22 +1,40 @@
 import * as React from 'react'
 import { Schema as YupSchema } from 'yup'
 
+/**
+ * Input reference is a union with all kinds of native inputs.
+ */
 export type Ref = {
    current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
 }
 
+/**
+ * This is the type of Register function, we just need the name and the reference of input
+ */
 type RegisterReturn = {
    name: string
    ref: Ref
 }
 
+/**
+ * inputs reference is a type that of an object that has all native input in a form.
+ */
 export type InputsRef = { [path: string]: Ref }
 
+/**
+ * Touched type represents a touched object that has all properties of a form values, when this properties is primitive type ww convert this in a boolean,
+ *  otherwise if this an object we start again validating every properties.
+ */
 export type Touched<T extends {}> = {
    [k in keyof T]: T[k] extends number | string | boolean | Date
       ? boolean
       : Touched<T[k]>
 }
+
+/**
+ * Errors type represents a errors object that has all properties of a form values, when this properties is primitive type ww convert this in a string,
+ *  otherwise if this an object we start again validating every properties.
+ */
 export type Errors<T extends {}> = {
    [k in keyof T]: T[k] extends number | string | boolean | Date
       ? string
