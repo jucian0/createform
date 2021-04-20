@@ -88,5 +88,5 @@ Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2020 [Jucian0](https://github.com/useform).<br />
-This project is [MIT](https://github.com/useform/useform/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
+Copyright © 2020 [Jucian0](https://github.com/jucian0).<br />
+This project is [MIT](https://github.com/use-form/use-form/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
