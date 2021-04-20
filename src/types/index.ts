@@ -25,20 +25,24 @@ export type InputsRef = { [path: string]: Ref }
  * Touched type represents a touched object that has all properties of a form values, when this properties is primitive type ww convert this in a boolean,
  *  otherwise if this an object we start again validating every properties.
  */
-export type Touched<T extends {}> = {
-   [k in keyof T]: T[k] extends number | string | boolean | Date
+export type Touched<Values> = {
+   [k in keyof Values]?: Values[k] extends number | string | boolean | Date
       ? boolean
-      : Touched<T[k]>
+      : Values[k] extends Array<any>
+      ? Touched<Values[k][number]>[]
+      : Touched<Values[k]>
 }
 
 /**
  * Errors type represents a errors object that has all properties of a form values, when this properties is primitive type ww convert this in a string,
  *  otherwise if this an object we start again validating every properties.
  */
-export type Errors<T extends {}> = {
-   [k in keyof T]: T[k] extends number | string | boolean | Date
-      ? string
-      : Touched<T[k]>
+export type Errors<Values> = {
+   [k in keyof Values]?: Values[k] extends number | string | boolean | Date
+      ? boolean
+      : Values[k] extends Array<any>
+      ? Errors<Values[k][number]>[]
+      : Errors<Values[k]>
 }
 
 /**
