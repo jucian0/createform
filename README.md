@@ -71,8 +71,8 @@ const {
 Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
 
 ```jsx
-   <Input placeholder="Name" {...register("name")}/>
-   <Input placeholder="E-mail" type="email" {...register("email")}/>
+   <input placeholder="Name" {...register("name")}/>
+   <input placeholder="E-mail" type="email" {...register("email")}/>
    <Range {...register("score")}/>
 ```
 
