@@ -1,6 +1,6 @@
 {
   "name": "@use-form/use-form",
-  "version": "1.0.7",
+  "version": "1.0.11",
   "description": "UseFom provides a way to create complex forms easily.",
   "keywords": [
     "react",
