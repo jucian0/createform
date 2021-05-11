@@ -57,15 +57,15 @@ import { useForm } from "@use-form/use-form";
  *  initial Values optional
  */
 const initialValues = {
-  name: 'Jesse',
-  email: 'jesse@jesse.com',
+  name: "Jesse",
+  email: "jesse@jesse.com",
   score: 25,
-}
+};
 
 const {
   register,
   state: { values },
-} = useForm({ initialValues, isControlled: true })
+} = useForm({ initialValues, isControlled: true });
 ```
 
 Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
@@ -76,11 +76,11 @@ Use dot notation to create advanced objects or to map object values. Type an ent
    <Range {...register("score")}/>
 ```
 
-### Post https://dev.to/jucian0/building-forms-with-useform-1cna
+### [Post](https://dev.to/jucian0/building-forms-with-useform-1cna)
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/Jucian0/useform/issues). You can also take a look at the [contributing guide](https://github.com/Jucian0/useform/blob/master/CONTRIBUTING.md).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/use-form/use-form/issues). You can also take a look at the [contributing guide](https://github.com/Jucian0/use-form/blob/main/CONTRIBUTING.md).
 
 ## Show your support
 
@@ -88,5 +88,5 @@ Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2020 [Jucian0](https://github.com/useform).<br />
-This project is [MIT](https://github.com/useform/useform/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
+Copyright © 2020 [useForm](https://github.com/use-form).<br />
+This project is [MIT](https://github.com/use-form/use-form/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
