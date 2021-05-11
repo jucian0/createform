@@ -33,7 +33,7 @@ this approach prevents you to type more code to convert an object from form to b
 - Easy to write - useForm has an easy way to write forms with less code. register function return necessary input's properties and it is all we need to manage all events in a native HTML `input`. Writhe forms without form tag.
 - Easy validation - By default useform uses yup validation, we can write complex validation without effort.
 
-## Instalation
+## Installation
 
 ```
   npm i @use-form/use-form
@@ -71,8 +71,8 @@ const {
 Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
 
 ```jsx
-   <Input placeholder="Name" {...register("name")}/>
-   <Input placeholder="E-mail" type="email" {...register("email")}/>
+   <input placeholder="Name" {...register("name")}/>
+   <input placeholder="E-mail" type="email" {...register("email")}/>
    <Range {...register("score")}/>
 ```
 
