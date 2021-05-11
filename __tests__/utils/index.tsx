@@ -1,7 +1,6 @@
-import React from 'react'
-import { render } from '@testing-library/react';
+import * as React from 'react'
+import { render } from '@testing-library/react'
 import { useForm } from '../../src/index'
-
 
 export function setup({ hookParams, inputParams, onSubmit }: any) {
    const returnVal: any = {}
@@ -13,7 +12,6 @@ export function setup({ hookParams, inputParams, onSubmit }: any) {
 
       Object.assign(returnVal, { state, ...rest })
 
-
       // React.useEffect(()=>{
       //    setReady(true)
       // },[state.touched])
@@ -23,7 +21,11 @@ export function setup({ hookParams, inputParams, onSubmit }: any) {
             {/* {
               ready && <span data-testid="ready"></span>
             } */}
-            <input {...register(inputParams.name)} {...inputParams} data-testid={inputParams.name} />
+            <input
+               {...register(inputParams.name)}
+               {...inputParams}
+               data-testid={inputParams.name}
+            />
             <button type="submit" id="22" data-testid="on-submit"></button>
             <button type="reset" data-testid="on-reset"></button>
          </form>
