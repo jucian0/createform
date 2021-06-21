@@ -20,13 +20,13 @@ module.exports = {
           loader: 'babel-loader'
         }
       },
-     {
-      test: /\.css$/,
-      use: [
-         { loader: 'style-loader' },
-         { loader: mapStyle ? 'css-loader?sourceMap' : 'css-loader' },
-      ],
-   },
+      {
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: mapStyle ? 'css-loader?sourceMap' : 'css-loader' }
+        ]
+      }
     ]
   },
   devServer: {
