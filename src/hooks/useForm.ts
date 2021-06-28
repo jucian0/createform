@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as dot from 'dot-prop-immutable'
+import * as dot from 'object-path-immutable'
 import { debounce, isCheckbox, isRadio, makeDotNotation } from '../utils'
 import { ValidationError } from 'yup'
 import { createState } from '../core/observable'
