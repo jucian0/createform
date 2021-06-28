@@ -3020,11 +3020,6 @@ domexception@^2.0.1:
   dependencies:
     webidl-conversions "^5.0.0"
 
-dot-prop-immutable@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/dot-prop-immutable/-/dot-prop-immutable-2.1.0.tgz#aa08d57b7b4c8ba1aac1b8f9b058bb3f37027af6"
-  integrity sha512-8IIkxeXjLkKbhbqwmqCdFzRup1wFwH4tuY7/s5ScVpzYXgjZ+lw5ocvtDG1KR9VG+/AIGgGpWBdzmq+QUFANoA==
-
 dot-prop@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-3.0.0.tgz#1b708af094a49c9a0e7dbcad790aba539dac1177"
@@ -4095,6 +4090,11 @@ is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   integrity sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==
   dependencies:
     isobject "^3.0.1"
+
+is-plain-object@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-3.0.1.tgz#662d92d24c0aa4302407b0d45d21f2251c85f85b"
+  integrity sha512-Xnpx182SBMrr/aBik8y+GuR4U1L9FqMSojwDQwPMmxyC6bvEqly9UBCxhauBF5vNh2gwWJNX6oDV7O+OM4z34g==
 
 is-potential-custom-element-name@^1.0.0:
   version "1.0.1"
@@ -5482,6 +5482,19 @@ object-keys@^1.0.12, object-keys@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.1.1.tgz#1c47f272df277f3b1daf061677d9c82e2322c60e"
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
+
+object-path-immutable@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/object-path-immutable/-/object-path-immutable-4.1.1.tgz#f657e9120075a9866227cb6324b90edda042118d"
+  integrity sha512-kaH7a+jzt8WhPUeA26qrBwiJFBGFCkXaa4CbCuv4+8oZgb2Qo4/NV9KN1fyd8xPzAutJvVw0mjywn+FqU1MbTA==
+  dependencies:
+    is-plain-object "^3.0.0"
+    object-path "^0.11.5"
+
+object-path@^0.11.5:
+  version "0.11.5"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.5.tgz#d4e3cf19601a5140a55a16ad712019a9c50b577a"
+  integrity sha512-jgSbThcoR/s+XumvGMTMf81QVBmah+/Q7K7YduKeKVWL7N111unR2d6pZZarSk6kY/caeNxUDyxOvMWyzoU2eg==
 
 object-visit@^1.0.0:
   version "1.0.1"
