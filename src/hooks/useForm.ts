@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as dot from 'dot-prop-immutable'
+import * as dot from 'object-path-immutable'
 import { debounce, isCheckbox, isRadio, makeDotNotation } from '../utils'
 import { ValidationError } from 'yup'
 import { createState } from '../core/observable'
@@ -136,6 +136,11 @@ export function useForm<TO>({
    }
 
    function setRefValue(path: string, value: any) {
+      if (!refs.current[path]) {
+         throw new Error(
+            "You probably are trying to use a div as a Input component or your component doesn't have `forwardRef`"
+         )
+      }
       if (isCheckbox(refs.current[path].current.type)) {
          return (refs.current[path].current.checked = value)
       } else if (refs.current[path]?.current?.children) {

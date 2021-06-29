@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ValidationError, Schema as YupSchema } from 'yup'
-import * as dot from 'dot-prop-immutable'
+import * as dot from 'object-path-immutable'
 import { makeDotNotation } from '../utils'
 
 export function useValidation<

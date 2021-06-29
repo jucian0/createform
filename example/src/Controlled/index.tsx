@@ -1,3 +1,4 @@
+import { TextField } from '@material-ui/core'
 import * as React from 'react'
 import * as yup from 'yup'
 import { useForm } from '../../../src'
@@ -47,38 +48,30 @@ const Controlled: React.FC = () => {
       register,
       resetForm,
       resetFieldValue,
-      setFieldsTouched
+      setFieldsTouched,
+      setFieldValue
    } = useForm({ initialValues, validationSchema })
-
-   console.log('<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>')
-
-   setFieldsTouched(state => ({
-      ...state,
-      name: true,
-      address: [
-         {
-            street: false,
-            number: true,
-            john: [
-               {
-                  name: true
-               }
-            ]
-         }
-      ]
-   }))
 
    return (
       <div className="row">
          <div className="col-lg-12">
             <h2>Controlled Form</h2>
             <div className="form-group">
-               <label>Nome</label>
+               <TextField
+                  label="Text"
+                  className="form-control"
+                  // {...register('name')}
+                  //inputProps={register('name')}
+                  name="name"
+                  value={state.values.name}
+                  onChange={e => setFieldValue('name', e.target.value)}
+               />
+               {/* <label>Nome</label>
                <input
                   className="form-control"
                   autoComplete="off"
                   {...register('name')}
-               />
+               /> */}
                <span className="text-danger">
                   {state.touched.name && state.errors.name}
                </span>
