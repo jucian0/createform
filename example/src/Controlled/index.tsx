@@ -64,7 +64,9 @@ const Controlled: React.FC = () => {
                   //inputProps={register('name')}
                   name="name"
                   value={state.values.name}
-                  onChange={e => setFieldValue('name', e.target.value)}
+                  onChange={e =>
+                     setFieldValue('address.0.number', e.target.value)
+                  }
                />
                {/* <label>Nome</label>
                <input
@@ -149,14 +151,14 @@ const Controlled: React.FC = () => {
             <button
                type="button"
                className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.number')}
+               onClick={() => resetFieldValue('address.0.street')}
             >
                Reset number
             </button>
             <button
                type="button"
                className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.john.0.name')}
+               onClick={() => resetFieldValue('address.0.street')}
             >
                Reset number
             </button>
