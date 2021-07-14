@@ -60,20 +60,9 @@ const Controlled: React.FC = () => {
                <TextField
                   label="Text"
                   className="form-control"
-                  // {...register('name')}
-                  //inputProps={register('name')}
+                  inputProps={register('name')}
                   name="name"
-                  value={state.values.name}
-                  onChange={e =>
-                     setFieldValue('address.0.number', e.target.value)
-                  }
                />
-               {/* <label>Nome</label>
-               <input
-                  className="form-control"
-                  autoComplete="off"
-                  {...register('name')}
-               /> */}
                <span className="text-danger">
                   {state.touched.name && state.errors.name}
                </span>
