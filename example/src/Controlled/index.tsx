@@ -60,18 +60,9 @@ const Controlled: React.FC = () => {
                <TextField
                   label="Text"
                   className="form-control"
-                  // {...register('name')}
-                  //inputProps={register('name')}
+                  inputProps={register('name')}
                   name="name"
-                  value={state.values.name}
-                  onChange={e => setFieldValue('name', e.target.value)}
                />
-               {/* <label>Nome</label>
-               <input
-                  className="form-control"
-                  autoComplete="off"
-                  {...register('name')}
-               /> */}
                <span className="text-danger">
                   {state.touched.name && state.errors.name}
                </span>
@@ -149,14 +140,14 @@ const Controlled: React.FC = () => {
             <button
                type="button"
                className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.number')}
+               onClick={() => resetFieldValue('address.0.street')}
             >
                Reset number
             </button>
             <button
                type="button"
                className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.john.0.name')}
+               onClick={() => resetFieldValue('address.0.street')}
             >
                Reset number
             </button>

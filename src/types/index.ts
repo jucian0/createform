@@ -39,7 +39,7 @@ export type Touched<Values> = {
  */
 export type Errors<Values> = {
    [k in keyof Values]?: Values[k] extends number | string | boolean | Date
-      ? boolean
+      ? string
       : Values[k] extends Array<any>
       ? Errors<Values[k][number]>[]
       : Errors<Values[k]>
@@ -130,10 +130,46 @@ type ChangeState<T> = T | ((state: T) => T)
 type HandleSubmit = (e: React.BaseSyntheticEvent) => Promise<any>
 
 /** paths are the parameter that register function receives, that type needs more improvements */
-export type Paths<T> = keyof T | string
+//export type Paths<T> = keyof T | string
 
-// type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]];
+type Prev = [
+   never,
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   ...0[]
+]
 
-// type Join<K, P> = K extends string | number ? P extends string | number ? `${K}${"" extends P ? "" : "."}${P}` : never : never;
+type Join<K, P> = K extends string | number
+   ? P extends string | number
+      ? `${K}${'' extends P ? '' : '.'}${P}`
+      : never
+   : never
 
-// export type Paths<T, D extends number = 10> = [D] extends [never] ? never : T extends object ? { [K in keyof T]-?: K extends string | number ? `${K}` | Join<K, Paths<T[K], Prev[D]>> : never }[keyof T] : "";
+export type Paths<T, D extends number = 10> = [D] extends [never]
+   ? never
+   : T extends object
+   ? {
+        [K in keyof T]-?: K extends string | number
+           ? `${K}` | Join<K, Paths<T[K], Prev[D]>>
+           : never
+     }[keyof T]
+   : ''
