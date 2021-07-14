@@ -1,3 +1,4 @@
+import { TextField } from '@material-ui/core'
 import * as React from 'react'
 import * as yup from 'yup'
 import { useForm } from '../../../src'
@@ -47,37 +48,20 @@ const Controlled: React.FC = () => {
       register,
       resetForm,
       resetFieldValue,
-      setFieldsTouched
+      setFieldsTouched,
+      setFieldValue
    } = useForm({ initialValues, validationSchema })
-
-   console.log('<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>')
-
-   setFieldsTouched(state => ({
-      ...state,
-      name: true,
-      address: [
-         {
-            street: false,
-            number: true,
-            john: [
-               {
-                  name: true
-               }
-            ]
-         }
-      ]
-   }))
 
    return (
       <div className="row">
          <div className="col-lg-12">
             <h2>Controlled Form</h2>
             <div className="form-group">
-               <label>Nome</label>
-               <input
+               <TextField
+                  label="Text"
                   className="form-control"
-                  autoComplete="off"
-                  {...register('name')}
+                  inputProps={register('name')}
+                  name="name"
                />
                <span className="text-danger">
                   {state.touched.name && state.errors.name}
@@ -156,14 +140,14 @@ const Controlled: React.FC = () => {
             <button
                type="button"
                className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.number')}
+               onClick={() => resetFieldValue('address.0.street')}
             >
                Reset number
             </button>
             <button
                type="button"
                className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.john.0.name')}
+               onClick={() => resetFieldValue('address.0.street')}
             >
                Reset number
             </button>
