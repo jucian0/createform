@@ -11,6 +11,7 @@
     ],
     "sourceMap": true,
     "allowJs": false,
+    "noEmit": true,
     "jsx": "react",
     "skipLibCheck": true,
     "declaration": true,
