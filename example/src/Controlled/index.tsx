@@ -2,6 +2,13 @@ import { TextField } from '@material-ui/core'
 import * as React from 'react'
 import * as yup from 'yup'
 import { useForm } from '../../../src'
+import Select from 'react-select'
+
+const optionsSelect = [
+   { value: 'chocolate', label: 'Chocolate' },
+   { value: 'strawberry', label: 'Strawberry' },
+   { value: 'vanilla', label: 'Vanilla' }
+]
 
 const validationSchema: any = yup.object().shape({
    name: yup.string().required('this field is required'),
@@ -39,7 +46,8 @@ const initialValues = {
    ],
    options: 'value 1',
    radio: 'op3',
-   accept: true
+   accept: true,
+   select: ''
 }
 
 const Controlled: React.FC = () => {
@@ -50,7 +58,15 @@ const Controlled: React.FC = () => {
       resetFieldValue,
       setFieldsTouched,
       setFieldValue
-   } = useForm({ initialValues, validationSchema })
+   } = useForm({
+      initialValues,
+      validationSchema,
+      watch: e => {
+         console.log(e)
+      }
+   })
+
+   console.log(state.values.select)
 
    return (
       <div className="row">
@@ -72,7 +88,8 @@ const Controlled: React.FC = () => {
                <input
                   className="form-control"
                   autoComplete="off"
-                  {...register('email')}
+                  value={state.values.email}
+                  onChange={e => setFieldValue('email', e.target.value)}
                />
                <span className="text-danger">
                   {state.touched.email && state.errors.email}
@@ -84,6 +101,17 @@ const Controlled: React.FC = () => {
                   className="form-control"
                   autoComplete="off"
                   {...register('bio')}
+               />
+            </div>
+            <div className="">
+               <label>Select</label>
+               <Select
+                  ref={register('select')}
+                  options={optionsSelect}
+                  value={optionsSelect.find(
+                     o => o.value === state.values.select
+                  )}
+                  onChange={e => setFieldValue('select', e.value)}
                />
             </div>
 
