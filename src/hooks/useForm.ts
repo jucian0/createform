@@ -280,7 +280,6 @@ export function useForm<TO>({
    }
 
    function setFieldValue(path: Paths<typeof initialValues>, value: any) {
-      console.log('passou')
       state$.setState(state => ({
          ...state,
          values: dot.set(state.values, path as string, value)

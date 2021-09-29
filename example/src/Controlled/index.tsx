@@ -106,7 +106,6 @@ const Controlled: React.FC = () => {
             <div className="">
                <label>Select</label>
                <Select
-                  ref={register('select')}
                   options={optionsSelect}
                   value={optionsSelect.find(
                      o => o.value === state.values.select
