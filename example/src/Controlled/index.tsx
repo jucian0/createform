@@ -10,26 +10,6 @@ const optionsSelect = [
    { value: 'vanilla', label: 'Vanilla' }
 ]
 
-const validationSchema: any = yup.object().shape({
-   name: yup.string().required('this field is required'),
-   email: yup
-      .string()
-      .required('this field is required')
-      .email('this field must be a valid email'),
-   address: yup.array(
-      yup.object().shape({
-         street: yup.string().required('this field is required'),
-         number: yup.number().required('this field is required')
-      })
-   )
-})
-
-const options = [
-   { value: 'chocolate', label: 'Chocolate' },
-   { value: 'strawberry', label: 'Strawberry' },
-   { value: 'vanilla', label: 'Vanilla' }
-]
-
 const initialValues = {
    name: 'Jesse Woodson James',
    email: 'jesse@jesse.com',
@@ -59,14 +39,8 @@ const Controlled: React.FC = () => {
       setFieldsTouched,
       setFieldValue
    } = useForm({
-      initialValues,
-      validationSchema,
-      watch: e => {
-         console.log(e)
-      }
+      initialValues
    })
-
-   console.log(state.values.select)
 
    return (
       <div className="row">
@@ -113,80 +87,6 @@ const Controlled: React.FC = () => {
                   onChange={e => setFieldValue('select', e.value)}
                />
             </div>
-
-            <div>
-               <h3>Address</h3>
-               <div className="form-group">
-                  <label>Street</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     {...register('address.0.street')}
-                  />
-                  <span className="text-danger">
-                     {state.touched.address?.[0].street &&
-                        state.errors.address?.[0].street}
-                  </span>
-               </div>
-               <div className="form-group">
-                  <label>Number</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     {...register('address.0.number')}
-                  />
-                  <span className="text-danger">
-                     {state.touched.address?.[0].number &&
-                        state.errors.address?.[0].number}
-                  </span>
-               </div>
-            </div>
-            <div className="col-lg-12">
-               <div className="form-group">
-                  <label>Select Option</label>
-                  <select {...register('options')}>
-                     <option value="value 1">Option 1</option>
-                     <option value="value 2">Option 2</option>
-                     <option value="value 3">Option 3</option>
-                     <option value="value 4">Option 4</option>
-                  </select>
-               </div>
-               <div className="form-group">
-                  <label htmlFor="accept">Accept</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     {...register('accept')}
-                     type="checkbox"
-                  />
-               </div>
-            </div>
-         </div>
-
-         <div className="col-lg-6">
-            <button
-               type="button"
-               className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.street')}
-            >
-               Reset number
-            </button>
-            <button
-               type="button"
-               className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.street')}
-            >
-               Reset number
-            </button>
-         </div>
-         <div className="col-lg-6">
-            <button
-               type="button"
-               className="btn btn-primary"
-               onClick={() => resetForm()}
-            >
-               Reset All
-            </button>
          </div>
       </div>
    )
