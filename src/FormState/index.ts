@@ -1,3 +1,7 @@
+/**
+ *  FormState is a class that holds the state of a form.
+ * It is used to keep track of the state of the form and to provide a way to manipulate the form.
+ */
 export class FormState<T = any> extends ObservableForm<T> {
    private initialState: T
    constructor(

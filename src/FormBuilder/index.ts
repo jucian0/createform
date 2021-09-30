@@ -1,31 +1,169 @@
+import React from 'react'
+
+type InputRef<T> = React.RefObject<T>
+
 export class FormBuilder {
-   private state: FormState<any>
+   private ref: InputRef<any>
+   private name: string
 
-   constructor(initialState: any) {
-      this.state = new FormState(initialState, onSubmit, onReset)
+   constructor() {}
+
+   public text(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
    }
 
-   name(value: string) {
-      return this.state.setField('name', value)
+   public password(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
    }
 
-   email(value: string) {
-      return this.state.setField('email', value)
+   public number(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
    }
 
-   password(value: string) {
-      return this.state.setField('password', value)
+   public email(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
    }
 
-   onSubmit(onSubmitCallback: (state: any) => void) {
-      return this.state.onSubmit(onSubmitCallback)
+   public select(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
    }
 
-   onReset(onResetCallback: () => void) {
-      return this.state.onReset(onResetCallback)
+   public checkbox(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
    }
 
-   getInitialState() {
-      return this.state.getInitialState()
+   public radio(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public color(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public date(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public file(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public hidden(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public image(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public range(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public tel(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public url(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public time(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public datetime(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public month(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public submit(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public reset(name: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public custom(name: string, type: string) {
+      this.ref = React.createRef()
+      this.name = name
+
+      return this
+   }
+
+   public validations(name: string, validations: any) {
+      this.ref = React.createRef()
+      return this
+   }
+
+   public build(inintialValue: any) {
+      return {
+         ref: this.ref,
+         name: this.name
+      }
    }
 }
