@@ -1,3 +1,5 @@
+import { FieldBuilder } from '../FieldBuilder'
+
 type FormShape = {
    [key: string]: any
 }

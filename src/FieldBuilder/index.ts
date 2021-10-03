@@ -210,7 +210,7 @@ export class FieldBuilder {
       return this
    }
 
-   public build(defaultValue: any) {
+   public builder(defaultValue: any) {
       return {
          ref: this.ref,
          name: this.name,

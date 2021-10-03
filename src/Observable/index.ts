@@ -8,7 +8,7 @@ interface Observable<T> {
    get: () => T
 }
 
-class ObservableForm<T> implements Observable<T> {
+export class ObservableForm<T> implements Observable<T> {
    private observers: Observers
 
    constructor(private state: T) {
