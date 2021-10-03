@@ -4,7 +4,17 @@ import { create } from '../../../src/Create'
 const useForm = create(builder => {
    return {
       name: builder.text('name').builder('juciano'),
-      lastName: builder.text('lastName').builder('barbosa')
+      lastName: builder.text('lastName').builder('barbosa'),
+      address: {
+         street: builder.text('street').builder('Virginio Belgini'),
+         number: builder.number('number').builder(123),
+         city: builder.text('city').builder('São Paulo'),
+         range: [
+            builder.number('range[0]').builder(1),
+            builder.number('range[1]').builder(10),
+            builder.number('range[2]').builder(100)
+         ]
+      }
    }
 })
 
@@ -13,7 +23,7 @@ const Controlled: React.FC = () => {
 
    React.useEffect(() => {
       console.log(state)
-   }, [refs])
+   }, [state])
 
    return (
       <div className="row">
