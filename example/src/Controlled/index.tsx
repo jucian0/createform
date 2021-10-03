@@ -10,9 +10,9 @@ const useForm = create(builder => {
          number: builder.number('number').builder(123),
          city: builder.text('city').builder('São Paulo'),
          range: [
-            builder.number('range[0]').builder(1),
-            builder.number('range[1]').builder(10),
-            builder.number('range[2]').builder(100)
+            builder.number('0').builder(1),
+            builder.number('1').builder(10),
+            builder.number('2').builder(100)
          ]
       }
    }
@@ -22,7 +22,7 @@ const Controlled: React.FC = () => {
    const { refs, state } = useForm()
 
    React.useEffect(() => {
-      console.log(state)
+      console.log(state, refs)
    }, [state])
 
    return (
@@ -41,6 +41,14 @@ const Controlled: React.FC = () => {
                   placeholder="Last name"
                   className="form-control"
                   {...refs.lastName}
+               />
+            </div>
+
+            <div className="form-group">
+               <input
+                  placeholder="Range 3th position"
+                  className="form-control"
+                  {...refs.address.range[2]}
                />
             </div>
          </div>

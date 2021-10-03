@@ -1,13 +1,16 @@
 import { FieldBuilder } from '../FieldBuilder'
 import { FormValuesState } from '../FormValuesState'
 
-function getFieldsValues(fields: object) {
+export function getFieldsProperty(fields: object, property: string) {
    function getDeepValue(obj: object, path: string): any {
-      const value = obj[path]?.defaultValue ? obj[path].defaultValue : obj[path]
+      const value = obj[path]?.[property] ? obj[path][property] : obj[path]
 
       if (typeof value === 'object') {
          const keys = Object.keys(value)
-         const newObj = {}
+         let newObj = {}
+         if (Array.isArray(value)) {
+            newObj = []
+         }
          keys.forEach(key => {
             newObj[key] = getDeepValue(value, key)
          })
@@ -36,9 +39,9 @@ export function create(fn: Function) {
    return () => {
       const fields = fn(builder)
 
-      const defaultState = getFieldsValues(fields)
+      const defaultValues = getFieldsProperty(fields, 'defaultValue')
 
-      const state = new FormValuesState(defaultState)
+      const state = new FormValuesState(defaultValues)
 
       return {
          refs: fields,
