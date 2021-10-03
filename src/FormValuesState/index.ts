@@ -1,3 +1,4 @@
+import { ObservableForm } from '../Observable'
 export class FormValuesState<T = any> extends ObservableForm<T> {
    private initialState: T
    constructor(defaultState: T) {
