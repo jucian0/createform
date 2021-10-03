@@ -13,6 +13,7 @@ export class ObservableForm<T> implements Observable<T> {
 
    constructor(private state: T) {
       this.observers = new Set()
+      this.state = state
    }
 
    set(state: T) {
