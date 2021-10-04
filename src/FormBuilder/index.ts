@@ -7,21 +7,19 @@ type FormShape = {
 
 export class FormBuilder {
    private values: FormShape
-   private errors: FormShape
-   private untouched: FormShape
-   private touched: FormShape
-   private pristine: FormShape
-   private dirty: FormShape
+   // private errors: FormShape
+   // private untouched: FormShape
+   // private touched: FormShape
+   // private pristine: FormShape
+   // private dirty: FormShape
 
    constructor(
-      private readonly fields: FieldBuilder,
+      private readonly fields: any,
       private readonly formValues: FormValuesState
-   ) {
-      this.values = formValues.getFormValues()
-   }
+   ) {}
 
    public getValues(): FormShape {
-      return this.values
+      return this.formValues.getFormValues()
    }
 
    //   public getErrors(): FormShape {

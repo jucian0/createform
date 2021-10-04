@@ -29,28 +29,24 @@ const Controlled: React.FC = () => {
       <div className="row">
          <div className="col-lg-12">
             <h2>Controlled Form</h2>
-            <div className="form-group">
-               <input
-                  placeholder="Name"
-                  className="form-control"
-                  {...refs.name}
-               />
-            </div>
-            <div className="form-group">
-               <input
-                  placeholder="Last name"
-                  className="form-control"
-                  {...refs.lastName}
-               />
-            </div>
+            {/* <div className="form-group">
+          <input placeholder="Name" className="form-control" {...refs.name} />
+        </div>
+        <div className="form-group">
+          <input
+            placeholder="Last name"
+            className="form-control"
+            {...refs.lastName}
+          />
+        </div>
 
-            <div className="form-group">
-               <input
-                  placeholder="Range 3th position"
-                  className="form-control"
-                  {...refs.address.range[2]}
-               />
-            </div>
+        <div className="form-group">
+          <input
+            placeholder="Range 3th position"
+            className="form-control"
+            {...refs.address.range[2]}
+          />
+        </div> */}
          </div>
       </div>
    )

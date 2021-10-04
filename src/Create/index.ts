@@ -1,45 +1,57 @@
 import { FieldBuilder } from '../FieldBuilder'
 import { FormValuesState } from '../FormValuesState'
+import { ObjectPath } from '../ObjectPath'
 
-export function getFieldsProperty(fields: object, property: string) {
-   function getDeepValue(obj: object, path: string): any {
-      const value = obj[path]?.[property] ? obj[path][property] : obj[path]
+// class Create {
+//   private fields: {} = {}
+//   constructor(
+//     private readonly fieldBuilder: FieldBuilder,
+//     private readonly formState: FormValuesState,
+//     private readonly objectPath: ObjectPath
+//   ) {}
 
-      if (typeof value === 'object') {
-         const keys = Object.keys(value)
-         let newObj = {}
-         if (Array.isArray(value)) {
-            newObj = []
-         }
-         keys.forEach(key => {
-            newObj[key] = getDeepValue(value, key)
-         })
+//   public create(fn: Function) {
+//     this.fields = fn(this.fieldBuilder)
+//     const defaultValue = this.objectPath.getFieldsProperty(
+//       this.fields,
+//       'defaultValue'
+//     )
 
-         return newObj
-      }
+//     this.formState.setFormValue(defaultValue)
+//   }
 
-      return value
-   }
+//   public getValues() {
+//     return this.formState.getFormValues()
+//   }
 
-   const defaultState = Object.keys(fields).reduce((acc, key) => {
-      const value = getDeepValue(fields, key)
+//   public getRefs() {
+//     return this.fields
+//   }
+// }
 
-      return {
-         ...acc,
-         [key]: value
-      }
-   }, {})
+// export function create(fn: Function) {
+//   const fieldBuilder = new FieldBuilder()
+//   const formState = new FormValuesState()
+//   const objectPath = new ObjectPath()
+//   const form = new Create(fieldBuilder, formState, objectPath)
+//   return () => {
+//     form.create(fn)
 
-   return defaultState
-}
+//     return {
+//       refs: form.getRefs(),
+//       state: form.getValues()
+//     }
+//   }
+// }
 
 export function create(fn: Function) {
    const builder = new FieldBuilder()
+   const objectPath = new ObjectPath()
 
    return () => {
       const fields = fn(builder)
 
-      const defaultValues = getFieldsProperty(fields, 'defaultValue')
+      const defaultValues = objectPath.getFieldsProperty(fields, 'defaultValue')
 
       const state = new FormValuesState(defaultValues)
 
