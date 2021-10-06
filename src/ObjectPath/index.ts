@@ -1,6 +1,20 @@
-const { propToPath, isPrimitive } = require('./utils')
+function propToPath(prop: any) {
+   return prop
+      .replaceAll('][', '.')
+      .replaceAll(']', '.')
+      .replaceAll('[', '.')
+      .split('.')
+}
 
-function set(defaultObject: object, prop: string, value: any) {
+function isPrimitive(value: any) {
+   return (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean'
+   )
+}
+
+export function set(defaultObject: object, prop: string, value: any) {
    const paths = propToPath(prop)
 
    function setPropertyValue(object: object, index: number) {
@@ -21,7 +35,7 @@ function set(defaultObject: object, prop: string, value: any) {
    return setPropertyValue(defaultObject, 0)
 }
 
-function del(defaultObject: object, prop: string) {
+export function del(defaultObject: object, prop: string) {
    const paths = propToPath(prop)
 
    function deletePropertyValue(object: object, index: number) {
@@ -47,7 +61,7 @@ function del(defaultObject: object, prop: string) {
    return deletePropertyValue(defaultObject, 0)
 }
 
-function get(defaultObject: object, prop: string) {
+export function get(defaultObject: object, prop: string) {
    const paths = propToPath(prop)
 
    function getPropertyValue(object: object, index: number): any {
@@ -66,7 +80,7 @@ function get(defaultObject: object, prop: string) {
    return getPropertyValue(defaultObject, 0)
 }
 
-function merge(defaultObject: object, prop: string, value: any) {
+export function merge(defaultObject: object, prop: string, value: any) {
    const targetValue = get(defaultObject, prop)
    if (typeof targetValue === 'undefined' || isPrimitive(value)) {
       throw new Error('Target value is undefine, verify your property path')

@@ -4,15 +4,15 @@ import { create } from '../../../src/Create'
 const useForm = create(builder => {
    return {
       name: builder.text().builder('juciano'),
-      lastName: builder.text('lastName').builder('barbosa'),
+      lastName: builder.text().builder('barbosa'),
       address: {
-         street: builder.text('street').builder('Virginio Belgini'),
-         number: builder.number('number').builder(123),
-         city: builder.text('city').builder('São Paulo'),
+         street: builder.text().builder('Virginio Belgini'),
+         number: builder.number().builder(123),
+         city: builder.text().builder('São Paulo'),
          range: [
-            builder.number('0').builder(1),
-            builder.number('1').builder(10),
-            builder.number('2').builder(100)
+            builder.number().builder(1),
+            builder.number().builder(10),
+            builder.number().builder(100)
          ]
       }
    }
