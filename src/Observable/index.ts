@@ -37,6 +37,7 @@ export class ObservableForm<T> implements Observable<T> {
    }
 
    notify() {
+      console.log('notify', this.state)
       this.observers.forEach(observer => observer(this.state))
    }
 }

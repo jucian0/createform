@@ -1,6 +1,7 @@
+import { useEffect } from 'react'
 import { FieldBuilder } from '../FieldBuilder'
 import { FormValuesState } from '../FormValuesState'
-import { ObjectPath } from '../ObjectPath'
+import { get } from './../ObjectPath'
 
 // class Create {
 //   private fields: {} = {}
@@ -46,20 +47,35 @@ import { ObjectPath } from '../ObjectPath'
 
 export function create(fn: Function) {
    const builder = new FieldBuilder()
-   const objectPath = new ObjectPath()
 
    return () => {
       const fields = fn(builder)
 
-      const defaultValues = objectPath.getFieldsProperty(fields, 'defaultValue')
+      const state = new FormValuesState({})
 
-      const state = new FormValuesState(defaultValues)
+      function register(name: string) {
+         const field = get(fields, name)
 
-      function register(name: string) {}
+         function onChange(value: any) {
+            state.setFieldValue(name, value.target.value)
+         }
+
+         useEffect(() => {
+            if (field.ref.current) {
+               field.ref.current.addEventListener('input', onChange)
+            }
+
+            return () => {
+               field.ref.current.removeEventListener('input', onChange)
+            }
+         }, [field.current])
+
+         return field
+      }
 
       return {
-         refs: fields,
-         state: state.getFormValues()
+         state: state.getFormValues(),
+         register
       }
    }
 }
