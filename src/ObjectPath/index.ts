@@ -1,33 +1,86 @@
-export class ObjectPath {
-   public getFieldsProperty(fields: object, property: string) {
-      function getDeepValue(obj: object, path: string): any {
-         const value = obj[path]?.[property] ? obj[path][property] : obj[path]
+const { propToPath, isPrimitive } = require('./utils')
 
-         if (typeof value === 'object') {
-            const keys = Object.keys(value)
-            let newObj = {}
-            if (Array.isArray(value)) {
-               newObj = []
-            }
-            keys.forEach(key => {
-               newObj[key] = getDeepValue(value, key)
-            })
+function set(defaultObject: object, prop: string, value: any) {
+   const paths = propToPath(prop)
 
-            return newObj
+   function setPropertyValue(object: object, index: number) {
+      let clone = Object.assign({}, object)
+
+      if (paths.length > index) {
+         if (Array.isArray(object)) {
+            paths[index] = parseInt(paths[index])
+            clone = object.slice()
          }
+         clone[paths[index]] = setPropertyValue(object[paths[index]], index + 1)
 
-         return value
+         return clone
       }
-
-      const defaultState = Object.keys(fields).reduce((acc, key) => {
-         const value = getDeepValue(fields, key)
-
-         return {
-            ...acc,
-            [key]: value
-         }
-      }, {})
-
-      return defaultState
+      return value
    }
+
+   return setPropertyValue(defaultObject, 0)
+}
+
+function del(defaultObject: object, prop: string) {
+   const paths = propToPath(prop)
+
+   function deletePropertyValue(object: object, index: number) {
+      let clone: any = Object.assign({}, object)
+
+      if (paths.length > index) {
+         if (Array.isArray(object)) {
+            paths[index] = parseInt(paths[index])
+            clone = object.slice()
+            clone.splice(paths[index], 1)
+            return clone
+         }
+         const result = deletePropertyValue(object[paths[index]], index + 1)
+         typeof result === 'undefined'
+            ? delete clone[paths[index]]
+            : (clone[paths[index]] = result)
+
+         return clone
+      }
+      return undefined
+   }
+
+   return deletePropertyValue(defaultObject, 0)
+}
+
+function get(defaultObject: object, prop: string) {
+   const paths = propToPath(prop)
+
+   function getPropertyValue(object: object, index: number): any {
+      const clone = Object.assign({}, object)
+      if (paths.length === index + 1) {
+         if (Array.isArray(clone[paths[index]])) {
+            return clone[paths[index]].slice()
+         } else if (typeof clone[paths[index]] === 'object') {
+            return Object.assign({}, clone[paths[index]])
+         }
+         return clone[paths[index]]
+      }
+      return getPropertyValue(object[paths[index]], index + 1)
+   }
+
+   return getPropertyValue(defaultObject, 0)
+}
+
+function merge(defaultObject: object, prop: string, value: any) {
+   const targetValue = get(defaultObject, prop)
+   if (typeof targetValue === 'undefined' || isPrimitive(value)) {
+      throw new Error('Target value is undefine, verify your property path')
+   }
+
+   if (Array.isArray(value)) {
+      if (!Array.isArray(targetValue)) {
+         throw new Error('The bot values should be arrays')
+      }
+      const resultValue = targetValue.concat(value)
+      return set(defaultObject, prop, resultValue)
+   }
+
+   const resultValue = Object.assign(targetValue, value)
+
+   return set(defaultObject, prop, resultValue)
 }
