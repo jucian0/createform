@@ -29,7 +29,7 @@ import { ObjectPath } from '../ObjectPath'
 //   }
 // }
 
-// export function create(fn: Function) {
+// export function creates(fn: Function) {
 //   const fieldBuilder = new FieldBuilder()
 //   const formState = new FormValuesState()
 //   const objectPath = new ObjectPath()
@@ -54,6 +54,8 @@ export function create(fn: Function) {
       const defaultValues = objectPath.getFieldsProperty(fields, 'defaultValue')
 
       const state = new FormValuesState(defaultValues)
+
+      function register(name: string) {}
 
       return {
          refs: fields,
