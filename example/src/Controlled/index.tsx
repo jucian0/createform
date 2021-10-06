@@ -3,7 +3,7 @@ import { create } from '../../../src/Create'
 
 const useForm = create(builder => {
    return {
-      name: builder.text('name').builder('juciano'),
+      name: builder.text().builder('juciano'),
       lastName: builder.text('lastName').builder('barbosa'),
       address: {
          street: builder.text('street').builder('Virginio Belgini'),
@@ -19,11 +19,11 @@ const useForm = create(builder => {
 })
 
 const Controlled: React.FC = () => {
-   const { refs, state } = useForm()
+   const { register, state } = useForm()
 
-   React.useEffect(() => {
-      console.log(state, refs)
-   }, [state])
+   //   React.useEffect(() => {
+   //     console.log(state, refs)
+   //   }, [state])
 
    return (
       <div className="row">
@@ -33,23 +33,23 @@ const Controlled: React.FC = () => {
                <input
                   placeholder="Name"
                   className="form-control"
-                  {...refs.name}
+                  {...register('name')}
                />
             </div>
             <div className="form-group">
                <input
                   placeholder="Last name"
                   className="form-control"
-                  {...refs.lastName}
+                  {...register('lastName')}
                />
             </div>
 
             <div className="form-group">
-               <input
-                  placeholder="Range 3th position"
-                  className="form-control"
-                  {...refs.address.range[2]}
-               />
+               {/* <input
+            placeholder="Range 3th position"
+            className="form-control"
+            {...refs.address.range[2]}
+          /> */}
             </div>
          </div>
       </div>
