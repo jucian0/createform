@@ -3,47 +3,13 @@ import { FieldBuilder } from '../FieldBuilder'
 import { FormValuesState } from '../FormValuesState'
 import { get } from './../ObjectPath'
 
-// class Create {
-//   private fields: {} = {}
-//   constructor(
-//     private readonly fieldBuilder: FieldBuilder,
-//     private readonly formState: FormValuesState,
-//     private readonly objectPath: ObjectPath
-//   ) {}
+function isCheckbox(type: string) {
+   return type === 'checkbox'
+}
 
-//   public create(fn: Function) {
-//     this.fields = fn(this.fieldBuilder)
-//     const defaultValue = this.objectPath.getFieldsProperty(
-//       this.fields,
-//       'defaultValue'
-//     )
-
-//     this.formState.setFormValue(defaultValue)
-//   }
-
-//   public getValues() {
-//     return this.formState.getFormValues()
-//   }
-
-//   public getRefs() {
-//     return this.fields
-//   }
-// }
-
-// export function creates(fn: Function) {
-//   const fieldBuilder = new FieldBuilder()
-//   const formState = new FormValuesState()
-//   const objectPath = new ObjectPath()
-//   const form = new Create(fieldBuilder, formState, objectPath)
-//   return () => {
-//     form.create(fn)
-
-//     return {
-//       refs: form.getRefs(),
-//       state: form.getValues()
-//     }
-//   }
-// }
+function isParsableToNumber(value: string) {
+   return !isNaN(parseInt(value, 10))
+}
 
 export function create(fn: Function) {
    const builder = new FieldBuilder()
@@ -55,10 +21,17 @@ export function create(fn: Function) {
       function register(name: string) {
          const field = get(fields, name)
 
-         console.log(field, name)
+         console.log(state.getFormValues())
 
-         function onChange(value: any) {
-            state.setFieldValue(name, value.target.value)
+         function onChange(event: any) {
+            if (isCheckbox(field.type)) {
+               return state.setFieldValue(name, event.target.checked)
+            }
+            const value = isParsableToNumber(event.target.value)
+               ? parseInt(event.target.value, 10)
+               : event.target.value
+
+            return state.setFieldValue(name, value)
          }
 
          useEffect(() => {

@@ -5,7 +5,10 @@ const useForm = create(builder => {
    return {
       name: builder.text().builder('juciano'),
       lastName: builder.text().builder('barbosa'),
-      address: {
+      select: builder.select().builder('1'),
+      range: builder.range().builder(1),
+      checkbox: builder.checkbox().builder(true),
+      nested: {
          street: builder.text().builder('Virginio Belgini'),
          number: builder.number().builder(123),
          city: builder.text().builder('São Paulo'),
@@ -20,10 +23,6 @@ const useForm = create(builder => {
 
 const Controlled: React.FC = () => {
    const { register, state } = useForm()
-
-   //   React.useEffect(() => {
-   //     console.log(state, refs)
-   //   }, [state])
 
    return (
       <div className="row">
@@ -48,7 +47,31 @@ const Controlled: React.FC = () => {
                <input
                   placeholder="Range 3th position"
                   className="form-control"
-                  {...register('address.range[0]')}
+                  {...register('nested.range.0')}
+               />
+            </div>
+            <div className="form-group">
+               <select className="form-control" {...register('select')}>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+               </select>
+            </div>
+            <div className="form-group">
+               <input
+                  type="range"
+                  className="form-control"
+                  {...register('range')}
+               />
+            </div>
+            <div className="form-group">
+               <label htmlFor="">Checkbox</label>
+               <input
+                  type="checkbox"
+                  className="form-control"
+                  {...register('checkbox')}
                />
             </div>
          </div>
