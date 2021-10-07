@@ -47,14 +47,15 @@ import { get } from './../ObjectPath'
 
 export function create(fn: Function) {
    const builder = new FieldBuilder()
+   const state = new FormValuesState({})
 
    return () => {
       const fields = fn(builder)
 
-      const state = new FormValuesState({})
-
       function register(name: string) {
          const field = get(fields, name)
+
+         console.log(field, name)
 
          function onChange(value: any) {
             state.setFieldValue(name, value.target.value)
@@ -68,7 +69,7 @@ export function create(fn: Function) {
             return () => {
                field.ref.current.removeEventListener('input', onChange)
             }
-         }, [field.current])
+         }, [field?.current])
 
          return field
       }
