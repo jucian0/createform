@@ -216,6 +216,7 @@ export class FieldBuilder {
          name: this.name,
          type: this.type,
          defaultValue,
+         defaultChecked: defaultValue,
          validations: this.validationsList
       }
    }

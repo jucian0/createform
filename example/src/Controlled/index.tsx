@@ -8,6 +8,7 @@ const useForm = create(builder => {
       select: builder.select().builder('1'),
       range: builder.range().builder(1),
       checkbox: builder.checkbox().builder(true),
+      radio: builder.radio().builder('1'),
       nested: {
          street: builder.text().builder('Virginio Belgini'),
          number: builder.number().builder(123),
@@ -73,6 +74,15 @@ const Controlled: React.FC = () => {
                   className="form-control"
                   {...register('checkbox')}
                />
+            </div>
+
+            <div className="form-group" {...register('radio')}>
+               <input type="radio" value="1" />
+               <input type="radio" value="2" />
+               <input type="radio" value="3" />
+               <input type="radio" value="4" />
+               <input type="radio" value="5" />
+               <input type="radio" value="6" />
             </div>
          </div>
       </div>
