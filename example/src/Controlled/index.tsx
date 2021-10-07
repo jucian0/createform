@@ -76,13 +76,33 @@ const Controlled: React.FC = () => {
                />
             </div>
 
-            <div className="form-group" {...register('radio')}>
-               <input type="radio" value="1" />
-               <input type="radio" value="2" />
-               <input type="radio" value="3" />
-               <input type="radio" value="4" />
-               <input type="radio" value="5" />
-               <input type="radio" value="6" />
+            <div className="form-group">
+               <input
+                  className="form-ckeck-input"
+                  id="1"
+                  {...register('radio', 1)}
+               />
+               <label className="form-check-label" htmlFor="1">
+                  Option 1
+               </label>
+
+               <input
+                  className="form-ckeck-input"
+                  id="2"
+                  {...register('radio', 2)}
+               />
+               <label className="form-check-label" htmlFor="1">
+                  Option 2
+               </label>
+
+               <input
+                  className="form-ckeck-input"
+                  id="3"
+                  {...register('radio', 3)}
+               />
+               <label className="form-check-label" htmlFor="3">
+                  Option 3
+               </label>
             </div>
          </div>
       </div>
