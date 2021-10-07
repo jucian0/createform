@@ -45,11 +45,11 @@ const Controlled: React.FC = () => {
             </div>
 
             <div className="form-group">
-               {/* <input
-            placeholder="Range 3th position"
-            className="form-control"
-            {...refs.address.range[2]}
-          /> */}
+               <input
+                  placeholder="Range 3th position"
+                  className="form-control"
+                  {...register('address.range[0]')}
+               />
             </div>
          </div>
       </div>
