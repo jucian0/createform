@@ -1,6 +1,33 @@
 import * as React from 'react'
 import { create } from '../../../src/Create'
 
+const useForm2 = create({
+   name: [
+      '',
+      required("It's required"),
+      minLength(3, 'Min length is 3'),
+      maxLength(10, 'Max length is 10')
+   ],
+   age: [
+      '',
+      required("It's required"),
+      min(18, 'Min age is 18'),
+      max(100, 'Max age is 100')
+   ],
+   email: [
+      '',
+      required("It's required"),
+      email('Email is not valid'),
+      maxLength(100, 'Max length is 100')
+   ],
+   password: [
+      '',
+      required("It's required"),
+      minLength(8, 'Min length is 8'),
+      maxLength(20, 'Max length is 20')
+   ]
+})
+
 const useForm = create(builder => {
    return {
       name: builder.text().builder('juciano'),
