@@ -25,7 +25,15 @@ const useForm2 = create({
       required("It's required"),
       minLength(8, 'Min length is 8'),
       maxLength(20, 'Max length is 20')
-   ]
+   ],
+   nested: {
+      name: [
+         '',
+         required("It's required"),
+         minLength(3, 'Min length is 3'),
+         maxLength(10, 'Max length is 10')
+      ]
+   }
 })
 
 const useForm = create(builder => {
