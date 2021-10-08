@@ -4,8 +4,8 @@ import { create } from '../../../src/Create'
 const useForm = create(builder => {
    return {
       name: builder.text().builder('juciano'),
-      lastName: builder.text().builder('barbosa'),
-      select: builder.select().builder('1'),
+      lastName: builder.text().validations(['res', 're']).builder('barbosa'),
+      select: builder.select().builder(2),
       range: builder.range().builder(1),
       checkbox: builder.checkbox().builder(true),
       radio: builder.radio().builder('1'),

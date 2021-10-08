@@ -15,7 +15,7 @@ function isParsableToNumber(value: string) {
 export function create(fn: Function) {
    const builder = new FieldBuilder()
    const state = new FormValuesState({})
-   //const errors = new FormErrorsState({})
+   const errors = new FormErrorsState({})
 
    return () => {
       const fields = fn(builder)
@@ -30,6 +30,8 @@ export function create(fn: Function) {
             const value = isParsableToNumber(event.target.value)
                ? parseInt(event.target.value, 10)
                : event.target.value
+
+            const error = field.validate(value)
 
             return state.setFieldValue(name, value)
          }
