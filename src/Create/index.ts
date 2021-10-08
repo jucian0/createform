@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { FieldBuilder } from '../FieldBuilder'
+import { FormErrorsState } from '../FormErrorsState'
 import { FormValuesState } from '../FormValuesState'
 import { get } from './../ObjectPath'
 
@@ -14,16 +15,13 @@ function isParsableToNumber(value: string) {
 export function create(fn: Function) {
    const builder = new FieldBuilder()
    const state = new FormValuesState({})
+   //const errors = new FormErrorsState({})
 
    return () => {
       const fields = fn(builder)
 
       function register(name: string) {
          const field = get(fields, name)
-
-         //console.log(state.getFormValues())
-         // console.log(field?.defaultChecked === value)
-         // console.log(field?.defaultChecked, value)
 
          function onChange(event: any) {
             if (isCheckbox(field.type)) {
@@ -48,7 +46,11 @@ export function create(fn: Function) {
 
          useEffect(() => {
             if (field.type === 'radio') {
-               document.getElementsByName(name).forEach((radio: any) => {
+               Array.from(
+                  (field.ref.current as HTMLDivElement).getElementsByTagName(
+                     'input'
+                  )
+               ).forEach((radio: any) => {
                   radio.checked = radio.value == field.defaultChecked
                })
             }
