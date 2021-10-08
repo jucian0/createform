@@ -217,15 +217,10 @@ export class FieldBuilder {
          type: this.type,
          validations: this.validationsList
       }
-      if (this.type === 'radio' || this.type === 'checkbox') {
-         return {
-            ...defaultProps,
-            defaultChecked: defaultValue,
-            value: defaultValue
-         }
-      }
+
       return {
          ...defaultProps,
+         defaultChecked: defaultValue,
          defaultValue
       }
    }
