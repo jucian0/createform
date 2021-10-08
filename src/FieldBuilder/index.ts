@@ -211,13 +211,22 @@ export class FieldBuilder {
    }
 
    public builder(defaultValue: any) {
-      return {
+      const defaultProps = {
          ref: this.ref,
          name: this.name,
          type: this.type,
-         defaultValue,
-         defaultChecked: defaultValue,
          validations: this.validationsList
+      }
+      if (this.type === 'radio' || this.type === 'checkbox') {
+         return {
+            ...defaultProps,
+            defaultChecked: defaultValue,
+            value: defaultValue
+         }
+      }
+      return {
+         ...defaultProps,
+         defaultValue
       }
    }
 }
