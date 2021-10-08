@@ -76,33 +76,43 @@ const Controlled: React.FC = () => {
                />
             </div>
 
-            <div className="form-group">
-               <input
-                  className="form-ckeck-input"
-                  id="1"
-                  {...register('radio', 1)}
-               />
-               <label className="form-check-label" htmlFor="1">
-                  Option 1
-               </label>
-
-               <input
-                  className="form-ckeck-input"
-                  id="2"
-                  {...register('radio', 2)}
-               />
-               <label className="form-check-label" htmlFor="1">
-                  Option 2
-               </label>
-
-               <input
-                  className="form-ckeck-input"
-                  id="3"
-                  {...register('radio', 3)}
-               />
-               <label className="form-check-label" htmlFor="3">
-                  Option 3
-               </label>
+            <div className="form-group" {...register('radio')}>
+               <div className="form-check">
+                  <input
+                     className="form-check-input"
+                     id="1"
+                     type="radio"
+                     value="1"
+                     name="radio"
+                  />
+                  <label className="form-check-label" htmlFor="1">
+                     Option 1
+                  </label>
+               </div>
+               <div className="form-check">
+                  <input
+                     className="form-check-input"
+                     id="2"
+                     type="radio"
+                     value="2"
+                     name="radio"
+                  />
+                  <label className="form-check-label" htmlFor="1">
+                     Option 2
+                  </label>
+               </div>
+               <div className="form-check">
+                  <input
+                     className="form-check-input"
+                     id="3"
+                     type="radio"
+                     value="3"
+                     name="radio"
+                  />
+                  <label className="form-check-label" htmlFor="3">
+                     Option 3
+                  </label>
+               </div>
             </div>
          </div>
       </div>

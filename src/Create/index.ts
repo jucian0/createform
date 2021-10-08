@@ -21,7 +21,9 @@ export function create(fn: Function) {
       function register(name: string) {
          const field = get(fields, name)
 
-         console.log(state.getFormValues())
+         //console.log(state.getFormValues())
+         // console.log(field?.defaultChecked === value)
+         // console.log(field?.defaultChecked, value)
 
          function onChange(event: any) {
             if (isCheckbox(field.type)) {
@@ -43,6 +45,14 @@ export function create(fn: Function) {
                field.ref.current.removeEventListener('input', onChange)
             }
          }, [field?.current])
+
+         useEffect(() => {
+            if (field.type === 'radio') {
+               document.getElementsByName(name).forEach((radio: any) => {
+                  radio.checked = radio.value == field.defaultChecked
+               })
+            }
+         }, [field.ref.current])
 
          return field
       }
