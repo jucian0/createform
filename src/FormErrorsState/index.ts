@@ -1,5 +1,8 @@
+import { ObservableForm } from '../Observable'
+
 export class FormErrorsState<T = any> extends ObservableForm<T> {
    private initialState: T
+
    constructor(defaultState: T) {
       super(defaultState)
       this.initialState = defaultState
