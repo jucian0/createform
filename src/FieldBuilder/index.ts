@@ -225,3 +225,26 @@ export class FieldBuilder {
       }
    }
 }
+
+export class Fielder {
+   private ref: InputRef<any>
+   private defaultValue: any
+   private validationsList: Function[]
+
+   constructor() {}
+
+   public register([value, validations]: Array<any>) {
+      this.ref = React.createRef()
+      this.defaultValue = value
+      this.validationsList = [...validations]
+   }
+
+   public builder() {
+      return {
+         ref: this.ref,
+         defaultChecked: this.defaultValue,
+         defaultValue: this.defaultValue,
+         validations: this.validationsList
+      }
+   }
+}
