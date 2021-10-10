@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { isCheckbox, isParsableToNumber } from './Utils'
-import { get } from './ObjectPath'
+import { get } from '../StateManagement/ObjectPath'
 import { FormValuesState } from '../StateManagement/FormValuesState'
 import { Validate } from '../Validation/Validate'
 import { CreateField, FieldType } from './CreateField'
@@ -58,6 +58,10 @@ export function create(fn: Function) {
             )
          }
 
+         function handleTouched() {
+            touched.setFieldTouched(name, true)
+         }
+
          function inputEventHandler(event: any) {
             if (options?.mode === 'onChange') {
                handleOnChange(event)
@@ -69,6 +73,7 @@ export function create(fn: Function) {
             if (options?.mode === 'onBlur') {
                handleOnChange(event)
                handleValidate(event)
+               handleTouched()
             }
          }
 

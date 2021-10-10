@@ -12,7 +12,7 @@ export class FormTouchedState<T = any> extends ObservableForm<T> {
       this.notify()
    }
 
-   setFieldTouched(field: string, value: string) {
+   setFieldTouched(field: string, value: boolean) {
       this.patchState({ [field]: value } as any)
       this.notify()
    }
