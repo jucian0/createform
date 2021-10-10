@@ -4,6 +4,9 @@ import { get } from './ObjectPath'
 import { FormValuesState } from '../StateManagement/FormValuesState'
 import { Validate } from '../Validation/Validate'
 import { CreateField, FieldType } from './CreateField'
+import { FormErrorsState } from '../StateManagement/FormErrorsState'
+import { FormTouchedState } from '../StateManagement/FormTouchedState'
+import { FormPristineState } from '../StateManagement/FormPristineState'
 
 type Options = {
    mode: 'onBlur' | 'onChange' | 'onSubmit'
@@ -26,15 +29,18 @@ type Options = {
  */
 export function create(fn: Function) {
    const state = new FormValuesState({})
-   const validate = new Validate()
+   const validations = new Validate()
+   const errors = new FormErrorsState({})
+   const touched = new FormTouchedState({})
+   const pristine = new FormPristineState({})
 
-   return (options: Options) => {
+   return (options?: Options) => {
       const fields = fn(CreateField)
 
       function register(name: string, type?: FieldType) {
          const field = get(fields, name)
 
-         function onChange(event: any) {
+         function handleOnChange(event: any) {
             if (isCheckbox(field.type)) {
                return state.setFieldValue(name, event.target.checked)
             }
@@ -46,24 +52,42 @@ export function create(fn: Function) {
          }
 
          function handleValidate(event: any) {
-            console.log(
-               validate.validate(event.target.value, field.validations)
+            errors.setFieldError(
+               name,
+               validations.validate(event.target.value, field.validations)
             )
+         }
+
+         function inputEventHandler(event: any) {
+            if (options?.mode === 'onChange') {
+               handleOnChange(event)
+               handleValidate(event)
+            }
+         }
+
+         function blurEventHandler(event: any) {
+            if (options?.mode === 'onBlur') {
+               handleOnChange(event)
+               handleValidate(event)
+            }
+         }
+
+         function submitEventHandler(event: any) {
+            if (options?.mode === 'onSubmit') {
+               handleOnChange(event)
+               handleValidate(event)
+            }
          }
 
          useEffect(() => {
             if (field.ref.current) {
-               field.ref.current.addEventListener('input', (e: any) => {
-                  onChange(e)
-                  handleValidate(e)
-               })
+               field.ref.current.addEventListener('input', inputEventHandler)
+               field.ref.current.addEventListener('blur', blurEventHandler)
             }
 
             return () => {
-               field.ref.current.removeEventListener('input', (e: any) => {
-                  onChange(e)
-                  handleValidate(e)
-               })
+               field.ref.current.removeEventListener('input', inputEventHandler)
+               field.ref.current.removeEventListener('blur', blurEventHandler)
             }
          }, [field.ref])
 
