@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { create } from '../../../src/V3/React/Create'
+import { create } from '../../../src/V3/React/CreateForm'
 import {
    email,
    max,

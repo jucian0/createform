@@ -1,3 +1,5 @@
+import { ObservableForm } from './Observable'
+
 export class FormTouchedState<T = any> extends ObservableForm<T> {
    private initialState: T
    constructor(defaultState: T) {

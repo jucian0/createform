@@ -1,25 +1,18 @@
 import { useEffect } from 'react'
-import { Field } from '../FieldBuilder'
-import { FormValuesState } from '../FormValuesState'
-import { Validate } from '../Validate'
-import { get } from './../ObjectPath'
-
-function isCheckbox(type: string) {
-   return type === 'checkbox'
-}
-
-function isParsableToNumber(value: string) {
-   return !isNaN(parseInt(value, 10))
-}
+import { isCheckbox, isParsableToNumber } from './Utils'
+import { get } from './ObjectPath'
+import { FormValuesState } from '../StateManagement/FormValuesState'
+import { Validate } from '../Validation/Validate'
+import { CreateField, FieldType } from './CreateField'
 
 export function create(fn: Function) {
    const state = new FormValuesState({})
    const validate = new Validate()
 
    return () => {
-      const fields = fn(Field)
+      const fields = fn(CreateField)
 
-      function register(name: string) {
+      function register(name: string, type?: FieldType) {
          const field = get(fields, name)
 
          function onChange(event: any) {
@@ -56,7 +49,7 @@ export function create(fn: Function) {
          }, [field.ref])
 
          useEffect(() => {
-            if (field.ref.current && field.type === 'radio') {
+            if (field.ref.current && type === 'radio') {
                Array.from(
                   (field.ref.current as HTMLDivElement).getElementsByTagName(
                      'input'

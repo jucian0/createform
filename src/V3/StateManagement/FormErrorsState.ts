@@ -1,4 +1,4 @@
-import { ObservableForm } from '../Observable'
+import { ObservableForm } from './Observable'
 
 export class FormErrorsState<T = any> extends ObservableForm<T> {
    private initialState: T

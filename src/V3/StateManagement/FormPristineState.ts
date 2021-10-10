@@ -1,3 +1,5 @@
+import { ObservableForm } from './Observable'
+
 export class FormPristineState<T = any> extends ObservableForm<T> {
    private initialState: T
    constructor(defaultState: T) {
