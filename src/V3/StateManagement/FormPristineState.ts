@@ -23,7 +23,7 @@ export class FormPristineState<T = any> extends ObservableForm<T> {
    }
 
    resetFieldPristine(field: string) {
-      this.patchState(field, false as any)
+      this.patch(field, false as any)
       this.notify()
    }
 

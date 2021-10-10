@@ -5,7 +5,7 @@ type Observers = Set<Observer>
 
 interface Observable<T> {
    set: (state: T) => void
-   patchState: (path: string, state: T) => void
+   patch: (path: string, state: T) => void
    subscribe: (observer: Observer) => void
    get: () => T
 }
@@ -22,7 +22,7 @@ export class ObservableForm<T extends {}> implements Observable<T> {
       this.state = state
    }
 
-   patchState(path: string, state: Partial<T>) {
+   patch(path: string, state: Partial<T>) {
       this.state = set(this.state, path, state)
    }
 

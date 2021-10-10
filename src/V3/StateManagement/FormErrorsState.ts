@@ -14,7 +14,7 @@ export class FormErrorsState<T = any> extends ObservableForm<T> {
    }
 
    setFieldError(field: string, value: string) {
-      this.patchState(field, value as any)
+      this.patch(field, value as any)
       this.notify()
    }
 
@@ -24,7 +24,7 @@ export class FormErrorsState<T = any> extends ObservableForm<T> {
    }
 
    resetFieldError(field: string) {
-      this.patchState(field, null as any)
+      this.patch(field, null as any)
       this.notify()
    }
 
