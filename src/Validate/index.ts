@@ -10,122 +10,171 @@ export class Validate {
       }
       return null
    }
+}
 
-   public required(message: string) {
-      return function (value: any) {
-         if (value === null || value === undefined || value === '') {
-            return message || 'This field is required'
-         }
-         return null
+export function required(message = 'This field is required') {
+   return function (value: any) {
+      if (value === null || value === undefined || value === '') {
+         return message
       }
+      return null
    }
+}
 
-   public minLength(message: string) {
-      return function (value: any, length: number) {
-         if (value.length < length) {
-            return message || `This field must be at least ${length} characters`
-         }
-         return null
+export function minLength(
+   length: number,
+   message = `This field must be at least ${length} characters long`
+) {
+   return function (value: any) {
+      if (value.length < length) {
+         return message
       }
+      return null
    }
+}
 
-   public maxLength(value: any, length: number) {
-      if (value.length > length) {
-         return `This field must be at most ${length} characters`
+export function maxLength(
+   length: number,
+   message = `This field must be at most ${length} characters long`
+) {
+   return function (value: any) {
+      if (value > length) {
+         return message
       }
+      return null
    }
+}
 
-   public min(value: any, min: number) {
+export function min(
+   min: number,
+   message = `This field must be at least ${min}`
+) {
+   return function (value: any) {
       if (value < min) {
-         return `This field must be at least ${min}`
+         return message
       }
+      return null
    }
+}
 
-   public max(value: any, max: number) {
+export function max(
+   max: number,
+   message = `This field must be at most ${max}`
+) {
+   return function (value: any) {
       if (value > max) {
-         return `This field must be at most ${max}`
+         return message
       }
+      return null
    }
+}
 
-   public email(value: any) {
-      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-         return 'Invalid email address'
+export function email(message = 'This field must be a valid email') {
+   return function (value: any) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+         return message
       }
+      return null
    }
+}
 
-   public url(value: any) {
+export function url(message = 'This field must be a valid url') {
+   return function (value: any) {
       if (
-         !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/i.test(
+         !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(
             value
          )
       ) {
-         return 'Invalid URL'
+         return message
       }
+      return null
    }
+}
 
-   public number(value: any) {
+export function number(message = 'This field must be a number') {
+   return function (value: any) {
       if (isNaN(value)) {
-         return 'This field must be a number'
+         return message
       }
+      return null
    }
+}
 
-   public integer(value: any) {
-      if (isNaN(value) || value % 1 !== 0) {
-         return 'This field must be an integer'
+export function integer(message = 'This field must be an integer') {
+   return function (value: any) {
+      if (!Number.isInteger(value)) {
+         return message
       }
+      return null
    }
+}
 
-   public float(value: any) {
-      if (isNaN(value)) {
-         return 'This field must be a number'
+export function float(message = 'This field must be a float') {
+   return function (value: any) {
+      if (!Number.isFinite(value)) {
+         return message
       }
+      return null
    }
+}
 
-   public boolean(value: any) {
+export function boolean(message = 'This field must be a boolean') {
+   return function (value: any) {
       if (typeof value !== 'boolean') {
-         return 'This field must be a boolean'
+         return message
       }
+      return null
    }
+}
 
-   public regex(value: any, regex: RegExp) {
+export function regex(
+   regex: RegExp,
+   message = 'This field must match the regex'
+) {
+   return function (value: any) {
       if (!regex.test(value)) {
-         return 'Invalid value'
+         return message
       }
+      return null
    }
+}
 
-   public date(value: any) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-         return 'Invalid date'
+export function date(message = 'This field must be a date') {
+   return function (value: any) {
+      if (!(value instanceof Date)) {
+         return message
       }
+      return null
    }
+}
 
-   public dateTime(value: any) {
-      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value)) {
-         return 'Invalid date time'
+export function dateTime(message = 'This field must be a date time') {
+   return function (value: any) {
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/.test(value)) {
+         return message
       }
+      return null
    }
+}
 
-   public dateISO(value: any) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-         return 'Invalid date'
+export function dateIso(message = 'This field must be a date time') {
+   return function (value: any) {
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/.test(value)) {
+         return message
       }
+      return null
    }
+}
 
-   public domain(value: any) {
+export function domain(message = 'This field must be a domain') {
+   return function (value: any) {
       if (
-         !/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/.test(
+         !/^(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?$/i.test(
             value
          )
       ) {
-         return 'Invalid domain'
+         return message
       }
+      return null
    }
-
-   public ip(value: any) {}
-
-   public ipv4(value: any) {}
-
-   public ipv6(value: any) {}
-
-   public uuid(value: any) {}
 }
