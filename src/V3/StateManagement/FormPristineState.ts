@@ -12,8 +12,8 @@ export class FormPristineState<T = any> extends ObservableForm<T> {
       this.notify()
    }
 
-   setFieldPristine(field: string, value: string) {
-      this.patchState({ [field]: value } as any)
+   setFieldPristine(field: string, value: boolean) {
+      this.setFieldPristine(field, value as any)
       this.notify()
    }
 
@@ -23,7 +23,7 @@ export class FormPristineState<T = any> extends ObservableForm<T> {
    }
 
    resetFieldPristine(field: string) {
-      this.patchState({ [field]: this.initialState[field] } as Partial<T>)
+      this.patchState(field, false as any)
       this.notify()
    }
 

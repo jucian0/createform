@@ -13,7 +13,7 @@ export class FormTouchedState<T = any> extends ObservableForm<T> {
    }
 
    setFieldTouched(field: string, value: boolean) {
-      this.patchState({ [field]: value } as any)
+      this.patchState(field, value as any)
       this.notify()
    }
 
@@ -23,7 +23,7 @@ export class FormTouchedState<T = any> extends ObservableForm<T> {
    }
 
    resetFieldTouched(field: string) {
-      this.patchState({ [field]: this.initialState[field] } as Partial<T>)
+      this.patchState(field, false as any)
       this.notify()
    }
 
@@ -35,7 +35,7 @@ export class FormTouchedState<T = any> extends ObservableForm<T> {
       return this.get()[field]
    }
 
-   getInitialToucheds() {
+   getInitialTouched() {
       return this.initialState
    }
 }

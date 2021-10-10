@@ -1,14 +1,16 @@
+import { set } from './ObjectPath'
+
 type Observer = (...args: any[]) => void
 type Observers = Set<Observer>
 
 interface Observable<T> {
    set: (state: T) => void
-   patchState: (state: T) => void
+   patchState: (path: string, state: T) => void
    subscribe: (observer: Observer) => void
    get: () => T
 }
 
-export class ObservableForm<T> implements Observable<T> {
+export class ObservableForm<T extends {}> implements Observable<T> {
    private observers: Observers
 
    constructor(private state: T) {
@@ -20,8 +22,8 @@ export class ObservableForm<T> implements Observable<T> {
       this.state = state
    }
 
-   patchState(state: Partial<T>) {
-      this.state = Object.assign(this.state, state)
+   patchState(path: string, state: Partial<T>) {
+      this.state = set(this.state, path, state)
    }
 
    subscribe(observer: Observer) {
