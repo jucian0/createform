@@ -12,7 +12,7 @@ export class FormValuesState<T = any> extends ObservableForm<T> {
    }
 
    setFieldValue(field: string, value: any) {
-      this.patchState(field, value as any)
+      this.patch(field, value as any)
       this.notify()
    }
 
@@ -22,7 +22,7 @@ export class FormValuesState<T = any> extends ObservableForm<T> {
    }
 
    resetFieldValue(field: string) {
-      this.patchState(field, null as any)
+      this.patch(field, null as any)
       this.notify()
    }
 
