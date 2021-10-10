@@ -1,3 +1,5 @@
+export type Validator = (...args: any[]) => (value: any) => string | null
+
 /**
  * REQUIRED VALIDATOR
  *
