@@ -5,11 +5,30 @@ import { FormValuesState } from '../StateManagement/FormValuesState'
 import { Validate } from '../Validation/Validate'
 import { CreateField, FieldType } from './CreateField'
 
+type Options = {
+   mode: 'onBlur' | 'onChange' | 'onSubmit'
+   validateOn?: 'onBlur' | 'onChange' | 'onSubmit'
+}
+
+/**
+ * CREATE FORM
+ *
+ * @param {Function} function - This function receives a `CreateField` function as a parameter, and returns a custom hook.
+ * @example const useForm = create(register => ({
+ *    name: register('') }),
+ *    email => ({ email: register('')
+ * })) `or`
+ *
+ * const useForm = create(register => ({
+ *    name: register(['', required('This field is required'),...more validators]),
+ *    email: register(['', required('This field is required',...more validators)])
+ * }))
+ */
 export function create(fn: Function) {
    const state = new FormValuesState({})
    const validate = new Validate()
 
-   return () => {
+   return (options: Options) => {
       const fields = fn(CreateField)
 
       function register(name: string, type?: FieldType) {
