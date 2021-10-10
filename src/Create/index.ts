@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { FieldBuilder } from '../FieldBuilder'
-import { FormErrorsState } from '../FormErrorsState'
+import { Field } from '../FieldBuilder'
 import { FormValuesState } from '../FormValuesState'
 import { get } from './../ObjectPath'
 
@@ -13,12 +12,10 @@ function isParsableToNumber(value: string) {
 }
 
 export function create(fn: Function) {
-   const builder = new FieldBuilder()
    const state = new FormValuesState({})
-   const errors = new FormErrorsState({})
 
    return () => {
-      const fields = fn(builder)
+      const fields = fn(Field)
 
       function register(name: string) {
          const field = get(fields, name)
@@ -31,8 +28,6 @@ export function create(fn: Function) {
                ? parseInt(event.target.value, 10)
                : event.target.value
 
-            const error = field.validate(value)
-
             return state.setFieldValue(name, value)
          }
 
@@ -44,10 +39,10 @@ export function create(fn: Function) {
             return () => {
                field.ref.current.removeEventListener('input', onChange)
             }
-         }, [field?.current])
+         }, [field.ref])
 
          useEffect(() => {
-            if (field.type === 'radio') {
+            if (field.ref.current && field.type === 'radio') {
                Array.from(
                   (field.ref.current as HTMLDivElement).getElementsByTagName(
                      'input'
@@ -56,7 +51,7 @@ export function create(fn: Function) {
                   radio.checked = radio.value == field.defaultChecked
                })
             }
-         }, [field.ref.current])
+         }, [field.ref])
 
          return field
       }
