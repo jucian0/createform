@@ -26,7 +26,7 @@ type FieldType =
    | 'custom'
    | 'image'
 
-export function Field<T = any>([value, validations]: Array<any>) {
+export function Field<T = any>([value, ...validations]: Array<any>) {
    const ref = React.createRef<T>()
    return {
       ref,

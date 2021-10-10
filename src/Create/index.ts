@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Field } from '../FieldBuilder'
 import { FormValuesState } from '../FormValuesState'
+import { Validate } from '../Validate'
 import { get } from './../ObjectPath'
 
 function isCheckbox(type: string) {
@@ -13,6 +14,7 @@ function isParsableToNumber(value: string) {
 
 export function create(fn: Function) {
    const state = new FormValuesState({})
+   const validate = new Validate()
 
    return () => {
       const fields = fn(Field)
@@ -31,13 +33,25 @@ export function create(fn: Function) {
             return state.setFieldValue(name, value)
          }
 
+         function handleValidate(event: any) {
+            console.log(
+               validate.validate(event.target.value, field.validations)
+            )
+         }
+
          useEffect(() => {
             if (field.ref.current) {
-               field.ref.current.addEventListener('input', onChange)
+               field.ref.current.addEventListener('input', (e: any) => {
+                  onChange(e)
+                  handleValidate(e)
+               })
             }
 
             return () => {
-               field.ref.current.removeEventListener('input', onChange)
+               field.ref.current.removeEventListener('input', (e: any) => {
+                  onChange(e)
+                  handleValidate(e)
+               })
             }
          }, [field.ref])
 
