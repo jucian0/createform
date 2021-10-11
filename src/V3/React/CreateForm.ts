@@ -77,6 +77,10 @@ export function create(fn: Function) {
             }
          }
 
+         function focusEventHandler(event: any) {
+            pristine.setFieldPristine(name, false)
+         }
+
          function submitEventHandler(event: any) {
             if (options?.mode === 'onSubmit') {
                handleOnChange(event)
