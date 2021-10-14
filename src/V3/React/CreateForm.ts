@@ -29,7 +29,7 @@ type Options = {
  */
 export function create(fn: Function) {
    const state = new FormValuesState({})
-   const validations = new Validate()
+   const validate = new Validate()
    const errors = new FormErrorsState({})
    const touched = new FormTouchedState({})
    const pristine = new FormPristineState({})
@@ -54,7 +54,7 @@ export function create(fn: Function) {
          function handleValidate(event: any) {
             errors.setFieldError(
                name,
-               validations.validate(event.target.value, validations)
+               validate.validate(event.target.value, validations)
             )
          }
 
@@ -62,10 +62,12 @@ export function create(fn: Function) {
             touched.setFieldTouched(name, true)
          }
 
-         console.log(pristine.getFieldsPristine())
-
          function inputEventHandler(event: any) {
             if (options?.mode === 'onChange') {
+               console.log(
+                  pristine.getFieldsPristine(),
+                  errors.getFieldsError()
+               )
                handleOnChange(event)
                handleValidate(event)
             }
@@ -79,8 +81,8 @@ export function create(fn: Function) {
             }
          }
 
-         function focusEventHandler(event: any) {
-            pristine.setFieldPristine(name, false)
+         function focusEventHandler() {
+            pristine.setFieldPristine(name)
          }
 
          function submitEventHandler(event: any) {

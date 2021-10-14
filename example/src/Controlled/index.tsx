@@ -42,7 +42,9 @@ const useForm = create(build => ({
 }))
 
 const Controlled: React.FC = () => {
-   const { register, state } = useForm()
+   const { register, state } = useForm({
+      mode: 'onChange'
+   })
 
    return (
       <div className="row">
