@@ -38,7 +38,7 @@ export function create(fn: Function) {
       const fields = fn(CreateField)
 
       function register(name: string, type?: FieldType) {
-         const field = get(fields, name)
+         const { validations, ...field } = get(fields, name)
 
          function handleOnChange(event: any) {
             if (isCheckbox(field.type)) {
@@ -54,13 +54,15 @@ export function create(fn: Function) {
          function handleValidate(event: any) {
             errors.setFieldError(
                name,
-               validations.validate(event.target.value, field.validations)
+               validations.validate(event.target.value, validations)
             )
          }
 
          function handleTouched() {
             touched.setFieldTouched(name, true)
          }
+
+         console.log(pristine.getFieldsPristine())
 
          function inputEventHandler(event: any) {
             if (options?.mode === 'onChange') {
@@ -90,6 +92,12 @@ export function create(fn: Function) {
 
          useEffect(() => {
             if (field.ref.current) {
+               field.ref.current.addEventListener('focus', focusEventHandler)
+            }
+         }, [field.ref])
+
+         useEffect(() => {
+            if (field.ref.current) {
                field.ref.current.addEventListener('input', inputEventHandler)
                field.ref.current.addEventListener('blur', blurEventHandler)
             }
@@ -112,7 +120,7 @@ export function create(fn: Function) {
             }
          }, [field.ref])
 
-         return field
+         return { ...field, name }
       }
 
       return {
