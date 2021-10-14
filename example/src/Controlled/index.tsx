@@ -46,6 +46,8 @@ const Controlled: React.FC = () => {
       mode: 'onChange'
    })
 
+   console.log(state)
+
    return (
       <div className="row">
          <div className="col-lg-12">
