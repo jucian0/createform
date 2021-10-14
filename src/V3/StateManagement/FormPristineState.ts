@@ -12,8 +12,8 @@ export class FormPristineState<T = any> extends ObservableForm<T> {
       this.notify()
    }
 
-   setFieldPristine(field: string, value: boolean) {
-      this.setFieldPristine(field, value as any)
+   setFieldPristine(field: string) {
+      this.patch(field, true as any)
       this.notify()
    }
 
