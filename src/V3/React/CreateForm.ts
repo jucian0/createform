@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
 import { isCheckbox, isParsableToNumber } from './Utils'
 import { get } from '../StateManagement/ObjectPath'
 import { FormValuesState } from '../StateManagement/FormValuesState'
@@ -11,6 +11,18 @@ import { FormPristineState } from '../StateManagement/FormPristineState'
 type Options = {
    mode: 'onBlur' | 'onChange' | 'onSubmit'
    validateOn?: 'onBlur' | 'onChange' | 'onSubmit'
+}
+
+type Action = {
+   type: 'touched' | 'errors' | 'values' | 'pristine'
+   payload: any
+}
+
+function stateReducer(state: FormValuesState, action: Action) {
+   return {
+      ...state,
+      [action.type]: action.payload
+   }
 }
 
 /**
@@ -39,6 +51,7 @@ export function create(fn: Function) {
 
       function register(name: string, type?: FieldType) {
          const { validations, ...field } = get(fields, name)
+         const [formState, setFormState] = useReducer(stateReducer, {})
 
          function handleOnChange(event: any) {
             if (isCheckbox(field.type)) {
