@@ -40,28 +40,27 @@ function stateReducer(state: FormValuesState, action: Action) {
  * }))
  */
 export function create(fn: Function) {
-   const state = new FormValuesState({})
-   const validate = new Validate()
-   const errors = new FormErrorsState({})
-   const touched = new FormTouchedState({})
-   const pristine = new FormPristineState({})
-
    return (options?: Options) => {
+      const values = new FormValuesState({})
+      const validate = new Validate()
+      const errors = new FormErrorsState({})
+      const touched = new FormTouchedState({})
+      const pristine = new FormPristineState({})
       const fields = fn(CreateField)
+      const [formState, setFormState] = useReducer(stateReducer, {})
 
       function register(name: string, type?: FieldType) {
          const { validations, ...field } = get(fields, name)
-         const [formState, setFormState] = useReducer(stateReducer, {})
 
          function handleOnChange(event: any) {
             if (isCheckbox(field.type)) {
-               return state.setFieldValue(name, event.target.checked)
+               return values.setFieldValue(name, event.target.checked)
             }
             const value = isParsableToNumber(event.target.value)
                ? parseInt(event.target.value, 10)
                : event.target.value
 
-            return state.setFieldValue(name, value)
+            return values.setFieldValue(name, value)
          }
 
          function handleValidate(event: any) {
@@ -77,10 +76,6 @@ export function create(fn: Function) {
 
          function inputEventHandler(event: any) {
             if (options?.mode === 'onChange') {
-               console.log(
-                  pristine.getFieldsPristine(),
-                  errors.getFieldsError()
-               )
                handleOnChange(event)
                handleValidate(event)
             }
@@ -118,8 +113,17 @@ export function create(fn: Function) {
             }
 
             return () => {
-               field.ref.current.removeEventListener('input', inputEventHandler)
-               field.ref.current.removeEventListener('blur', blurEventHandler)
+               if (field.ref.current) {
+                  field.ref.current.removeEventListener(
+                     'input',
+                     inputEventHandler
+                  )
+
+                  field.ref.current.removeEventListener(
+                     'blur',
+                     blurEventHandler
+                  )
+               }
             }
          }, [field.ref])
 
@@ -138,8 +142,26 @@ export function create(fn: Function) {
          return { ...field, name }
       }
 
+      function handleState(event: any) {
+         return (state: any) => setFormState({ payload: state, type: event })
+      }
+
+      useEffect(() => {
+         const valuesUnsubscribe = values.subscribe(handleState('values'))
+         const errorsUnsubscribe = errors.subscribe(handleState('errors'))
+         const touchedUnsubscribe = touched.subscribe(handleState('touched'))
+         const pristineUnsubscribe = pristine.subscribe(handleState('pristine'))
+
+         return () => {
+            valuesUnsubscribe()
+            errorsUnsubscribe()
+            touchedUnsubscribe()
+            pristineUnsubscribe()
+         }
+      }, [])
+
       return {
-         state: state.getFormValues(),
+         state: formState,
          register
       }
    }

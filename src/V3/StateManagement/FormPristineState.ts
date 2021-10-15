@@ -13,8 +13,10 @@ export class FormPristineState<T = any> extends ObservableForm<T> {
    }
 
    setFieldPristine(field: string) {
-      this.patch(field, true as any)
-      this.notify()
+      if (this.getProperty(field) === undefined) {
+         this.patch(field, true as any)
+         this.notify()
+      }
    }
 
    resetFieldsPristine() {
