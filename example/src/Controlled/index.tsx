@@ -42,11 +42,13 @@ const useForm = create(build => ({
 }))
 
 const Controlled: React.FC = () => {
-   const { register, state } = useForm({
-      mode: 'onBlur'
+   const { register, state, form$ } = useForm({
+      mode: 'onChange'
    })
 
-   console.log(state)
+   //console.log(state.values)
+
+   form$.subscribe(e => console.log(e.values))
 
    return (
       <div className="row">
