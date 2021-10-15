@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { isCheckbox, isParsableToNumber } from './Utils'
 import { get } from '../StateManagement/ObjectPath'
 import { FormValuesState } from '../StateManagement/FormValuesState'
@@ -29,12 +29,11 @@ type Options = {
 const INITIAL_VALUES = {
    values: {},
    errors: {},
-   touched: {},
-   pristine: {}
+   touched: {}
 }
 export function create(fn: Function) {
    return (options?: Options) => {
-      const state = new FormValuesState(INITIAL_VALUES)
+      const form$ = new FormValuesState(INITIAL_VALUES)
       const validate = new Validate()
       const fields = fn(CreateField)
       const [formState, setFormState] = useState(INITIAL_VALUES)
@@ -44,13 +43,13 @@ export function create(fn: Function) {
 
          function handleOnChange(event: any) {
             if (isCheckbox(field.type)) {
-               return state.setFieldValue(name, event.target.checked)
+               return form$.setFieldValue(name, event.target.checked)
             }
             const value = isParsableToNumber(event.target.value)
                ? parseInt(event.target.value, 10)
                : event.target.value
 
-            return state.setFieldValue(name, value)
+            return form$.setFieldValue(name, value)
          }
 
          function handleNextState(event: any) {
@@ -60,21 +59,24 @@ export function create(fn: Function) {
                : isParsableToNumber(event.target.value)
                ? parseInt(event.target.value, 10)
                : event.target.value
-
             const touched = true
-            const currentState = state.get()
-            const nextError = set(currentState, `errors.${name}`, error)
-            const nextValue = set(nextError, `values.${name}`, value)
-            const nextTouched = set(nextValue, `touched.${name}`, touched)
-            const nextPristine = set(nextTouched, `pristine.${name}`, false)
+
+            const currentState = form$.get()
+            const nextErrors = set(currentState, `errors.${name}`, error).errors
+            const nextValues = set(currentState, `values.${name}`, value).values
+            const nextTouched = set(
+               currentState,
+               `touched.${name}`,
+               touched
+            ).touched
+
             const nextState = {
-               values: nextPristine.values,
-               errors: nextPristine.errors,
-               touched: nextPristine.touched,
-               pristine: nextPristine.pristine
+               values: nextValues,
+               errors: nextErrors,
+               touched: nextTouched
             }
 
-            state.set(nextState)
+            form$.set(nextState)
          }
 
          function inputEventHandler(event: any) {
@@ -124,21 +126,22 @@ export function create(fn: Function) {
          return { ...field, name, type }
       }
 
-      function handleState(state: any) {
+      const handleState = useCallback((state: any) => {
          return setFormState({ ...state })
-      }
+      }, [])
 
       useEffect(() => {
-         const valuesUnsubscribe = state.subscribe(handleState)
+         const valuesUnsubscribe = form$.subscribe(handleState)
 
          return () => {
             valuesUnsubscribe()
          }
-      }, [])
+      }, [handleState])
 
       return {
          state: formState,
-         register
+         register,
+         form$: form$
       }
    }
 }

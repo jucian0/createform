@@ -48,7 +48,7 @@ const Controlled: React.FC = () => {
 
    //console.log(state.values)
 
-   form$.subscribe(e => console.log(e.values))
+   //form$.subscribe(e => console.log(e.values))
 
    return (
       <div className="row">
