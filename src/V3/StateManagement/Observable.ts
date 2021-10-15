@@ -1,4 +1,4 @@
-import { set } from './ObjectPath'
+import { get, set } from './ObjectPath'
 
 type Observer = (...args: any[]) => void
 type Observers = Set<Observer>
@@ -36,6 +36,10 @@ export class ObservableForm<T extends {}> implements Observable<T> {
 
    get() {
       return this.state
+   }
+
+   getProperty(path: string) {
+      return get(this.state, path)
    }
 
    notify() {
