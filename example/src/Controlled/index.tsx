@@ -43,7 +43,7 @@ const useForm = create(build => ({
 
 const Controlled: React.FC = () => {
    const { register, state } = useForm({
-      mode: 'onChange'
+      mode: 'onBlur'
    })
 
    console.log(state)
@@ -93,9 +93,8 @@ const Controlled: React.FC = () => {
             <div className="form-group">
                <label htmlFor="">Checkbox</label>
                <input
-                  type="checkbox"
                   className="form-control"
-                  {...register('checkbox')}
+                  {...register('checkbox', 'checkbox')}
                />
             </div>
 

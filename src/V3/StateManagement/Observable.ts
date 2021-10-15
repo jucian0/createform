@@ -1,4 +1,4 @@
-import { get, set } from './ObjectPath'
+import { get, set } from 'object-path-immutable'
 
 type Observer = (...args: any[]) => void
 type Observers = Set<Observer>
@@ -20,10 +20,15 @@ export class ObservableForm<T extends {}> implements Observable<T> {
 
    set(state: T) {
       this.state = state
+      this.notify()
    }
 
    patch(path: string, state: Partial<T>) {
-      this.state = set(this.state, path, state)
+      const value = get(this.state, path)
+      if (value !== state) {
+         this.state = set(this.state, path, state)
+         this.notify()
+      }
    }
 
    subscribe(observer: Observer) {
