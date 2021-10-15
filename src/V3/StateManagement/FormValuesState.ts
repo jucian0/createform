@@ -8,22 +8,18 @@ export class FormValuesState<T = any> extends ObservableForm<T> {
 
    setFormValue(values: T) {
       this.set(values)
-      this.notify()
    }
 
    setFieldValue(field: string, value: any) {
-      this.patch(field, value as any)
-      this.notify()
+      this.patch(`values.${[field]}`, value as any)
    }
 
    resetFormValues() {
       this.set(this.initialState)
-      this.notify()
    }
 
    resetFieldValue(field: string) {
-      this.patch(field, null as any)
-      this.notify()
+      this.patch(`values.${[field]}`, null as any)
    }
 
    getFormValues() {
@@ -31,10 +27,22 @@ export class FormValuesState<T = any> extends ObservableForm<T> {
    }
 
    getFieldValue(field: string) {
-      return this.get()[field]
+      return this.getProperty(`values.${field}`)
    }
 
    getInitialStateValues() {
       return this.initialState
+   }
+
+   setFieldError(field: string, error: string) {
+      this.setFieldValue(`errors.${field}`, error)
+   }
+
+   setFieldTouched(field: string, touched: boolean) {
+      this.setFieldValue(`touched.${field}`, touched)
+   }
+
+   setFieldPristine(field: string) {
+      this.setFieldValue(`pristine.${field}`, true)
    }
 }

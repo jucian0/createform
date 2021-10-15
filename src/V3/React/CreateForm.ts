@@ -1,28 +1,14 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useState } from 'react'
 import { isCheckbox, isParsableToNumber } from './Utils'
 import { get } from '../StateManagement/ObjectPath'
 import { FormValuesState } from '../StateManagement/FormValuesState'
 import { Validate } from '../Validation/Validate'
 import { CreateField, FieldType } from './CreateField'
-import { FormErrorsState } from '../StateManagement/FormErrorsState'
-import { FormTouchedState } from '../StateManagement/FormTouchedState'
-import { FormPristineState } from '../StateManagement/FormPristineState'
+import { set } from 'object-path-immutable'
 
 type Options = {
    mode: 'onBlur' | 'onChange' | 'onSubmit'
    validateOn?: 'onBlur' | 'onChange' | 'onSubmit'
-}
-
-type Action = {
-   type: 'touched' | 'errors' | 'values' | 'pristine'
-   payload: any
-}
-
-function stateReducer(state: FormValuesState, action: Action) {
-   return {
-      ...state,
-      [action.type]: action.payload
-   }
 }
 
 /**
@@ -39,72 +25,69 @@ function stateReducer(state: FormValuesState, action: Action) {
  *    email: register(['', required('This field is required',...more validators)])
  * }))
  */
+
+const INITIAL_VALUES = {
+   values: {},
+   errors: {},
+   touched: {},
+   pristine: {}
+}
 export function create(fn: Function) {
    return (options?: Options) => {
-      const values = new FormValuesState({})
+      const state = new FormValuesState(INITIAL_VALUES)
       const validate = new Validate()
-      const errors = new FormErrorsState({})
-      const touched = new FormTouchedState({})
-      const pristine = new FormPristineState({})
       const fields = fn(CreateField)
-      const [formState, setFormState] = useReducer(stateReducer, {})
+      const [formState, setFormState] = useState(INITIAL_VALUES)
 
       function register(name: string, type?: FieldType) {
          const { validations, ...field } = get(fields, name)
 
          function handleOnChange(event: any) {
             if (isCheckbox(field.type)) {
-               return values.setFieldValue(name, event.target.checked)
+               return state.setFieldValue(name, event.target.checked)
             }
             const value = isParsableToNumber(event.target.value)
                ? parseInt(event.target.value, 10)
                : event.target.value
 
-            return values.setFieldValue(name, value)
+            return state.setFieldValue(name, value)
          }
 
-         function handleValidate(event: any) {
-            errors.setFieldError(
-               name,
-               validate.validate(event.target.value, validations)
-            )
-         }
+         function handleNextState(event: any) {
+            const error = validate.validate(event.target.value, validations)
+            const value = isCheckbox(type as '')
+               ? event.target.checked
+               : isParsableToNumber(event.target.value)
+               ? parseInt(event.target.value, 10)
+               : event.target.value
 
-         function handleTouched() {
-            touched.setFieldTouched(name, true)
+            const touched = true
+            const currentState = state.get()
+            const nextError = set(currentState, `errors.${name}`, error)
+            const nextValue = set(nextError, `values.${name}`, value)
+            const nextTouched = set(nextValue, `touched.${name}`, touched)
+            const nextPristine = set(nextTouched, `pristine.${name}`, false)
+            const nextState = {
+               values: nextPristine.values,
+               errors: nextPristine.errors,
+               touched: nextPristine.touched,
+               pristine: nextPristine.pristine
+            }
+
+            state.set(nextState)
          }
 
          function inputEventHandler(event: any) {
             if (options?.mode === 'onChange') {
-               handleOnChange(event)
-               handleValidate(event)
+               handleNextState(event)
             }
          }
 
          function blurEventHandler(event: any) {
             if (options?.mode === 'onBlur') {
-               handleOnChange(event)
-               handleValidate(event)
-               handleTouched()
+               handleNextState(event)
             }
          }
-
-         function focusEventHandler() {
-            pristine.setFieldPristine(name)
-         }
-
-         function submitEventHandler(event: any) {
-            if (options?.mode === 'onSubmit') {
-               handleOnChange(event)
-               handleValidate(event)
-            }
-         }
-
-         useEffect(() => {
-            if (field.ref.current) {
-               field.ref.current.addEventListener('focus', focusEventHandler)
-            }
-         }, [field.ref])
 
          useEffect(() => {
             if (field.ref.current) {
@@ -118,7 +101,6 @@ export function create(fn: Function) {
                      'input',
                      inputEventHandler
                   )
-
                   field.ref.current.removeEventListener(
                      'blur',
                      blurEventHandler
@@ -139,24 +121,18 @@ export function create(fn: Function) {
             }
          }, [field.ref])
 
-         return { ...field, name }
+         return { ...field, name, type }
       }
 
-      function handleState(event: any) {
-         return (state: any) => setFormState({ payload: state, type: event })
+      function handleState(state: any) {
+         return setFormState({ ...state })
       }
 
       useEffect(() => {
-         const valuesUnsubscribe = values.subscribe(handleState('values'))
-         const errorsUnsubscribe = errors.subscribe(handleState('errors'))
-         const touchedUnsubscribe = touched.subscribe(handleState('touched'))
-         const pristineUnsubscribe = pristine.subscribe(handleState('pristine'))
+         const valuesUnsubscribe = state.subscribe(handleState)
 
          return () => {
             valuesUnsubscribe()
-            errorsUnsubscribe()
-            touchedUnsubscribe()
-            pristineUnsubscribe()
          }
       }, [])
 
