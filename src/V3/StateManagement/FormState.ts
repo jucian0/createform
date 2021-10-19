@@ -22,7 +22,7 @@ export class FormState<T = any> extends ObservableForm<T> {
       this.patch(`values.${[field]}`, null as any)
    }
 
-   getFormValues() {
+   getFormState() {
       return this.get()
    }
 
