@@ -46,7 +46,7 @@ const Controlled: React.FC = () => {
       mode: 'onChange'
    })
 
-   //console.log(state.values)
+   console.log(state.values)
 
    //form$.subscribe(e => console.log(e.values))
 
@@ -139,6 +139,14 @@ const Controlled: React.FC = () => {
                </div>
             </div>
          </div>
+         <button
+            onClick={() => form$.setFieldValue('name', 'Mudei o seu nome')}
+         >
+            Change Name
+         </button>
+         <button onClick={() => form$.resetFieldValue('name')}>
+            Reset Field Value
+         </button>
       </div>
    )
 }

@@ -1,5 +1,5 @@
-export function isCheckbox(type: string) {
-   return type === 'checkbox'
+export function isCheckboxOrRadio(type: string) {
+   return type === 'checkbox' || type === 'radio'
 }
 
 export function isParsableToNumber(value: string) {
