@@ -41,17 +41,6 @@ export function create(fn: Function) {
       const register = useCallback((name: string, type?: FieldType) => {
          const { validations, ...field } = get(fields.current, name)
 
-         function handleOnChange(event: any) {
-            if (isCheckboxOrRadio(field.type)) {
-               return form$.setFieldValue(name, event.target.checked)
-            }
-            const value = isParsableToNumber(event.target.value)
-               ? parseInt(event.target.value, 10)
-               : event.target.value
-
-            return form$.setFieldValue(name, value)
-         }
-
          function handleNextState(event: any) {
             const error = validate.validate(event.target.value, validations)
             const value = isCheckboxOrRadio(type as '')
@@ -143,12 +132,21 @@ export function create(fn: Function) {
          form$.setFieldValue(name, value)
          const field = get(fields.current, name)
          field.ref.current.value = value
+         field.ref.current.checked = value
       }
 
       function resetFieldValue(name: string) {
          form$.resetFieldValue(name)
          const field = get(fields.current, name)
          field.ref.current.value = field.defaultValue
+         field.ref.current.checked = field.defaultChecked
+      }
+
+      function resetFormValues() {
+         form$.resetFormValues
+         Object.keys(fields).forEach(field => {
+            resetFieldValue(field)
+         })
       }
 
       return {
@@ -156,7 +154,8 @@ export function create(fn: Function) {
          register,
          form$: {
             setFieldValue,
-            resetFieldValue
+            resetFieldValue,
+            resetFormValues
          }
       }
    }

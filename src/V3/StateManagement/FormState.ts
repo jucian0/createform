@@ -6,7 +6,7 @@ export class FormState<T = any> extends ObservableForm<T> {
       this.initialState = defaultState
    }
 
-   setFormValue(values: T) {
+   setFormValues(values: T) {
       this.set(values)
    }
 
