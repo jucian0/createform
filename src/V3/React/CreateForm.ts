@@ -36,7 +36,7 @@ export function create(fn: Function) {
       const form$ = new FormState(INITIAL_VALUES)
       const validate = new Validate()
       const fields = useRef(fn(CreateField))
-      const [formState, setFormState] = useState(INITIAL_VALUES)
+      const [formState, setFormState] = useState(form$.getFormState())
 
       const register = useCallback((name: string, type?: FieldType) => {
          const { validations, ...field } = get(fields.current, name)
@@ -78,7 +78,6 @@ export function create(fn: Function) {
 
             form$.set(nextState)
          }
-         console.log('<<<<<<<<A>>>>>>>>>>')
 
          function inputEventHandler(event: any) {
             if (options?.mode === 'onChange') {
@@ -96,7 +95,9 @@ export function create(fn: Function) {
             if (field.ref.current) {
                field.ref.current.addEventListener('input', inputEventHandler)
                field.ref.current.addEventListener('blur', blurEventHandler)
+               form$.setFieldValue(name, field.currentValue)
             }
+
             return () => {
                if (field.ref.current) {
                   field.ref.current.removeEventListener(
@@ -141,36 +142,13 @@ export function create(fn: Function) {
       function setFieldValue(name: string, value: any) {
          form$.setFieldValue(name, value)
          const field = get(fields.current, name)
-         if (isCheckboxOrRadio(field)) {
-            return (fields.current = set(
-               fields.current,
-               `${name}.defaultChecked`,
-               value
-            ))
-         }
-         return (fields.current = set(
-            fields.current,
-            `${name}.defaultValue`,
-            value
-         ))
+         field.ref.current.value = value
       }
 
       function resetFieldValue(name: string) {
          form$.resetFieldValue(name)
          const field = get(fields.current, name)
-         console.log('<<<<<<<<B>>>>>>>>>>', form$.getInitialStateValues())
-         if (isCheckboxOrRadio(field)) {
-            return (fields.current = set(
-               fields.current,
-               `${name}.defaultChecked`,
-               get(form$.getInitialStateValues().values, name)
-            ))
-         }
-         return (fields.current = set(
-            fields.current,
-            `${name}.defaultValue`,
-            get(form$.getInitialStateValues().values, name)
-         ))
+         field.ref.current.value = field.defaultValue
       }
 
       return {

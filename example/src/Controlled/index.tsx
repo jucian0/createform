@@ -12,7 +12,7 @@ import {
 
 const useForm = create(build => ({
    name: build([
-      '',
+      'juciano',
       required("It's required"),
       minLength(3, 'Min length is 3'),
       maxLength(10, 'Max length is 10')
