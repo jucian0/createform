@@ -1,5 +1,5 @@
 import { ObservableForm } from './Observable'
-export class FormValuesState<T = any> extends ObservableForm<T> {
+export class FormState<T = any> extends ObservableForm<T> {
    private initialState: T
    constructor(defaultState: T = {} as T) {
       super(defaultState)

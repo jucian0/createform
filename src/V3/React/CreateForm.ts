@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
-import { isCheckbox, isParsableToNumber } from './Utils'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { isCheckboxOrRadio, isParsableToNumber } from './Utils'
 import { get } from '../StateManagement/ObjectPath'
-import { FormValuesState } from '../StateManagement/FormValuesState'
+import { FormState } from '../StateManagement/FormState'
 import { Validate } from '../Validation/Validate'
 import { CreateField, FieldType } from './CreateField'
 import { set } from 'object-path-immutable'
@@ -33,16 +33,16 @@ const INITIAL_VALUES = {
 }
 export function create(fn: Function) {
    return (options?: Options) => {
-      const form$ = new FormValuesState(INITIAL_VALUES)
+      const form$ = new FormState(INITIAL_VALUES)
       const validate = new Validate()
-      const fields = fn(CreateField)
+      const fields = useRef(fn(CreateField))
       const [formState, setFormState] = useState(INITIAL_VALUES)
 
-      function register(name: string, type?: FieldType) {
-         const { validations, ...field } = get(fields, name)
+      const register = useCallback((name: string, type?: FieldType) => {
+         const { validations, ...field } = get(fields.current, name)
 
          function handleOnChange(event: any) {
-            if (isCheckbox(field.type)) {
+            if (isCheckboxOrRadio(field.type)) {
                return form$.setFieldValue(name, event.target.checked)
             }
             const value = isParsableToNumber(event.target.value)
@@ -54,7 +54,7 @@ export function create(fn: Function) {
 
          function handleNextState(event: any) {
             const error = validate.validate(event.target.value, validations)
-            const value = isCheckbox(type as '')
+            const value = isCheckboxOrRadio(type as '')
                ? event.target.checked
                : isParsableToNumber(event.target.value)
                ? parseInt(event.target.value, 10)
@@ -78,6 +78,7 @@ export function create(fn: Function) {
 
             form$.set(nextState)
          }
+         console.log('<<<<<<<<A>>>>>>>>>>')
 
          function inputEventHandler(event: any) {
             if (options?.mode === 'onChange') {
@@ -96,7 +97,6 @@ export function create(fn: Function) {
                field.ref.current.addEventListener('input', inputEventHandler)
                field.ref.current.addEventListener('blur', blurEventHandler)
             }
-
             return () => {
                if (field.ref.current) {
                   field.ref.current.removeEventListener(
@@ -109,7 +109,7 @@ export function create(fn: Function) {
                   )
                }
             }
-         }, [field.ref])
+         }, [field.ref.current])
 
          useEffect(() => {
             if (field.ref.current && type === 'radio') {
@@ -121,10 +121,10 @@ export function create(fn: Function) {
                   radio.checked = radio.value == field.defaultChecked
                })
             }
-         }, [field.ref])
+         }, [field.ref.current])
 
          return { ...field, name, type }
-      }
+      }, [])
 
       const handleState = useCallback((state: any) => {
          return setFormState({ ...state })
@@ -138,10 +138,48 @@ export function create(fn: Function) {
          }
       }, [handleState])
 
+      function setFieldValue(name: string, value: any) {
+         form$.setFieldValue(name, value)
+         const field = get(fields.current, name)
+         if (isCheckboxOrRadio(field)) {
+            return (fields.current = set(
+               fields.current,
+               `${name}.defaultChecked`,
+               value
+            ))
+         }
+         return (fields.current = set(
+            fields.current,
+            `${name}.defaultValue`,
+            value
+         ))
+      }
+
+      function resetFieldValue(name: string) {
+         form$.resetFieldValue(name)
+         const field = get(fields.current, name)
+         console.log('<<<<<<<<B>>>>>>>>>>', form$.getInitialStateValues())
+         if (isCheckboxOrRadio(field)) {
+            return (fields.current = set(
+               fields.current,
+               `${name}.defaultChecked`,
+               get(form$.getInitialStateValues().values, name)
+            ))
+         }
+         return (fields.current = set(
+            fields.current,
+            `${name}.defaultValue`,
+            get(form$.getInitialStateValues().values, name)
+         ))
+      }
+
       return {
          state: formState,
          register,
-         form$: form$
+         form$: {
+            setFieldValue,
+            resetFieldValue
+         }
       }
    }
 }
