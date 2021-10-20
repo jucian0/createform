@@ -1,5 +1,5 @@
 import React from 'react'
-import { Validator } from '../Validation/Validators'
+import { boolean, required, Validator } from '../Validation/Validators'
 
 export type FieldType =
    | 'text'
@@ -60,48 +60,73 @@ export function CreateField<T = any>(
    }
 }
 
-export class FormControl {
-   constructor() {}
+type Fields = {
+   [key: string]:
+      | [DefaultValue, ...Validator[]]
+      | DefaultValue
+      | FormControl<any>
+}
 
-   build(form: {
-      [key: string]: [DefaultValue, ...Validator[]] | DefaultValue
-   }) {
+export class FormControl<Form extends Fields> {
+   constructor(public form: Form) {
       Object.keys(form).forEach(key => {
-         this[key] = this.createField(form[key], key)
+         this[key] = this.field(form[key] as '', key)
       })
-
-      return this
    }
 
-   private createField(
+   private boolean(key: string, value: boolean, validations?: Validator[]) {
+      const ref = React.createRef<any>()
+
+      return {
+         props: {
+            ref,
+            name: key,
+            defaultChecked: value
+         },
+         meta: {
+            path: key,
+            validations
+         }
+      }
+   }
+
+   private default<T>(key: string, value: T, validations?: Validator[]) {
+      const ref = React.createRef<any>()
+
+      return {
+         props: {
+            ref,
+            name: key,
+            defaultValue: value
+         },
+         meta: {
+            path: key,
+            validations
+         }
+      }
+   }
+
+   private field(
       params: [DefaultValue, ...Validator[]] | DefaultValue,
       key: string
    ) {
       const value = Array.isArray(params) ? params[0] : params
       const validations = Array.isArray(params)
-         ? params.slice(1)
+         ? (params.slice(1) as Validator[])
          : ([] as Validator[])
 
-      const ref = React.createRef<any>()
-      return {
-         props: {
-            ref,
-            name: key,
-            defaultChecked: Boolean(value),
-            defaultValue: value
-         },
-         meta: {
-            path: key,
-            validations: validations as Validator[]
-         }
+      if (params instanceof FormControl) {
+         return params
       }
+
+      if (typeof value === 'boolean') {
+         return this.boolean(key, value, validations)
+      }
+
+      return this.default(key, value, validations)
    }
 }
 
-export function creates(fn: Function) {
-   return (...args: any[]) => {
-      const formControl = new FormControl()
-      const form = fn(formControl, ...args)
-      return form
-   }
+export function useForm<T extends Fields>(formControl: FormControl<T>) {
+   return { formControl }
 }
