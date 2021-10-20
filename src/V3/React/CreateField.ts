@@ -67,13 +67,16 @@ export class FormControl {
       [key: string]: [DefaultValue, ...Validator[]] | DefaultValue
    }) {
       Object.keys(form).forEach(key => {
-         this[key] = this.createField(form[key])
+         this[key] = this.createField(form[key], key)
       })
 
       return this
    }
 
-   private createField(params: [DefaultValue, ...Validator[]] | DefaultValue) {
+   private createField(
+      params: [DefaultValue, ...Validator[]] | DefaultValue,
+      key: string
+   ) {
       const value = Array.isArray(params) ? params[0] : params
       const validations = Array.isArray(params)
          ? params.slice(1)
@@ -81,10 +84,16 @@ export class FormControl {
 
       const ref = React.createRef<any>()
       return {
-         ref,
-         defaultChecked: Boolean(value),
-         defaultValue: value,
-         validations: validations as Validator[]
+         props: {
+            ref,
+            name: key,
+            defaultChecked: Boolean(value),
+            defaultValue: value
+         },
+         meta: {
+            path: key,
+            validations: validations as Validator[]
+         }
       }
    }
 }

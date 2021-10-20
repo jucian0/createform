@@ -26,22 +26,22 @@ const test = creates(build =>
          number(),
          min(18, 'Min length is 18'),
          max(60, 'Max length is 60')
-      ],
-      address: build.build({
-         street: ['', required("It's required")],
-         city: ['', required("It's required")],
-         zip: [
-            '',
-            required("It's required"),
-            number('Zis is not valid'),
-            min(1000, 'Min length is 1000'),
-            max(9999, 'Max length is 9999')
-         ]
-      }),
-      phone: build.build({
-         home: ['', required("It's required")],
-         mobile: ['', required("It's required")]
-      })
+      ]
+      // address: build.build({
+      //    street: ['', required("It's required")],
+      //    city: ['', required("It's required")],
+      //    zip: [
+      //       '',
+      //       required("It's required"),
+      //       number('Zis is not valid'),
+      //       min(1000, 'Min length is 1000'),
+      //       max(9999, 'Max length is 9999')
+      //    ]
+      // }),
+      // phone: build.build({
+      //    home: ['', required("It's required")],
+      //    mobile: ['', required("It's required")]
+      // })
    })
 )
 
