@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { creates } from '../../../src/V3/React/CreateField'
 import { create } from '../../../src/V3/React/CreateForm'
 import {
    email,
@@ -10,8 +11,8 @@ import {
    required
 } from '../../../src/V3/Validation/Validators'
 
-const test = create(build =>
-   build({
+const test = creates(build =>
+   build.build({
       name: [
          '',
          required("It's required"),
@@ -26,7 +27,7 @@ const test = create(build =>
          min(18, 'Min length is 18'),
          max(60, 'Max length is 60')
       ],
-      address: build({
+      address: build.build({
          street: ['', required("It's required")],
          city: ['', required("It's required")],
          zip: [
@@ -37,7 +38,7 @@ const test = create(build =>
             max(9999, 'Max length is 9999')
          ]
       }),
-      phone: build({
+      phone: build.build({
          home: ['', required("It's required")],
          mobile: ['', required("It's required")]
       })
@@ -87,7 +88,7 @@ const Controlled: React.FC = () => {
       mode: 'onChange'
    })
 
-   console.log(state.values)
+   console.log(test())
 
    //form$.subscribe(e => console.log(e.values))
 
