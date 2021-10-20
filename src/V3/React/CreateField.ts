@@ -84,3 +84,10 @@ export class FormControl {
       }
    }
 }
+
+export function create(fn: Function) {
+   return (...args: any[]) => {
+      const form = new FormControl(fn(...args))
+      return form
+   }
+}
