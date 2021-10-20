@@ -61,12 +61,16 @@ export function CreateField<T = any>(
 }
 
 export class FormControl {
-   constructor(form: {
+   constructor() {}
+
+   build(form: {
       [key: string]: [DefaultValue, ...Validator[]] | DefaultValue
    }) {
       Object.keys(form).forEach(key => {
          this[key] = this.createField(form[key])
       })
+
+      return this
    }
 
    private createField(params: [DefaultValue, ...Validator[]] | DefaultValue) {
@@ -85,9 +89,10 @@ export class FormControl {
    }
 }
 
-export function create(fn: Function) {
+export function creates(fn: Function) {
    return (...args: any[]) => {
-      const form = new FormControl(fn(...args))
+      const formControl = new FormControl()
+      const form = fn(formControl, ...args)
       return form
    }
 }
