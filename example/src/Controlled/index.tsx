@@ -10,6 +10,40 @@ import {
    required
 } from '../../../src/V3/Validation/Validators'
 
+const test = create(build =>
+   build({
+      name: [
+         '',
+         required("It's required"),
+         minLength(3, 'Min length is 3'),
+         maxLength(10, 'Max length is 10')
+      ],
+      email: ['', required("It's required"), email('Email is not valid')],
+      age: [
+         '',
+         required("It's required"),
+         number(),
+         min(18, 'Min length is 18'),
+         max(60, 'Max length is 60')
+      ],
+      address: build({
+         street: ['', required("It's required")],
+         city: ['', required("It's required")],
+         zip: [
+            '',
+            required("It's required"),
+            number('Zis is not valid'),
+            min(1000, 'Min length is 1000'),
+            max(9999, 'Max length is 9999')
+         ]
+      }),
+      phone: build({
+         home: ['', required("It's required")],
+         mobile: ['', required("It's required")]
+      })
+   })
+)
+
 const useForm = create(build => ({
    name: build([
       'juciano',
@@ -38,7 +72,14 @@ const useForm = create(build => ({
       maxLength(10, 'Max length is 10')
    ]),
    checkbox: build([true]),
-   radio: build([1])
+   radio: build([1]),
+   test: {
+      test: build([
+         '',
+         required("It's required"),
+         maxLength(10, 'Max length is 10')
+      ])
+   }
 }))
 
 const Controlled: React.FC = () => {
@@ -59,6 +100,13 @@ const Controlled: React.FC = () => {
                   placeholder="Name"
                   className="form-control"
                   {...register('name')}
+               />
+            </div>
+            <div className="form-group">
+               <input
+                  placeholder="Test"
+                  className="form-control"
+                  {...register('test.test')}
                />
             </div>
             <div className="form-group">
@@ -144,8 +192,11 @@ const Controlled: React.FC = () => {
          >
             Change Name
          </button>
-         <button onClick={() => form$.resetFieldValue('name')}>
+         <button onClick={() => form$.resetFieldValue('test.test')}>
             Reset Field Value
+         </button>
+         <button onClick={() => form$.resetFormValues()}>
+            Reset Form Values
          </button>
       </div>
    )
