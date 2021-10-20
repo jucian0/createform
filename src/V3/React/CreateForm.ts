@@ -144,8 +144,9 @@ export function create(fn: Function) {
 
       function resetFormValues() {
          form$.resetFormValues
-         Object.keys(fields).forEach(field => {
-            resetFieldValue(field)
+         Object.keys(fields.current).forEach(field => {
+            console.log(fields.current[field])
+            //  resetFieldValue(field)
          })
       }
 

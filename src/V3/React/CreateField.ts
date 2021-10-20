@@ -59,3 +59,28 @@ export function CreateField<T = any>(
       validations: validations as Validator[]
    }
 }
+
+export class FormControl {
+   constructor(form: {
+      [key: string]: [DefaultValue, ...Validator[]] | DefaultValue
+   }) {
+      Object.keys(form).forEach(key => {
+         this[key] = this.createField(form[key])
+      })
+   }
+
+   private createField(params: [DefaultValue, ...Validator[]] | DefaultValue) {
+      const value = Array.isArray(params) ? params[0] : params
+      const validations = Array.isArray(params)
+         ? params.slice(1)
+         : ([] as Validator[])
+
+      const ref = React.createRef<any>()
+      return {
+         ref,
+         defaultChecked: Boolean(value),
+         defaultValue: value,
+         validations: validations as Validator[]
+      }
+   }
+}
