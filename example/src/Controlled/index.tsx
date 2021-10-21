@@ -1,9 +1,14 @@
 import * as React from 'react'
 import { FormControl, useForm } from '../../../src/V3/React/FormControl'
 import { create } from '../../../src/V3/React/CreateForm'
+import { minLength, required } from '../../../src/V3/Validation/Validators'
 
 const form = new FormControl({
-   name: 'juciano',
+   name: [
+      'juciano',
+      required('This field is required'),
+      minLength(30, 'Min length is 3')
+   ],
    email: 'juciano@juciano.com',
    age: 18,
    activated: true,
