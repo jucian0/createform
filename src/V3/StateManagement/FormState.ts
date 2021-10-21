@@ -35,14 +35,10 @@ export class FormState<T = any> extends ObservableForm<T> {
    }
 
    setFieldError(field: string, error: string) {
-      this.setFieldValue(`errors.${field}`, error)
+      this.patch(`errors.${field}`, error as any)
    }
 
    setFieldTouched(field: string, touched: boolean) {
-      this.setFieldValue(`touched.${field}`, touched)
-   }
-
-   setFieldPristine(field: string) {
-      this.setFieldValue(`pristine.${field}`, true)
+      this.patch(`touched.${field}`, touched as any)
    }
 }

@@ -3,7 +3,7 @@ import { isCheckboxOrRadio, isParsableToNumber } from './Utils'
 import { get } from '../StateManagement/ObjectPath'
 import { FormState } from '../StateManagement/FormState'
 import { Validate } from '../Validation/Validate'
-import { CreateField, FieldType } from './CreateField'
+import { CreateField, FieldType } from './FormControl'
 import { set } from 'object-path-immutable'
 
 type Options = {
