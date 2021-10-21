@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { FormControl, useForm } from '../../../src/V3/React/CreateField'
+import { FormControl, useForm } from '../../../src/V3/React/FormControl'
 import { create } from '../../../src/V3/React/CreateForm'
 
 const form = new FormControl({
    name: 'juciano',
    email: 'juciano@juciano.com',
    age: 18,
+   activated: true,
    address: new FormControl({
       street: 'Alcides Ulrich',
       number: '125',
@@ -21,7 +22,7 @@ const form = new FormControl({
 const Controlled: React.FC = () => {
    const { formControl } = useForm(form)
 
-   console.log(formControl)
+   //console.log(formControl)
 
    // test()
 
@@ -127,7 +128,33 @@ const Controlled: React.FC = () => {
       //   </button>
       //   <button onClick={() => form$.resetFormValues()}>Reset Form Values</button>
       // </div>
-      <div>Test Forms</div>
+      <div>
+         <div className="form-group">
+            <input
+               placeholder="Name"
+               className="form-control"
+               {...formControl.name.props}
+            />
+         </div>
+         <div className="form-group">
+            <input
+               placeholder="Email"
+               className="form-control"
+               {...formControl.email.props}
+            />
+         </div>
+         <div className="form-group">
+            <input
+               placeholder="Street"
+               className="form-control"
+               {...formControl.address.street.props}
+            />
+         </div>
+         <div className="form-group">
+            <label htmlFor="">Activated</label>
+            <input className="form-control" {...formControl.activated.props} />
+         </div>
+      </div>
    )
 }
 
