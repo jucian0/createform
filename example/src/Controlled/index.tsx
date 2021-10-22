@@ -1,163 +1,165 @@
+import { TextField } from '@material-ui/core'
 import * as React from 'react'
-import { FormControl, useForm } from '../../../src/V3/React/FormControl'
-import { create } from '../../../src/V3/React/CreateForm'
-import { minLength, required } from '../../../src/V3/Validation/Validators'
+import * as yup from 'yup'
+import { useForm } from '../../../src'
 
-const form = new FormControl({
-   name: [
-      'juciano',
-      required('This field is required'),
-      minLength(30, 'Min length is 3')
-   ],
-   email: 'juciano@juciano.com',
-   age: 18,
-   activated: true,
-   address: new FormControl({
-      street: 'Alcides Ulrich',
-      number: '125',
-      city: 'Itatiba',
-      state: 'SP',
-      zip: '13255722',
-      nested: new FormControl({
-         test: ''
+const validationSchema: any = yup.object().shape({
+   name: yup.string().required('this field is required'),
+   email: yup
+      .string()
+      .required('this field is required')
+      .email('this field must be a valid email'),
+   address: yup.array(
+      yup.object().shape({
+         street: yup.string().required('this field is required'),
+         number: yup.number().required('this field is required')
       })
-   })
+   )
 })
 
+const options = [
+   { value: 'chocolate', label: 'Chocolate' },
+   { value: 'strawberry', label: 'Strawberry' },
+   { value: 'vanilla', label: 'Vanilla' }
+]
+
+const initialValues = {
+   name: 'Jesse Woodson James',
+   email: 'jesse@jesse.com',
+   address: [
+      {
+         street: '',
+         number: 70,
+         john: [
+            {
+               name: 'john'
+            }
+         ]
+      }
+   ],
+   options: 'value 1',
+   radio: 'op3',
+   accept: true
+}
+
 const Controlled: React.FC = () => {
-   const { formControl } = useForm(form)
-
-   //console.log(formControl)
-
-   // test()
-
-   //form$.subscribe(e => console.log(e.values))
+   const {
+      state,
+      register,
+      resetForm,
+      resetFieldValue,
+      setFieldsTouched,
+      setFieldValue
+   } = useForm({ initialValues, validationSchema })
 
    return (
-      // <div className="row">
-      //   <div className="col-lg-12">
-      //     <h2>Controlled Form</h2>
-      //     <div className="form-group">
-      //       <input
-      //         placeholder="Name"
-      //         className="form-control"
-      //         {...register('name')}
-      //       />
-      //     </div>
-      //     <div className="form-group">
-      //       <input
-      //         placeholder="Test"
-      //         className="form-control"
-      //         {...register('test.test')}
-      //       />
-      //     </div>
-      //     <div className="form-group">
-      //       <input
-      //         placeholder="Last email"
-      //         className="form-control"
-      //         {...register('email')}
-      //       />
-      //     </div>
+      <div className="row">
+         <div className="col-lg-12">
+            <h2>Controlled Form</h2>
+            <div className="form-group">
+               <TextField
+                  label="Text"
+                  className="form-control"
+                  inputProps={register('name')}
+                  name="name"
+               />
+               <span className="text-danger">
+                  {state.touched.name && state.errors.name}
+               </span>
+            </div>
+            <div className="form-group">
+               <label>E-mail</label>
+               <input
+                  className="form-control"
+                  autoComplete="off"
+                  {...register('email')}
+               />
+               <span className="text-danger">
+                  {state.touched.email && state.errors.email}
+               </span>
+            </div>
+            <div className="form-group">
+               <label>Bio</label>
+               <textarea
+                  className="form-control"
+                  autoComplete="off"
+                  {...register('bio')}
+               />
+            </div>
 
-      //     <div className="form-group">
-      //       <input
-      //         placeholder="Range 3th position"
-      //         className="form-control"
-      //         {...register('number')}
-      //       />
-      //     </div>
-      //     <div className="form-group">
-      //       <select className="form-control" {...register('select')}>
-      //         <option value="1">1</option>
-      //         <option value="2">2</option>
-      //         <option value="3">3</option>
-      //         <option value="4">4</option>
-      //         <option value="5">5</option>
-      //       </select>
-      //     </div>
-      //     <div className="form-group">
-      //       <input type="range" className="form-control" {...register('range')} />
-      //     </div>
-      //     <div className="form-group">
-      //       <label htmlFor="">Checkbox</label>
-      //       <input
-      //         className="form-control"
-      //         {...register('checkbox', 'checkbox')}
-      //       />
-      //     </div>
+            <div>
+               <h3>Address</h3>
+               <div className="form-group">
+                  <label>Street</label>
+                  <input
+                     className="form-control"
+                     autoComplete="off"
+                     {...register('address.0.street')}
+                  />
+                  <span className="text-danger">
+                     {state.touched.address?.[0].street &&
+                        state.errors.address?.[0].street}
+                  </span>
+               </div>
+               <div className="form-group">
+                  <label>Number</label>
+                  <input
+                     className="form-control"
+                     autoComplete="off"
+                     {...register('address.0.number')}
+                  />
+                  <span className="text-danger">
+                     {state.touched.address?.[0].number &&
+                        state.errors.address?.[0].number}
+                  </span>
+               </div>
+            </div>
+            <div className="col-lg-12">
+               <div className="form-group">
+                  <label>Select Option</label>
+                  <select {...register('options')}>
+                     <option value="value 1">Option 1</option>
+                     <option value="value 2">Option 2</option>
+                     <option value="value 3">Option 3</option>
+                     <option value="value 4">Option 4</option>
+                  </select>
+               </div>
+               <div className="form-group">
+                  <label htmlFor="accept">Accept</label>
+                  <input
+                     className="form-control"
+                     autoComplete="off"
+                     {...register('accept')}
+                     type="checkbox"
+                  />
+               </div>
+            </div>
+         </div>
 
-      //     <div className="form-group" {...register('radio', 'radio')}>
-      //       <div className="form-check">
-      //         <input
-      //           className="form-check-input"
-      //           id="1"
-      //           type="radio"
-      //           value="1"
-      //           name="radio"
-      //         />
-      //         <label className="form-check-label" htmlFor="1">
-      //           Option 1
-      //         </label>
-      //       </div>
-      //       <div className="form-check">
-      //         <input
-      //           className="form-check-input"
-      //           id="2"
-      //           type="radio"
-      //           value="2"
-      //           name="radio"
-      //         />
-      //         <label className="form-check-label" htmlFor="1">
-      //           Option 2
-      //         </label>
-      //       </div>
-      //       <div className="form-check">
-      //         <input
-      //           className="form-check-input"
-      //           id="3"
-      //           type="radio"
-      //           value="3"
-      //           name="radio"
-      //         />
-      //         <label className="form-check-label" htmlFor="3">
-      //           Option 3
-      //         </label>
-      //       </div>
-      //     </div>
-      //   </div>
-      //   <button onClick={() => form$.setFieldValue('name', 'Mudei o seu nome')}>
-      //     Change Name
-      //   </button>
-      //   <button onClick={() => form$.resetFieldValue('test.test')}>
-      //     Reset Field Value
-      //   </button>
-      //   <button onClick={() => form$.resetFormValues()}>Reset Form Values</button>
-      // </div>
-      <div>
-         <div className="form-group">
-            <input
-               placeholder="Name"
-               className="form-control"
-               {...formControl.name.props}
-            />
+         <div className="col-lg-6">
+            <button
+               type="button"
+               className="btn btn-primary"
+               onClick={() => resetFieldValue('address.0.street')}
+            >
+               Reset number
+            </button>
+            <button
+               type="button"
+               className="btn btn-primary"
+               onClick={() => resetFieldValue('address.0.street')}
+            >
+               Reset number
+            </button>
          </div>
-         <div className="form-group">
-            <input
-               placeholder="Email"
-               className="form-control"
-               {...formControl.email.props}
-            />
-         </div>
-         <div className="form-group">
-            <input
-               placeholder="Street"
-               className="form-control"
-               {...formControl.address.street.props}
-            />
-         </div>
-         <div className="form-group">
-            <label htmlFor="">Activated</label>
-            <input className="form-control" {...formControl.activated.props} />
+         <div className="col-lg-6">
+            <button
+               type="button"
+               className="btn btn-primary"
+               onClick={() => resetForm()}
+            >
+               Reset All
+            </button>
          </div>
       </div>
    )
