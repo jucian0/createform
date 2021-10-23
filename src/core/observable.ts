@@ -1,3 +1,5 @@
+import * as dot from './dot-prop'
+
 type Subscribe<TValues> = (e: TValues) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
 
@@ -7,7 +9,7 @@ export function createState<T extends object>(
    let state = initialState
    let subscribers: Subscribers<T> = []
 
-   function getState() {
+   function get() {
       return state
    }
 
@@ -19,8 +21,8 @@ export function createState<T extends object>(
       }
    }
 
-   function setState(next: Partial<T> | ((state: T) => T)) {
-      const nextState = typeof next === 'function' ? next(getState()) : next
+   function set(next: Partial<T> | ((state: T) => T)) {
+      const nextState = typeof next === 'function' ? next(get()) : next
       state = {
          ...state,
          ...nextState
@@ -28,15 +30,22 @@ export function createState<T extends object>(
       notify()
    }
 
+   function patch(path: string, next: any) {
+      const nextState = dot.set(state, path, next)
+      state = nextState
+      notify()
+   }
+
    function notify() {
       subscribers.forEach(fn => {
-         fn(getState())
+         fn(get())
       })
    }
 
    return {
-      getState,
-      setState,
+      get,
+      set,
+      patch,
       subscribe
    }
 }
