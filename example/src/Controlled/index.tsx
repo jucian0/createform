@@ -20,7 +20,7 @@ const Controlled: React.FC = () => {
             </div>
             <div className="form-group">
                <label>Select Option</label>
-               <select {...register('options')}>
+               <select {...register('nested.options')}>
                   <option value="value 1">Option 1</option>
                   <option value="value 2">Option 2</option>
                   <option value="value 3">Option 3</option>
