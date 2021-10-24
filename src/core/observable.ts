@@ -23,10 +23,8 @@ export function createState<T extends object>(
 
    function set(next: Partial<T> | ((state: T) => T)) {
       const nextState = typeof next === 'function' ? next(get()) : next
-      state = {
-         ...state,
-         ...nextState
-      }
+      state = nextState
+
       notify()
    }
 

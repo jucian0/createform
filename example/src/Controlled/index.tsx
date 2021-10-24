@@ -1,13 +1,11 @@
 import { TextField } from '@material-ui/core'
 import * as React from 'react'
-import { useForm } from '../../../src/hooks/hook'
+import { useForm } from '../../../src/hooks/useForm'
 
 const Controlled: React.FC = () => {
-   const { register, state$ } = useForm({
-      values: { email: 'juciano@juciano.com' }
-   })
+   const { register, state, setFieldValue } = useForm({ isControlled: true })
 
-   state$.subscribe(e => console.log(e))
+   console.log(state)
 
    return (
       <div className="row">
@@ -68,6 +66,9 @@ const Controlled: React.FC = () => {
                   Checkbox
                </label>
             </div>
+         </div>
+         <div className="col-lg-12">
+            <div className="form-group"></div>
          </div>
       </div>
    )
