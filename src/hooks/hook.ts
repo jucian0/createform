@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createState } from '../core/observable'
 
 type InitialForm = {
@@ -8,7 +8,23 @@ type InitialForm = {
 }
 
 export function useForm(initial?: InitialForm) {
+   const initialState = React.useRef(initial)
    const state$ = createState(initial)
+   const fields = React.useRef({})
+
+   function resetValues() {
+      state$.set(initialState.current as any)
+      for (const field in fields.current) {
+         fields.current[field].value = ''
+      }
+   }
+
+   function setValues(values: any) {
+      state$.patch('values', values)
+      for (const field in fields.current) {
+         fields.current[field].value = values[field]
+      }
+   }
 
    function register(name: string) {
       const ref = React.useRef<HTMLInputElement>(null)
@@ -29,6 +45,7 @@ export function useForm(initial?: InitialForm) {
                radio.checked = radio.value == ref.current?.value
             })
          } else if (ref.current) {
+            fields.current[name] = ref.current
             ref.current.value = state$.getPropertyValue(`values.${name}`)
          }
       }, [name, ref.current])
@@ -41,6 +58,7 @@ export function useForm(initial?: InitialForm) {
 
    return {
       register,
+      resetValues,
       state$
    }
 }
