@@ -1,9 +1,12 @@
 import { TextField } from '@material-ui/core'
 import * as React from 'react'
-import { useForm } from '../../../src/hooks/useForm'
+import { useForm } from '../../../src/hooks/hook'
 
 const Controlled: React.FC = () => {
-   const { register, state, setFieldValue } = useForm({ isControlled: true })
+   const { register, state } = useForm({
+      mode: 'onChange',
+      initialState: { values: { email: 'juciano' } }
+   })
 
    console.log(state)
 
