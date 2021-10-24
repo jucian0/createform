@@ -19,20 +19,6 @@ export function useForm(initial?: HookParams) {
    const [state, setState] = React.useState(initial?.initialState)
    const fields = React.useRef({})
 
-   function resetValues() {
-      state$.set(initialState.current as any)
-      for (const field in fields.current) {
-         fields.current[field].value = ''
-      }
-   }
-
-   function setValues(values: any) {
-      state$.patch('values', values)
-      for (const field in fields.current) {
-         fields.current[field].value = values[field]
-      }
-   }
-
    function setValue(event: any): void {
       if (event.target.type === 'checkbox') {
          return state$.patch(
@@ -99,10 +85,78 @@ export function useForm(initial?: HookParams) {
       return () => unsubscribe()
    }, [])
 
+   function resetValues() {
+      state$.set(initialState.current as any)
+      for (const field in fields.current) {
+         fields.current[field].value = ''
+      }
+   }
+
+   function setValues(values: any) {
+      state$.patch('values', values)
+      for (const field in fields.current) {
+         fields.current[field].value = values[field]
+      }
+   }
+
+   function setFieldValue(field: string, value: any) {
+      state$.patch('values.'.concat(field), value)
+   }
+
+   function resetFieldValue(field: string) {
+      state$.patch('values.'.concat(field), '')
+   }
+
+   function setErrors(errors: any) {
+      state$.patch('errors', errors)
+   }
+
+   function setFieldError(field: string, error: string) {
+      state$.patch('errors.'.concat(field), error)
+   }
+
+   function resetFieldError(field: string) {
+      state$.patch('errors.'.concat(field), '')
+   }
+
+   function resetErrors() {
+      state$.patch('errors', {})
+   }
+
+   function setTouched(touched: any) {
+      state$.patch('touched', touched)
+   }
+
+   function resetTouched() {
+      state$.patch('touched', {})
+   }
+
+   function setFieldTouched(field: string) {
+      state$.patch('touched.'.concat(field), true)
+   }
+
+   function resetFieldTouched(field: string) {
+      state$.patch('touched.'.concat(field), false)
+   }
+
    return {
       register,
-      resetValues,
       state$,
-      state
+      state,
+
+      setTouched,
+      resetTouched,
+      setFieldTouched,
+      resetFieldTouched,
+
+      setErrors,
+      resetErrors,
+      setFieldError,
+      resetFieldError,
+
+      setValues,
+      resetValues,
+      setFieldValue,
+      resetFieldValue
    }
 }
