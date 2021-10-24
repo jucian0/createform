@@ -14,9 +14,21 @@ export function useForm(initial?: InitialForm) {
       const ref = React.useRef<HTMLInputElement>(null)
 
       React.useEffect(() => {
-         ref.current?.addEventListener('input', () => {
-            state$.patch(name, ref.current?.value)
+         ref.current?.addEventListener('input', (e: any) => {
+            if (ref.current?.type === 'checkbox') {
+               state$.patch(name, ref.current?.checked)
+            } else {
+               state$.patch(name, e?.target?.value)
+            }
          })
+
+         if (ref.current?.type === 'radio') {
+            Array.from(
+               (ref.current as HTMLDivElement).getElementsByTagName('input')
+            ).forEach((radio: any) => {
+               radio.checked = radio.value == ref.current?.value
+            })
+         }
       }, [name, ref.current])
 
       return {
