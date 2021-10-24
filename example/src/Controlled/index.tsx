@@ -4,7 +4,7 @@ import { useForm } from '../../../src/hooks/hook'
 
 const Controlled: React.FC = () => {
    const { register, state } = useForm({
-      mode: 'onChange',
+      mode: 'onBlur',
       initialState: { values: { email: 'juciano' } }
    })
 
