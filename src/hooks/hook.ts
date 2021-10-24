@@ -35,9 +35,16 @@ export function useForm(initial?: HookParams) {
 
    function setValue(event: any): void {
       if (event.target.type === 'checkbox') {
-         return state$.patch(event.target.name, event.target.checked)
+         return state$.patch(
+            `values.${event.target.name}`,
+            event.target.checked
+         )
       }
-      return state$.patch(event.target.name, event.target.value)
+
+      return state$.patch(
+         'values.'.concat(event.target.name),
+         event.target.value
+      )
    }
 
    function setRefValue(ref: any, value: any) {
@@ -64,9 +71,9 @@ export function useForm(initial?: HookParams) {
 
       React.useEffect(() => {
          if (initial?.mode === 'onChange') {
-            ref.current?.addEventListener('input', setValue)
+            ref.current?.addEventListener('input', e => setValue(e))
          } else if (initial?.mode === 'onBlur') {
-            ref.current?.addEventListener('blur', setValue)
+            ref.current?.addEventListener('blur', e => setValue(e))
          }
          return () => {
             if (initial?.mode === 'onChange') {
@@ -79,7 +86,7 @@ export function useForm(initial?: HookParams) {
 
       React.useEffect(() => {
          setRefValue(ref, state$.getPropertyValue(`values.${name}`))
-      }, [ref.current])
+      }, [])
 
       return {
          name,
