@@ -3,7 +3,9 @@ import * as React from 'react'
 import { useForm } from '../../../src/hooks/hook'
 
 const Controlled: React.FC = () => {
-   const { register, state$ } = useForm()
+   const { register, state$ } = useForm({
+      values: { email: 'juciano@juciano.com' }
+   })
 
    state$.subscribe(e => console.log(e))
 

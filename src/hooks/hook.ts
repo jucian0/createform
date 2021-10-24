@@ -16,9 +16,9 @@ export function useForm(initial?: InitialForm) {
       React.useEffect(() => {
          ref.current?.addEventListener('input', (e: any) => {
             if (ref.current?.type === 'checkbox') {
-               state$.patch(name, ref.current?.checked)
+               state$.patch(`values.${name}`, ref.current?.checked)
             } else {
-               state$.patch(name, e?.target?.value)
+               state$.patch(`values.${name}`, e?.target?.value)
             }
          })
 
@@ -28,6 +28,8 @@ export function useForm(initial?: InitialForm) {
             ).forEach((radio: any) => {
                radio.checked = radio.value == ref.current?.value
             })
+         } else if (ref.current) {
+            ref.current.value = state$.getPropertyValue(`values.${name}`)
          }
       }, [name, ref.current])
 
