@@ -9,7 +9,6 @@ import {
    InputsRef,
    Options,
    Paths,
-   Ref,
    State,
    Touched,
    UseFormReturnType
@@ -48,102 +47,40 @@ export function useForm<TO>({
    }
 
    function register(path: string) {
-      const ref = React.useRef()
+      const ref = React.useRef<any>()
 
       refs.current[path] = ref as any
 
-      return { name: path, ref: refs.current[path] }
-   }
-
-   function handleInputEvent(e: Event) {
-      const target = e.target as Change['target']
-      if (options.watch) {
-         options.watch(state.values)
-      }
-      return state$.set(state => ({
-         ...state,
-         values: dot.set(state.values, target.name, target.value)
-      }))
-   }
-
-   function handleChangeEvent(e: Event) {
-      const target = e.target as Change['target']
-      if (options.watch) {
-         options.watch(state.values)
-      }
-      const value = isCheckbox(target.type) ? target.checked : target.value
-      return state$.set(state => ({
-         ...state,
-         values: dot.set(state.values, target.name, value)
-      }))
-   }
-
-   function handleBlurEvent(e: Event) {
-      const target = e.target as Change['target']
-      return state$.set(state => ({
-         ...state,
-         touched: dot.set(state.touched, target.name, true)
-      }))
-   }
-
-   function addEvents() {
-      for (const path in refs.current) {
-         const ref = refs.current[path]
+      React.useEffect(() => {
          if (ref.current) {
-            if (isCheckbox(ref.current.type)) {
-               ref.current.addEventListener('change', handleChangeEvent)
-            } else {
-               ref.current.addEventListener('input', handleInputEvent)
+            ref.current.addEventListener('input', (e: any) => {
+               const nextValue =
+                  ref.current.type === 'checkbox'
+                     ? e.target.checked
+                     : e.target.value
+
+               if (options.isControlled) {
+                  state$.patch(`values.${path}`, nextValue)
+               } else if (options.debounced) {
+                  setValueDebounce(path, nextValue)
+               }
+            })
+
+            if (ref.current?.type === 'radio') {
+               Array.from(
+                  (ref.current as HTMLDivElement).getElementsByTagName('input')
+               ).forEach((radio: any) => {
+                  radio.checked = radio.value == ref.current?.value
+               })
             }
-            ref.current.addEventListener('blur', handleBlurEvent)
-         }
-      }
 
-      Object.keys(refs.current).forEach(path => {
-         if (
-            isCheckbox(refs.current[path].current.type) ||
-            isRadio(refs.current[path].current.type)
-         ) {
-            refs.current[path].current.addEventListener(
-               'change',
-               handleChangeEvent
-            )
-            refs.current[path].current.addEventListener('blur', handleBlurEvent)
-         } else {
-            refs.current[path].current.addEventListener(
-               'input',
-               handleInputEvent
-            )
-            refs.current[path].current.addEventListener('blur', handleBlurEvent)
+            return () => {
+               ref.current.removeEventListener('change', () => {})
+            }
          }
-      })
-   }
+      }, [])
 
-   function removeEvents() {
-      Object.keys(refs.current).forEach(path => {
-         if (
-            isCheckbox(refs.current[path].current?.type) ||
-            isRadio(refs.current[path].current?.type)
-         ) {
-            refs.current[path].current.removeEventListener(
-               'change',
-               handleChangeEvent
-            )
-            refs.current[path].current.removeEventListener(
-               'blur',
-               handleBlurEvent
-            )
-         } else if ((refs as any).current[path].current?.removeEventListener) {
-            refs.current[path].current.removeEventListener(
-               'input',
-               handleInputEvent
-            )
-            refs.current[path].current.removeEventListener(
-               'blur',
-               handleBlurEvent
-            )
-         }
-      })
+      return { name: path, ref: refs.current[path] }
    }
 
    function setRefValue(path: string, value: any) {
@@ -216,43 +153,13 @@ export function useForm<TO>({
          })
    }
 
-   async function handleChange(next: State<TO>) {
-      try {
-         await validate(next.values)
-         if (options.isControlled) {
-            setState(next)
-         } else if (options.debounced) {
-            setValueDebounce(next)
-         }
-      } catch (errors) {
-         if (options.isControlled) {
-            setState({ ...next, errors })
-         } else if (options.debounced) {
-            setValueDebounce({ ...next, errors })
-         }
-      }
-   }
-
    React.useEffect(() => {
-      const subscriber = state$.subscribe(handleChange)
+      const subscriber = state$.subscribe(setState)
 
       return () => {
          subscriber()
       }
    }, [])
-
-   React.useLayoutEffect(() => {
-      if (initialValues) {
-         for (const path in refs.current) {
-            setRefValue(path, dot.get(initialValues, path))
-         }
-      }
-
-      addEvents()
-      return () => {
-         removeEvents()
-      }
-   }, [refs])
 
    function setForm(next: State<TO> | ((state: State<TO>) => State<TO>)) {
       const nextState = typeof next === 'function' ? next(state) : next
