@@ -65,7 +65,7 @@ export function del(defaultObject: object, prop: string) {
 export function get(defaultObject: object, prop: string) {
    const paths = propToPath(prop)
 
-   function getPropertyValue(object: object, index: number): any {
+   function getPropertyValue(object: object = {}, index: number): any {
       const clone = Object.assign({}, object)
       if (paths.length === index + 1) {
          if (Array.isArray(clone[paths[index]])) {

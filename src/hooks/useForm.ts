@@ -4,7 +4,6 @@ import { debounce, isCheckbox, isRadio, makeDotNotation } from '../utils'
 import { ValidationError } from 'yup'
 import { createState } from '../core/observable'
 import {
-   Change,
    Errors,
    InputsRef,
    Options,
@@ -37,15 +36,6 @@ export function useForm<TO>({
       touched: initialTouched
    })
 
-   const setValueDebounce = React.useCallback(
-      debounce(setState, options.debounced || 300),
-      []
-   )
-
-   function isControlledOrDebounce() {
-      return options.isControlled || !!options.debounced
-   }
-
    function register(path: string) {
       const ref = React.useRef<any>()
 
@@ -53,18 +43,23 @@ export function useForm<TO>({
 
       React.useEffect(() => {
          if (ref.current) {
-            ref.current.addEventListener('input', (e: any) => {
-               const nextValue =
-                  ref.current.type === 'checkbox'
-                     ? e.target.checked
-                     : e.target.value
-
-               if (options.isControlled) {
+            if (options.mode === 'onChange') {
+               ref.current.addEventListener('input', (e: any) => {
+                  const nextValue =
+                     ref.current.type === 'checkbox'
+                        ? e.target.checked
+                        : e.target.value
                   state$.patch(`values.${path}`, nextValue)
-               } else if (options.debounced) {
-                  setValueDebounce(path, nextValue)
-               }
-            })
+               })
+            } else if (options.mode === 'onBlur') {
+               ref.current.addEventListener('blur', (e: any) => {
+                  const nextValue =
+                     ref.current.type === 'checkbox'
+                        ? e.target.checked
+                        : e.target.value
+                  state$.patch(`values.${path}`, nextValue)
+               })
+            }
 
             if (ref.current?.type === 'radio') {
                Array.from(
@@ -116,26 +111,26 @@ export function useForm<TO>({
       return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
          const values = state$.get().values
-         try {
-            await validate(values)
-            fn(values, true)
-         } catch (errors) {
-            fn(values, false)
-            state$.set(state => ({
-               ...state,
-               errors,
-               touched: makeAllTouchedPayload()
-            }))
+         // try {
+         //   await validate(values)
+         //   fn(values, true)
+         // } catch (errors) {
+         //   fn(values, false)
+         //   state$.set(state => ({
+         //     ...state,
+         //     errors,
+         //     touched: makeAllTouchedPayload()
+         //   }))
 
-            if (!isControlledOrDebounce()) {
-               setState(state => ({
-                  ...state,
-                  errors,
-                  values,
-                  touched: makeAllTouchedPayload()
-               }))
-            }
-         }
+         //   if (!isControlledOrDebounce()) {
+         //     setState(state => ({
+         //       ...state,
+         //       errors,
+         //       values,
+         //       touched: makeAllTouchedPayload()
+         //     }))
+         //   }
+         // }
       }
    }
 
@@ -195,7 +190,7 @@ export function useForm<TO>({
    }
 
    function resetFieldsValue() {
-      for (const path of refs.current) {
+      for (const path in refs.current) {
          setRefValue(path, dot.get(initialValues, path))
       }
       state$.patch(`values`, initialValues)

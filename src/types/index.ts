@@ -56,10 +56,8 @@ export type Options<T> = {
    readonly initialErrors?: Errors<T>
    /** represents a initial values of visited inputs */
    readonly initialTouched?: Touched<T>
-   /**receives  true as a value if the form should be a controlled form  */
-   readonly isControlled?: boolean
-   /** receive a number if the form should be a debounced form */
-   readonly debounced?: number
+   /** represents the why that the form will works */
+   readonly mode?: 'onSubmit' | 'onChange' | 'onBlur' | 'debounced'
    /** validation schema provided by yup */
    readonly validationSchema?: YupSchema<T>
    /** watch every change in useForm even if is a uncontrolled form */
