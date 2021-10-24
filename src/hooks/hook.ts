@@ -1,15 +1,22 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { createState } from '../core/observable'
 
-type InitialForm = {
-   values: {}
-   errors: {}
-   touched: {}
+type InitialState = {
+   values?: {}
+   errors?: {}
+   touched?: {}
 }
 
-export function useForm(initial?: InitialForm) {
-   const initialState = React.useRef(initial)
-   const state$ = createState(initial)
+type HookParams = {
+   initialState?: InitialState
+   onSubmit?: (values: {}) => void
+   mode?: 'onChange' | 'onBlur' | 'onSubmit' | 'debounced'
+}
+
+export function useForm(initial?: HookParams) {
+   const initialState = React.useRef(initial?.initialState)
+   const state$ = createState(initial?.initialState)
+   const [state, setState] = React.useState(initial?.initialState)
    const fields = React.useRef({})
 
    function resetValues() {
@@ -26,29 +33,53 @@ export function useForm(initial?: InitialForm) {
       }
    }
 
+   function setValue(event: any): void {
+      if (event.target.type === 'checkbox') {
+         return state$.patch(event.target.name, event.target.checked)
+      }
+      return state$.patch(event.target.name, event.target.value)
+   }
+
+   function setRefValue(ref: any, value: any) {
+      if (ref.current.type === 'radio') {
+         const inputs = Array.from<HTMLInputElement>(
+            ref.current.form.querySelectorAll(
+               'input[name="' + ref.current.name + '"]'
+            )
+         )
+
+         for (const input of inputs) {
+            input.checked = input.value === value
+         }
+      } else {
+         fields.current[ref.current.name] = ref.current
+         ref.current.value = state$.getPropertyValue(
+            `values.${ref.current.name}`
+         )
+      }
+   }
+
    function register(name: string) {
       const ref = React.useRef<HTMLInputElement>(null)
 
       React.useEffect(() => {
-         ref.current?.addEventListener('input', (e: any) => {
-            if (ref.current?.type === 'checkbox') {
-               state$.patch(`values.${name}`, ref.current?.checked)
-            } else {
-               state$.patch(`values.${name}`, e?.target?.value)
+         if (initial?.mode === 'onChange') {
+            ref.current?.addEventListener('input', setValue)
+         } else if (initial?.mode === 'onBlur') {
+            ref.current?.addEventListener('blur', setValue)
+         }
+         return () => {
+            if (initial?.mode === 'onChange') {
+               ref.current?.removeEventListener('input', setValue)
+            } else if (initial?.mode === 'onBlur') {
+               ref.current?.removeEventListener('blur', setValue)
             }
-         })
-
-         if (ref.current?.type === 'radio') {
-            Array.from(
-               (ref.current as HTMLDivElement).getElementsByTagName('input')
-            ).forEach((radio: any) => {
-               radio.checked = radio.value == ref.current?.value
-            })
-         } else if (ref.current) {
-            fields.current[name] = ref.current
-            ref.current.value = state$.getPropertyValue(`values.${name}`)
          }
       }, [name, ref.current])
+
+      React.useEffect(() => {
+         setRefValue(ref, state$.getPropertyValue(`values.${name}`))
+      }, [ref.current])
 
       return {
          name,
@@ -56,9 +87,15 @@ export function useForm(initial?: InitialForm) {
       }
    }
 
+   React.useEffect(() => {
+      const unsubscribe = state$.subscribe(setState)
+      return () => unsubscribe()
+   }, [])
+
    return {
       register,
       resetValues,
-      state$
+      state$,
+      state
    }
 }
