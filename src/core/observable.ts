@@ -36,6 +36,10 @@ export function createState<T extends object>(
       notify()
    }
 
+   function getPropertyValue(path: string) {
+      return dot.get(state, path)
+   }
+
    function notify() {
       subscribers.forEach(fn => {
          fn(get())
@@ -46,6 +50,7 @@ export function createState<T extends object>(
       get,
       set,
       patch,
-      subscribe
+      subscribe,
+      getPropertyValue
    }
 }
