@@ -38,6 +38,14 @@ export function createState<T extends object>(
       return dot.get(state, path)
    }
 
+   function getInitialPropertyValue(path: string) {
+      return dot.get(initialState, path)
+   }
+
+   function getInitialState() {
+      return initialState
+   }
+
    function notify() {
       subscribers.forEach(fn => {
          fn(get())
@@ -49,6 +57,8 @@ export function createState<T extends object>(
       set,
       patch,
       subscribe,
-      getPropertyValue
+      getPropertyValue,
+      getInitialState,
+      getInitialPropertyValue
    }
 }

@@ -14,7 +14,6 @@ type HookParams = {
 }
 
 export function useForm(initial?: HookParams) {
-   const initialState = React.useRef(initial?.initialState)
    const state$ = createState(initial?.initialState)
    const [state, setState] = React.useState(initial?.initialState)
    const fields = React.useRef({})
@@ -22,7 +21,7 @@ export function useForm(initial?: HookParams) {
    function setValue(event: any): void {
       if (event.target.type === 'checkbox') {
          return state$.patch(
-            `values.${event.target.name}`,
+            'values.'.concat(event.target.name),
             event.target.checked
          )
       }
@@ -47,7 +46,7 @@ export function useForm(initial?: HookParams) {
       } else {
          fields.current[ref.current.name] = ref.current
          ref.current.value = state$.getPropertyValue(
-            `values.${ref.current.name}`
+            'values.'.concat(ref.current.name)
          )
       }
    }
@@ -86,7 +85,7 @@ export function useForm(initial?: HookParams) {
    }, [])
 
    function resetValues() {
-      state$.set(initialState.current as any)
+      state$.set(state$.getInitialState().values as any)
       for (const field in fields.current) {
          fields.current[field].value = ''
       }
@@ -100,11 +99,15 @@ export function useForm(initial?: HookParams) {
    }
 
    function setFieldValue(field: string, value: any) {
-      state$.patch('values.'.concat(field), value)
+      const path = 'values.'.concat(field)
+      state$.patch(path, value)
+      fields.current[field].value = value
    }
 
    function resetFieldValue(field: string) {
-      state$.patch('values.'.concat(field), '')
+      const path = 'values.'.concat(field)
+      state$.patch(path, '')
+      fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
    function setErrors(errors: any) {
@@ -112,11 +115,13 @@ export function useForm(initial?: HookParams) {
    }
 
    function setFieldError(field: string, error: string) {
-      state$.patch('errors.'.concat(field), error)
+      const path = 'errors.'.concat(field)
+      state$.patch(path, error)
    }
 
    function resetFieldError(field: string) {
-      state$.patch('errors.'.concat(field), '')
+      const path = 'errors.'.concat(field)
+      state$.patch(path, state$.getInitialPropertyValue(path))
    }
 
    function resetErrors() {
@@ -140,9 +145,9 @@ export function useForm(initial?: HookParams) {
    }
 
    return {
-      register,
       state$,
       state,
+      register,
 
       setTouched,
       resetTouched,
