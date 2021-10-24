@@ -153,12 +153,13 @@ export function useForm<TO>({
       if (isCheckbox(refs.current[path].current.type)) {
          return (refs.current[path].current.checked = value)
       } else if (refs.current[path]?.current?.children) {
-         Array.from(refs.current[path]?.current?.children).forEach(
-            (element: any) => {
-               element.checked = element.value === value
-            }
-         )
+         Array.from(
+            refs.current[path]?.current?.getElementsByTagName('input')
+         ).forEach((element: any) => {
+            element.checked = element.value === value
+         })
       }
+
       return (refs.current[path].current.value = value || null)
    }
 
@@ -242,9 +243,9 @@ export function useForm<TO>({
 
    React.useLayoutEffect(() => {
       if (initialValues) {
-         Object.keys(refs.current).forEach(path => {
+         for (const path in refs.current) {
             setRefValue(path, dot.get(initialValues, path))
-         })
+         }
       }
 
       addEvents()
@@ -255,21 +256,16 @@ export function useForm<TO>({
 
    function setForm(next: State<TO> | ((state: State<TO>) => State<TO>)) {
       const nextState = typeof next === 'function' ? next(state) : next
-
       state$.set(nextState as any)
-
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(
-            path,
-            dot.get(nextState.values, path) || dot.get(nextState.values, path)
-         )
-      })
+      for (const path in nextState.values) {
+         setRefValue(path, dot.get(nextState.values, path))
+      }
    }
 
    function resetForm() {
-      Object.keys(refs.current).forEach(path => {
+      for (const path in refs.current) {
          setRefValue(path, dot.get(initialValues, path))
-      })
+      }
       state$.set({
          values: initialValues,
          errors: initialErrors,
@@ -281,9 +277,9 @@ export function useForm<TO>({
       const nextState = typeof next === 'function' ? next(state.values) : next
       state$.patch(`values`, nextState)
 
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(nextState, path) || dot.get(nextState, path))
-      })
+      for (const path in nextState) {
+         setRefValue(path, dot.get(nextState, path))
+      }
    }
 
    function setFieldValue(path: Paths<typeof initialValues>, value: any) {
@@ -292,9 +288,9 @@ export function useForm<TO>({
    }
 
    function resetFieldsValue() {
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(initialValues, path) || null)
-      })
+      for (const path of refs.current) {
+         setRefValue(path, dot.get(initialValues, path))
+      }
       state$.patch(`values`, initialValues)
    }
 
