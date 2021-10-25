@@ -49,3 +49,8 @@ export function isEmpty(obj: any) {
 export function makeDotNotation(str: string) {
    return str.split('[').join('.').split(']').join('')
 }
+
+export function getNextState(next: any, state: any) {
+   const nextState = typeof next === 'function' ? next(state) : next
+   return nextState
+}

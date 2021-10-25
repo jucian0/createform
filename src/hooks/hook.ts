@@ -1,6 +1,9 @@
 import React from 'react'
 import { createState } from '../core/observable'
-import { debounce } from '../utils'
+import { debounce, getNextState } from '../utils'
+import * as dot from './../core/dot-prop'
+
+type SetType<T> = ((value: T) => T) | T
 
 type InitialState = {
    values?: {}
@@ -97,11 +100,12 @@ export function useForm(initial?: HookParams) {
       }
    }
 
-   function setValues(values: any) {
+   function setValues(next: any) {
+      const values = getNextState(next, state?.values)
       state$.patch('values', values)
       for (const field in fields.current) {
-         if (values[field]) {
-            fields.current[field].value = values[field]
+         if (fields.current[field]) {
+            fields.current[field].value = dot.get(values, field)
          }
       }
    }
@@ -129,7 +133,8 @@ export function useForm(initial?: HookParams) {
       fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
-   function setErrors(errors: any) {
+   function setErrors(next: any) {
+      const errors = getNextState(next, state?.errors)
       state$.patch('errors', errors)
    }
 
@@ -147,7 +152,8 @@ export function useForm(initial?: HookParams) {
       state$.patch('errors', state$.getInitialState().errors)
    }
 
-   function setTouched(touched: any) {
+   function setTouched(next: any) {
+      const touched = getNextState(next, state?.values)
       state$.patch('touched', touched)
    }
 
@@ -163,7 +169,9 @@ export function useForm(initial?: HookParams) {
       state$.patch('touched.'.concat(field), false)
    }
 
-   function setForm(nextState: any) {
+   function setForm(next: any) {
+      const nextState = getNextState(next, state)
+
       setValues(nextState.values)
       setErrors(nextState.errors)
       setTouched(nextState.touched)
