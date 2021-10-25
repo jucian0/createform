@@ -87,7 +87,7 @@ export function useForm(initial?: HookParams) {
    function resetValues() {
       state$.set(state$.getInitialState().values as any)
       for (const field in fields.current) {
-         fields.current[field].value = ''
+         fields.current[field].value = state$.getInitialPropertyValue(field)
       }
    }
 
@@ -107,7 +107,7 @@ export function useForm(initial?: HookParams) {
 
    function resetFieldValue(field: string) {
       const path = 'values.'.concat(field)
-      state$.patch(path, '')
+      state$.patch(path, state$.getInitialPropertyValue(path))
       fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
