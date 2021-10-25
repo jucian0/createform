@@ -46,6 +46,7 @@ export function createState<T extends object>(
    }
 
    function notify() {
+      console.log('notify', subscribers.length)
       subscribers.forEach(fn => {
          fn(get())
       })
