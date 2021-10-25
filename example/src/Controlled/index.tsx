@@ -12,7 +12,7 @@ const options = [
 const Controlled: React.FC = () => {
    const { register, state, setFieldValue, resetFieldValue, handleChange } =
       useForm({
-         mode: 'onChange',
+         mode: 'debounced',
          initialState: { values: { email: 'juciano' } }
       })
 
