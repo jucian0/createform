@@ -4,16 +4,14 @@ import { Schema as YupSchema } from 'yup'
 /**
  * Input reference is a union with all kinds of native inputs.
  */
-export type Ref = {
-   current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
-}
+export type Ref = HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
 
 /**
  * This is the type of Register function, we just need the name and the reference of input
  */
-type RegisterReturn = {
+export type RegisterReturn = {
    name: string
-   ref: Ref
+   ref: React.RefObject<Ref>
 }
 
 /**
@@ -90,6 +88,12 @@ export type UseFormReturnType<T> = {
    resetFieldsValue: () => void
    /** reset the value of a specific field */
    resetFieldValue: (path: Paths<T>) => void
+   /** handle input changes */
+   handleChange: (
+      e: React.ChangeEvent<
+         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >
+   ) => void
 
    /** set all fields as touched */
    setFieldsTouched: (next: ChangeState<Touched<T>>) => void
