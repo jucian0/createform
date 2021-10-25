@@ -15,16 +15,20 @@ function isPrimitive(value: any) {
    )
 }
 
-export function set(defaultObject: object, prop: string, value: any) {
+export function set<T extends object>(
+   defaultObject: T,
+   prop: string,
+   value: any
+) {
    const paths = propToPath(prop)
 
-   function setPropertyValue(object: object = {}, index: number) {
+   function setPropertyValue(object: Partial<T> = {}, index: number) {
       let clone = Object.assign({}, object)
 
       if (paths.length > index) {
          if (Array.isArray(object)) {
             paths[index] = parseInt(paths[index])
-            clone = object.slice()
+            clone = object.slice() as any
          }
          clone[paths[index]] = setPropertyValue(object[paths[index]], index + 1)
 
@@ -36,7 +40,7 @@ export function set(defaultObject: object, prop: string, value: any) {
    return setPropertyValue(defaultObject, 0)
 }
 
-export function del(defaultObject: object, prop: string) {
+export function del<T extends object>(defaultObject: T, prop: string) {
    const paths = propToPath(prop)
 
    function deletePropertyValue(object: object, index: number) {
@@ -62,7 +66,7 @@ export function del(defaultObject: object, prop: string) {
    return deletePropertyValue(defaultObject, 0)
 }
 
-export function get(defaultObject: object, prop: string) {
+export function get<T extends object>(defaultObject: T, prop: string) {
    const paths = propToPath(prop)
 
    function getPropertyValue(object: object = {}, index: number): any {
@@ -81,7 +85,11 @@ export function get(defaultObject: object, prop: string) {
    return getPropertyValue(defaultObject, 0)
 }
 
-export function merge(defaultObject: object, prop: string, value: any) {
+export function merge<T extends object>(
+   defaultObject: T,
+   prop: string,
+   value: any
+) {
    const targetValue = get(defaultObject, prop)
    if (typeof targetValue === 'undefined' || isPrimitive(value)) {
       throw new Error('Target value is undefine, verify your property path')
