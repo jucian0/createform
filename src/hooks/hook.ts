@@ -144,7 +144,7 @@ export function useForm(initial?: HookParams) {
    }
 
    function resetErrors() {
-      state$.patch('errors', {})
+      state$.patch('errors', state$.getInitialState().errors)
    }
 
    function setTouched(touched: any) {
@@ -152,7 +152,7 @@ export function useForm(initial?: HookParams) {
    }
 
    function resetTouched() {
-      state$.patch('touched', {})
+      state$.patch('touched', state$.getInitialState().touched)
    }
 
    function setFieldTouched(field: string) {
