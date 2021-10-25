@@ -1,5 +1,6 @@
 import React from 'react'
 import { createState } from '../core/observable'
+import { debounce } from '../utils'
 
 type InitialState = {
    values?: {}
@@ -16,6 +17,7 @@ type HookParams = {
 export function useForm(initial?: HookParams) {
    const { current: state$ } = React.useRef(createState(initial?.initialState))
    const [state, setState] = React.useState(initial?.initialState)
+   const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
    const fields = React.useRef({})
 
    function setValue(event: any): void {
@@ -59,18 +61,22 @@ export function useForm(initial?: HookParams) {
             ref.current?.addEventListener('input', e => setValue(e))
          } else if (initial?.mode === 'onBlur') {
             ref.current?.addEventListener('blur', e => setValue(e))
+         } else if (initial?.mode === 'debounced') {
+            ref.current?.addEventListener('input', e => setStateDebounced(e))
          }
          return () => {
             if (initial?.mode === 'onChange') {
                ref.current?.removeEventListener('input', setValue)
             } else if (initial?.mode === 'onBlur') {
                ref.current?.removeEventListener('blur', setValue)
+            } else if (initial?.mode === 'debounced') {
+               ref.current?.removeEventListener('input', setStateDebounced)
             }
          }
       }, [])
 
       React.useEffect(() => {
-         setRefValue(ref, state$.getPropertyValue(`values.${name}`))
+         setRefValue(ref, state$.getPropertyValue('values.'.concat(name)))
       }, [])
 
       return {
