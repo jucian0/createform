@@ -3,8 +3,8 @@ import * as React from 'react'
 import { useForm } from '../../../src/hooks/hook'
 
 const Controlled: React.FC = () => {
-   const { register, state } = useForm({
-      mode: 'onBlur',
+   const { register, state, setFieldValue, resetFieldValue } = useForm({
+      mode: 'onChange',
       initialState: { values: { email: 'juciano' } }
    })
 
@@ -73,6 +73,14 @@ const Controlled: React.FC = () => {
          <div className="col-lg-12">
             <div className="form-group"></div>
          </div>
+
+         <button onClick={() => setFieldValue('email', 'juciano@juciano.com')}>
+            Change Field Value
+         </button>
+
+         <button onClick={() => resetFieldValue('email')}>
+            Reset Field Value
+         </button>
       </div>
    )
 }

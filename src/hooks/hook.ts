@@ -14,7 +14,7 @@ type HookParams = {
 }
 
 export function useForm(initial?: HookParams) {
-   const state$ = createState(initial?.initialState)
+   const { current: state$ } = React.useRef(createState(initial?.initialState))
    const [state, setState] = React.useState(initial?.initialState)
    const fields = React.useRef({})
 
@@ -67,7 +67,7 @@ export function useForm(initial?: HookParams) {
                ref.current?.removeEventListener('blur', setValue)
             }
          }
-      }, [name, ref.current])
+      }, [])
 
       React.useEffect(() => {
          setRefValue(ref, state$.getPropertyValue(`values.${name}`))
@@ -100,6 +100,7 @@ export function useForm(initial?: HookParams) {
 
    function setFieldValue(field: string, value: any) {
       const path = 'values.'.concat(field)
+
       state$.patch(path, value)
       fields.current[field].value = value
    }
