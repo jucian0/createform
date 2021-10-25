@@ -94,7 +94,9 @@ export function useForm(initial?: HookParams) {
    function setValues(values: any) {
       state$.patch('values', values)
       for (const field in fields.current) {
-         fields.current[field].value = values[field]
+         if (values[field]) {
+            fields.current[field].value = values[field]
+         }
       }
    }
 
@@ -102,7 +104,17 @@ export function useForm(initial?: HookParams) {
       const path = 'values.'.concat(field)
 
       state$.patch(path, value)
-      fields.current[field].value = value
+      if (fields.current[field]) {
+         fields.current[field].value = value
+      }
+   }
+
+   function handleChange(event: any) {
+      const path = 'values.'.concat(event.target.name)
+      if (event.target.type === 'checkbox') {
+         return state$.patch(path, event.target.checked)
+      }
+      state$.patch(path, event.target.value)
    }
 
    function resetFieldValue(field: string) {
@@ -163,6 +175,7 @@ export function useForm(initial?: HookParams) {
       setValues,
       resetValues,
       setFieldValue,
-      resetFieldValue
+      resetFieldValue,
+      handleChange
    }
 }

@@ -1,12 +1,20 @@
 import { TextField } from '@material-ui/core'
 import * as React from 'react'
 import { useForm } from '../../../src/hooks/hook'
+import Select from 'react-select'
+
+const options = [
+   { value: 'chocolate', label: 'Chocolate' },
+   { value: 'strawberry', label: 'Strawberry' },
+   { value: 'vanilla', label: 'Vanilla' }
+]
 
 const Controlled: React.FC = () => {
-   const { register, state, setFieldValue, resetFieldValue } = useForm({
-      mode: 'onChange',
-      initialState: { values: { email: 'juciano' } }
-   })
+   const { register, state, setFieldValue, resetFieldValue, handleChange } =
+      useForm({
+         mode: 'onChange',
+         initialState: { values: { email: 'juciano' } }
+      })
 
    console.log(state)
 
@@ -71,7 +79,15 @@ const Controlled: React.FC = () => {
             </div>
          </div>
          <div className="col-lg-12">
-            <div className="form-group"></div>
+            <div className="form-group">
+               <label>Select</label>
+               <div {...register('select')}>
+                  <Select
+                     options={options}
+                     onChange={e => setFieldValue('select', e?.value)}
+                  />
+               </div>
+            </div>
          </div>
 
          <button onClick={() => setFieldValue('email', 'juciano@juciano.com')}>
