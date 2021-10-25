@@ -1,25 +1,31 @@
 import React from 'react'
 import { createState } from '../core/observable'
+import {
+   Options,
+   State,
+   UseFormReturnType,
+   RegisterReturn,
+   Ref
+} from '../types'
 import { debounce, getNextState } from '../utils'
 import * as dot from './../core/dot-prop'
 
 type SetType<T> = ((value: T) => T) | T
 
-type InitialState = {
-   values?: {}
-   errors?: {}
-   touched?: {}
-}
-
-type HookParams = {
-   initialState?: InitialState
-   onSubmit?: (values: {}) => void
-   mode?: 'onChange' | 'onBlur' | 'onSubmit' | 'debounced'
-}
-
-export function useForm(initial?: HookParams) {
-   const { current: state$ } = React.useRef(createState(initial?.initialState))
-   const [state, setState] = React.useState(initial?.initialState)
+export function useForm<TInitial extends {}>(
+   initial?: Options<TInitial>
+): UseFormReturnType<TInitial> {
+   const initialState = {
+      values: initial?.initialValues,
+      errors: initial?.initialErrors,
+      touched: initial?.initialTouched
+   }
+   const { current: state$ } = React.useRef(
+      createState<TInitial>(initialState as any)
+   )
+   const [state, setState] = React.useState<State<TInitial>>(
+      initialState as any
+   )
    const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
    const fields = React.useRef({})
 
@@ -56,8 +62,8 @@ export function useForm(initial?: HookParams) {
       }
    }
 
-   function register(name: string) {
-      const ref = React.useRef<HTMLInputElement>(null)
+   function register(name: string): RegisterReturn {
+      const ref = React.useRef<Ref>(null)
 
       React.useEffect(() => {
          if (initial?.mode === 'onChange') {
@@ -93,14 +99,14 @@ export function useForm(initial?: HookParams) {
       return () => unsubscribe()
    }, [])
 
-   function resetValues() {
+   function resetFieldsValue() {
       state$.set(state$.getInitialState().values as any)
       for (const field in fields.current) {
          fields.current[field].value = state$.getInitialPropertyValue(field)
       }
    }
 
-   function setValues(next: any) {
+   function setFieldsValue(next: SetType<TInitial>) {
       const values = getNextState(next, state?.values)
       state$.patch('values', values)
       for (const field in fields.current) {
@@ -133,7 +139,7 @@ export function useForm(initial?: HookParams) {
       fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
-   function setErrors(next: any) {
+   function setFieldsError(next: SetType<TInitial>) {
       const errors = getNextState(next, state?.errors)
       state$.patch('errors', errors)
    }
@@ -148,16 +154,16 @@ export function useForm(initial?: HookParams) {
       state$.patch(path, state$.getInitialPropertyValue(path))
    }
 
-   function resetErrors() {
+   function resetFieldsError() {
       state$.patch('errors', state$.getInitialState().errors)
    }
 
-   function setTouched(next: any) {
+   function setFieldsTouched(next: SetType<TInitial>) {
       const touched = getNextState(next, state?.values)
       state$.patch('touched', touched)
    }
 
-   function resetTouched() {
+   function resetFieldsTouched() {
       state$.patch('touched', state$.getInitialState().touched)
    }
 
@@ -169,42 +175,46 @@ export function useForm(initial?: HookParams) {
       state$.patch('touched.'.concat(field), false)
    }
 
-   function setForm(next: any) {
+   function setForm(next: SetType<TInitial>) {
       const nextState = getNextState(next, state)
 
-      setValues(nextState.values)
-      setErrors(nextState.errors)
-      setTouched(nextState.touched)
+      setFieldsValue(nextState.values)
+      setFieldsError(nextState.errors)
+      setFieldsTouched(nextState.touched)
    }
 
    function resetForm() {
-      setValues(state$.getInitialState().values)
-      setErrors(state$.getInitialState().errors)
-      setTouched(state$.getInitialState().touched)
+      setFieldsValue(state$.getInitialState().values)
+      setFieldsError(state$.getInitialState().errors)
+      setFieldsTouched(state$.getInitialState().touched)
+   }
+
+   function onSubmit(event: any): any {
+      event.preventDefault()
    }
 
    return {
-      state$,
       state,
       register,
 
-      setTouched,
-      resetTouched,
+      setFieldsTouched,
+      resetFieldsTouched,
       setFieldTouched,
       resetFieldTouched,
 
-      setErrors,
-      resetErrors,
+      setFieldsError,
+      resetFieldsError,
       setFieldError,
       resetFieldError,
 
-      setValues,
-      resetValues,
+      setFieldsValue,
+      resetFieldsValue,
       setFieldValue,
       resetFieldValue,
       handleChange,
 
       resetForm,
-      setForm
+      setForm,
+      onSubmit
    }
 }

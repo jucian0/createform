@@ -10,13 +10,23 @@ const options = [
 ]
 
 const Controlled: React.FC = () => {
-   const { register, state, setFieldValue, resetFieldValue, handleChange } =
-      useForm({
-         mode: 'debounced',
-         initialState: { values: { email: 'juciano' } }
-      })
+   const {
+      register,
+      state,
+      setFieldValue,
+      resetFieldValue,
+      handleChange,
+      setFieldsValue,
+      setForm
+   } = useForm({
+      mode: 'debounced',
+      initialValues: { email: 'juciano' },
+      initialErrors: { email: 'juciano' }
+   })
 
    console.log(state)
+
+   //setFieldsValue(state => ({ ...state }))
 
    return (
       <div className="row">
