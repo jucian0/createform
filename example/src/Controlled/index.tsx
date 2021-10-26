@@ -2,6 +2,7 @@ import { TextField } from '@material-ui/core'
 import * as React from 'react'
 import { useForm } from '../../../src/hooks/hook'
 import Select from 'react-select'
+import * as yup from 'yup'
 
 const options = [
    { value: 'chocolate', label: 'Chocolate' },
@@ -10,17 +11,15 @@ const options = [
 ]
 
 const Controlled: React.FC = () => {
-   const {
-      register,
-      state,
-      setFieldValue,
-      resetFieldValue,
-      handleChange,
-      setFieldsValue,
-      setForm
-   } = useForm({
+   const { register, state, setFieldValue, resetFieldValue } = useForm({
       mode: 'debounced',
-      initialValues: { email: 'juciano', name: 'juciano' }
+      validationSchema: yup.object().shape({
+         email: yup.string().email().required(),
+         name: yup.string().required(),
+         nested: yup.object().shape({
+            option: yup.string().email()
+         })
+      })
    })
 
    console.log(state)
@@ -30,6 +29,14 @@ const Controlled: React.FC = () => {
    return (
       <div className="row">
          <div className="col-lg-12">
+            <div className="form-group">
+               <label>Name</label>
+               <input
+                  className="form-control"
+                  autoComplete="off"
+                  {...register('name')}
+               />
+            </div>
             <div className="form-group">
                <label>E-mail</label>
                <input

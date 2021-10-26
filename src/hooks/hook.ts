@@ -1,4 +1,5 @@
 import React from 'react'
+import { ValidationError } from 'yup'
 import { createState } from '../core/observable'
 import {
    Options,
@@ -8,7 +9,7 @@ import {
    Ref,
    SetType
 } from '../types'
-import { debounce, getNextState } from '../utils'
+import { debounce, getNextState, makeDotNotation } from '../utils'
 import * as dot from './../core/dot-prop'
 
 export function useForm<TInitial extends Options<TInitial['initialValues']>>(
@@ -20,7 +21,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       touched: initial?.initialTouched
    }
    const { current: state$ } = React.useRef(
-      createState<TInitial['initialValues']>(initialState as any)
+      createState<any>(initialState as any)
    )
    const [state, setState] = React.useState<State<TInitial['initialValues']>>(
       initialState as any
@@ -28,18 +29,42 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
    const fields = React.useRef({})
 
-   function setValue(event: any): void {
-      if (event.target.type === 'checkbox') {
-         return state$.patch(
-            'values.'.concat(event.target.name),
-            event.target.checked
-         )
-      }
+   async function setValue(event: any) {
+      const validationSchema = initial?.validationSchema
+      const currentState = state$.get()
 
-      return state$.patch(
+      const nextState = dot.set(
+         currentState,
          'values.'.concat(event.target.name),
          event.target.value
       )
+      const nextTouched = dot.set(
+         currentState,
+         'touched.'.concat(event.target.name),
+         true
+      )
+      try {
+         if (validationSchema) {
+            await validate(nextState)
+            state$.set({
+               values: nextState.values,
+               errors: {},
+               touched: nextTouched.touched
+            })
+         }
+
+         state$.set({
+            values: nextState.values,
+            errors: nextState.errors,
+            touched: nextTouched.touched
+         })
+      } catch (errors) {
+         state$.set({
+            values: nextState.values,
+            errors: errors,
+            touched: nextTouched.touched
+         })
+      }
    }
 
    function setRefValue(ref: any, value: any) {
@@ -84,7 +109,10 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }, [])
 
       React.useEffect(() => {
-         setRefValue(ref, state$.getPropertyValue('values.'.concat(name)))
+         const value = state$.getPropertyValue('values.'.concat(name))
+         if (value) {
+            setRefValue(ref, value)
+         }
       }, [])
 
       return {
@@ -188,8 +216,47 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       setFieldsTouched(state$.getInitialState().touched)
    }
 
-   function onSubmit(event: any): any {
-      event.preventDefault()
+   function makeAllTouched() {
+      for (const field in fields.current) {
+         setFieldTouched(field)
+      }
+   }
+
+   function onSubmit(
+      fn: (values: TInitial['initialValues'], isValid: boolean) => void
+   ) {
+      return async (e: React.BaseSyntheticEvent) => {
+         e.preventDefault()
+         const values = state$.get().values
+         try {
+            await validate(values)
+            fn(values, true)
+         } catch (errors) {
+            fn(values, false)
+            state$.set({
+               ...state,
+               errors,
+               touched: makeAllTouched()
+            })
+
+            if (initial?.mode === 'onSubmit') {
+            }
+         }
+      }
+   }
+
+   function validate(values: State<TInitial['initialValues']>) {
+      return initial?.validationSchema
+         ?.validate(values, { abortEarly: false })
+         .then(() => {
+            return {}
+         })
+         .catch((e: ValidationError) => {
+            throw e.inner.reduce((acc, key) => {
+               const path = makeDotNotation(key.path)
+               return dot.set(acc, path, key.message)
+            }, {})
+         })
    }
 
    return {
