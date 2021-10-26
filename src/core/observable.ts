@@ -1,15 +1,16 @@
+import { State } from '../types'
 import * as dot from './dot-prop'
 
-type Subscribe<TValues> = (e: TValues) => void
+type Subscribe<TValues> = (e: State<TValues>) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
 
-export function createState<T extends object>(
+export function createState<T extends State<T>>(
    initialState: T = Object.assign({})
 ) {
    let state = initialState
    let subscribers: Subscribers<T> = []
 
-   function get() {
+   function get(): State<T> {
       return state
    }
 
@@ -41,7 +42,7 @@ export function createState<T extends object>(
       return dot.get(initialState, path)
    }
 
-   function getInitialState() {
+   function getInitialState(): State<T> {
       return initialState
    }
 

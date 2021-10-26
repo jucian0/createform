@@ -5,14 +5,13 @@ import {
    State,
    UseFormReturnType,
    RegisterReturn,
-   Ref
+   Ref,
+   SetType
 } from '../types'
 import { debounce, getNextState } from '../utils'
 import * as dot from './../core/dot-prop'
 
-type SetType<T> = ((value: T) => T) | T
-
-export function useForm<TInitial extends {}>(
+export function useForm<TInitial>(
    initial?: Options<TInitial>
 ): UseFormReturnType<TInitial> {
    const initialState = {
@@ -106,7 +105,7 @@ export function useForm<TInitial extends {}>(
       }
    }
 
-   function setFieldsValue(next: SetType<TInitial>) {
+   function setFieldsValue(next: SetType<TInitial['values']>) {
       const values = getNextState(next, state?.values)
       state$.patch('values', values)
       for (const field in fields.current) {
@@ -139,7 +138,7 @@ export function useForm<TInitial extends {}>(
       fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
-   function setFieldsError(next: SetType<TInitial>) {
+   function setFieldsError(next: SetType<TInitial['errors']>) {
       const errors = getNextState(next, state?.errors)
       state$.patch('errors', errors)
    }
@@ -158,7 +157,7 @@ export function useForm<TInitial extends {}>(
       state$.patch('errors', state$.getInitialState().errors)
    }
 
-   function setFieldsTouched(next: SetType<TInitial>) {
+   function setFieldsTouched(next: SetType<TInitial['touched']>) {
       const touched = getNextState(next, state?.values)
       state$.patch('touched', touched)
    }
