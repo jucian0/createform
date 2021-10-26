@@ -68,9 +68,9 @@ export type Options<T> = {
  * state is one of properties that is returned by useForm hook, this object contains the current state of form when the form is controlled or debounced.
  */
 export type State<T> = {
-   readonly values: T
-   readonly errors: Errors<T>
-   readonly touched: Touched<T>
+   values: T
+   errors: Errors<T>
+   touched: Touched<T>
 }
 
 /**
