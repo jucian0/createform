@@ -91,11 +91,7 @@ export type UseFormReturnType<T> = {
    /** reset the value of a specific field */
    resetFieldValue: (path: Paths<T>) => void
    /** handle input changes */
-   handleChange: (
-      e: React.ChangeEvent<
-         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-      >
-   ) => void
+   handleChange: (e: React.ChangeEvent<Ref>) => void
 
    /** set all fields as touched */
    setFieldsTouched: (next: ChangeState<Touched<T>>) => void
