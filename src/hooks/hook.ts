@@ -11,18 +11,18 @@ import {
 import { debounce, getNextState } from '../utils'
 import * as dot from './../core/dot-prop'
 
-export function useForm<TInitial>(
-   initial?: Options<TInitial>
-): UseFormReturnType<TInitial> {
+export function useForm<TInitial extends Options<TInitial['initialValues']>>(
+   initial?: TInitial
+): UseFormReturnType<TInitial['initialValues']> {
    const initialState = {
       values: initial?.initialValues,
       errors: initial?.initialErrors,
       touched: initial?.initialTouched
    }
    const { current: state$ } = React.useRef(
-      createState<TInitial>(initialState as any)
+      createState<TInitial['initialValues']>(initialState as any)
    )
-   const [state, setState] = React.useState<State<TInitial>>(
+   const [state, setState] = React.useState<State<TInitial['initialValues']>>(
       initialState as any
    )
    const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
@@ -105,7 +105,7 @@ export function useForm<TInitial>(
       }
    }
 
-   function setFieldsValue(next: SetType<TInitial['values']>) {
+   function setFieldsValue(next: SetType<TInitial['initialValues']>) {
       const values = getNextState(next, state?.values)
       state$.patch('values', values)
       for (const field in fields.current) {
@@ -138,7 +138,7 @@ export function useForm<TInitial>(
       fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
-   function setFieldsError(next: SetType<TInitial['errors']>) {
+   function setFieldsError(next: SetType<TInitial['initialErrors']>) {
       const errors = getNextState(next, state?.errors)
       state$.patch('errors', errors)
    }
@@ -157,7 +157,7 @@ export function useForm<TInitial>(
       state$.patch('errors', state$.getInitialState().errors)
    }
 
-   function setFieldsTouched(next: SetType<TInitial['touched']>) {
+   function setFieldsTouched(next: SetType<TInitial['initialTouched']>) {
       const touched = getNextState(next, state?.values)
       state$.patch('touched', touched)
    }
@@ -174,7 +174,7 @@ export function useForm<TInitial>(
       state$.patch('touched.'.concat(field), false)
    }
 
-   function setForm(next: SetType<TInitial>) {
+   function setForm(next: SetType<State<TInitial>>) {
       const nextState = getNextState(next, state)
 
       setFieldsValue(nextState.values)
