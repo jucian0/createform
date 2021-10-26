@@ -23,7 +23,7 @@ const Controlled: React.FC = () => {
       initialValues: { email: 'juciano', name: 'juciano' }
    })
 
-   console.log(state.values?.email)
+   console.log(state)
 
    //setFieldsValue(state => ({ ...state }))
 
