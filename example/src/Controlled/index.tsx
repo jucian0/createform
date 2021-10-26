@@ -20,7 +20,7 @@ const Controlled: React.FC = () => {
       setForm
    } = useForm({
       mode: 'debounced',
-      initialValues: { email: 'juciano' },
+      initialValues: { email: 'juciano', name: 'juciano' },
       initialErrors: { email: 'juciano' }
    })
 
