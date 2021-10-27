@@ -35,7 +35,9 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       const nextState = dot.set(
          currentState,
          'values.'.concat(event.target.name),
-         event.target.value
+         isCheckbox(event.target.type)
+            ? event.target.checked
+            : event.target.value
       )
       const nextTouched = dot.set(
          currentState,
