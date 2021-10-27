@@ -1,5 +1,5 @@
 import { State } from '../types'
-import * as dot from './dot-prop'
+import * as dot from '../utils/dot-prop'
 
 type Subscribe<TValues> = (e: State<TValues>) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
