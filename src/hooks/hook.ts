@@ -43,23 +43,24 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
          'touched.'.concat(event.target.name),
          true
       )
+
       try {
          if (validationSchema) {
-            await validate(nextState)
-            state$.set({
+            await validate(nextState.values)
+            return state$.set({
                values: nextState.values,
                errors: {},
                touched: nextTouched.touched
             })
          }
 
-         state$.set({
+         return state$.set({
             values: nextState.values,
             errors: nextState.errors,
             touched: nextTouched.touched
          })
       } catch (errors) {
-         state$.set({
+         return state$.set({
             values: nextState.values,
             errors: errors,
             touched: nextTouched.touched
