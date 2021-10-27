@@ -1,141 +1,253 @@
-import * as React from 'react'
-import * as dot from 'object-path-immutable'
-import { debounce, isCheckbox, isRadio, makeDotNotation } from '../utils'
+import React from 'react'
 import { ValidationError } from 'yup'
 import { createState } from '../core/observable'
 import {
-   Errors,
-   InputsRef,
    Options,
-   Paths,
    State,
-   Touched,
-   UseFormReturnType
+   UseFormReturnType,
+   RegisterReturn,
+   Ref,
+   SetType
 } from '../types'
-import path from 'path'
+import { debounce, getNextState, makeDotNotation } from '../utils'
+import * as dot from './../core/dot-prop'
 
-export function useForm<TO>({
-   initialErrors = {} as any,
-   initialValues = {} as any,
-   initialTouched = {} as any,
-   ...options
-}: Options<TO>): UseFormReturnType<TO> {
-   const refs = React.useRef<InputsRef>({} as any)
-
+export function useForm<TInitial extends Options<TInitial['initialValues']>>(
+   initial?: TInitial
+): UseFormReturnType<TInitial['initialValues']> {
+   const initialState = {
+      values: initial?.initialValues,
+      errors: initial?.initialErrors,
+      touched: initial?.initialTouched
+   }
    const { current: state$ } = React.useRef(
-      createState({
-         values: initialValues,
-         errors: initialErrors,
-         touched: initialTouched
-      })
+      createState<any>(initialState as any)
    )
+   const [state, setState] = React.useState<State<TInitial['initialValues']>>(
+      initialState as any
+   )
+   const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
+   const fields = React.useRef({})
 
-   const [state, setState] = React.useState<State<TO>>({
-      values: initialValues,
-      errors: initialErrors,
-      touched: initialTouched
-   })
+   async function setValue(event: any) {
+      const validationSchema = initial?.validationSchema
+      const currentState = state$.get()
 
-   function register(path: string) {
-      const ref = React.useRef<any>()
+      const nextState = dot.set(
+         currentState,
+         'values.'.concat(event.target.name),
+         event.target.value
+      )
+      const nextTouched = dot.set(
+         currentState,
+         'touched.'.concat(event.target.name),
+         true
+      )
 
-      refs.current[path] = ref as any
+      try {
+         if (validationSchema) {
+            await validate(nextState.values)
+            return state$.set({
+               values: nextState.values,
+               errors: {},
+               touched: nextTouched.touched
+            })
+         }
+
+         return state$.set({
+            values: nextState.values,
+            errors: nextState.errors,
+            touched: nextTouched.touched
+         })
+      } catch (errors) {
+         return state$.set({
+            values: nextState.values,
+            errors: errors,
+            touched: nextTouched.touched
+         })
+      }
+   }
+
+   function setRefValue(ref: any, value: any) {
+      if (ref.current.type === 'radio') {
+         const inputs = Array.from<HTMLInputElement>(
+            ref.current.form.querySelectorAll(
+               'input[name="' + ref.current.name + '"]'
+            )
+         )
+
+         for (const input of inputs) {
+            input.checked = input.value === value
+         }
+      } else {
+         fields.current[ref.current.name] = ref.current
+         ref.current.value = state$.getPropertyValue(
+            'values.'.concat(ref.current.name)
+         )
+      }
+   }
+
+   function register(name: string): RegisterReturn {
+      const ref = React.useRef<Ref>(null)
 
       React.useEffect(() => {
-         if (ref.current) {
-            if (options.mode === 'onChange') {
-               ref.current.addEventListener('input', (e: any) => {
-                  const nextValue =
-                     ref.current.type === 'checkbox'
-                        ? e.target.checked
-                        : e.target.value
-                  state$.patch(`values.${path}`, nextValue)
-               })
-            } else if (options.mode === 'onBlur') {
-               ref.current.addEventListener('blur', (e: any) => {
-                  const nextValue =
-                     ref.current.type === 'checkbox'
-                        ? e.target.checked
-                        : e.target.value
-                  state$.patch(`values.${path}`, nextValue)
-               })
-            }
-
-            if (ref.current?.type === 'radio') {
-               Array.from(
-                  (ref.current as HTMLDivElement).getElementsByTagName('input')
-               ).forEach((radio: any) => {
-                  radio.checked = radio.value == ref.current?.value
-               })
-            }
-
-            return () => {
-               ref.current.removeEventListener('change', () => {})
+         if (initial?.mode === 'onChange') {
+            ref.current?.addEventListener('input', e => setValue(e))
+         } else if (initial?.mode === 'onBlur') {
+            ref.current?.addEventListener('blur', e => setValue(e))
+         } else if (initial?.mode === 'debounced') {
+            ref.current?.addEventListener('input', e => setStateDebounced(e))
+         }
+         return () => {
+            if (initial?.mode === 'onChange') {
+               ref.current?.removeEventListener('input', setValue)
+            } else if (initial?.mode === 'onBlur') {
+               ref.current?.removeEventListener('blur', setValue)
+            } else if (initial?.mode === 'debounced') {
+               ref.current?.removeEventListener('input', setStateDebounced)
             }
          }
       }, [])
 
-      return { name: path, ref: refs.current[path] }
-   }
+      React.useEffect(() => {
+         const value = state$.getPropertyValue('values.'.concat(name))
+         if (value) {
+            setRefValue(ref, value)
+         }
+      }, [])
 
-   function setRefValue(path: string, value: any) {
-      if (!refs.current[path]) {
-         return
+      return {
+         name,
+         ref
       }
-      if (isCheckbox(refs.current[path].current.type)) {
-         return (refs.current[path].current.checked = value)
-      } else if (refs.current[path]?.current?.children) {
-         Array.from(
-            refs.current[path]?.current?.getElementsByTagName('input')
-         ).forEach((element: any) => {
-            element.checked = element.value === value
-         })
+   }
+
+   React.useEffect(() => {
+      const unsubscribe = state$.subscribe(setState)
+      return () => unsubscribe()
+   }, [])
+
+   function resetFieldsValue() {
+      state$.set(state$.getInitialState().values as any)
+      for (const field in fields.current) {
+         fields.current[field].value = state$.getInitialPropertyValue(field)
       }
-
-      return (refs.current[path].current.value = value || null)
    }
 
-   function makeResetAllTouchedPayload() {
-      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
-         return dot.set(acc, path, dot.get(initialTouched || {}, path) || false)
-      }, {} as Touched<TO>)
+   function setFieldsValue(next: SetType<TInitial['initialValues']>) {
+      const values = getNextState(next, state?.values)
+      state$.patch('values', values)
+      for (const field in fields.current) {
+         if (fields.current[field]) {
+            fields.current[field].value = dot.get(values, field)
+         }
+      }
    }
 
-   function makeAllTouchedPayload() {
-      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
-         return dot.set(acc, path, true)
-      }, {} as Touched<TO>)
+   function setFieldValue(field: string, value: any) {
+      const path = 'values.'.concat(field)
+
+      state$.patch(path, value)
+      if (fields.current[field]) {
+         fields.current[field].value = value
+      }
    }
 
-   function onSubmit(fn: (values: TO, isValid: boolean) => void) {
+   function handleChange(event: any) {
+      const path = 'values.'.concat(event.target.name)
+      if (event.target.type === 'checkbox') {
+         return state$.patch(path, event.target.checked)
+      }
+      state$.patch(path, event.target.value)
+   }
+
+   function resetFieldValue(field: string) {
+      const path = 'values.'.concat(field)
+      state$.patch(path, state$.getInitialPropertyValue(path))
+      fields.current[field].value = state$.getInitialPropertyValue(path)
+   }
+
+   function setFieldsError(next: SetType<TInitial['initialErrors']>) {
+      const errors = getNextState(next, state?.errors)
+      state$.patch('errors', errors)
+   }
+
+   function setFieldError(field: string, error: string) {
+      const path = 'errors.'.concat(field)
+      state$.patch(path, error)
+   }
+
+   function resetFieldError(field: string) {
+      const path = 'errors.'.concat(field)
+      state$.patch(path, state$.getInitialPropertyValue(path))
+   }
+
+   function resetFieldsError() {
+      state$.patch('errors', state$.getInitialState().errors)
+   }
+
+   function setFieldsTouched(next: SetType<TInitial['initialTouched']>) {
+      const touched = getNextState(next, state?.values)
+      state$.patch('touched', touched)
+   }
+
+   function resetFieldsTouched() {
+      state$.patch('touched', state$.getInitialState().touched)
+   }
+
+   function setFieldTouched(field: string) {
+      state$.patch('touched.'.concat(field), true)
+   }
+
+   function resetFieldTouched(field: string) {
+      state$.patch('touched.'.concat(field), false)
+   }
+
+   function setForm(next: SetType<State<TInitial>>) {
+      const nextState = getNextState(next, state)
+
+      setFieldsValue(nextState.values)
+      setFieldsError(nextState.errors)
+      setFieldsTouched(nextState.touched)
+   }
+
+   function resetForm() {
+      setFieldsValue(state$.getInitialState().values)
+      setFieldsError(state$.getInitialState().errors)
+      setFieldsTouched(state$.getInitialState().touched)
+   }
+
+   function makeAllTouched() {
+      for (const field in fields.current) {
+         setFieldTouched(field)
+      }
+   }
+
+   function onSubmit(
+      fn: (values: TInitial['initialValues'], isValid: boolean) => void
+   ) {
       return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
          const values = state$.get().values
-         // try {
-         //   await validate(values)
-         //   fn(values, true)
-         // } catch (errors) {
-         //   fn(values, false)
-         //   state$.set(state => ({
-         //     ...state,
-         //     errors,
-         //     touched: makeAllTouchedPayload()
-         //   }))
+         try {
+            await validate(values)
+            fn(values, true)
+         } catch (errors) {
+            fn(values, false)
+            state$.set({
+               ...state,
+               errors,
+               touched: makeAllTouched()
+            })
 
-         //   if (!isControlledOrDebounce()) {
-         //     setState(state => ({
-         //       ...state,
-         //       errors,
-         //       values,
-         //       touched: makeAllTouchedPayload()
-         //     }))
-         //   }
-         // }
+            if (initial?.mode === 'onSubmit') {
+            }
+         }
       }
    }
 
-   function validate(values: State<TO>['values']) {
-      return options.validationSchema
+   function validate(values: State<TInitial['initialValues']>) {
+      return initial?.validationSchema
          ?.validate(values, { abortEarly: false })
          .then(() => {
             return {}
@@ -148,124 +260,28 @@ export function useForm<TO>({
          })
    }
 
-   React.useEffect(() => {
-      const subscriber = state$.subscribe(setState)
-
-      return () => {
-         subscriber()
-      }
-   }, [])
-
-   function setForm(next: State<TO> | ((state: State<TO>) => State<TO>)) {
-      const nextState = typeof next === 'function' ? next(state) : next
-      state$.set(nextState as any)
-      for (const path in nextState.values) {
-         setRefValue(path, dot.get(nextState.values, path))
-      }
-   }
-
-   function resetForm() {
-      for (const path in refs.current) {
-         setRefValue(path, dot.get(initialValues, path))
-      }
-      state$.set({
-         values: initialValues,
-         errors: initialErrors,
-         touched: initialTouched
-      })
-   }
-
-   function setFieldsValue(next: Partial<TO> | ((values: TO) => TO)) {
-      const nextState = typeof next === 'function' ? next(state.values) : next
-      state$.patch(`values`, nextState)
-
-      for (const path in nextState) {
-         setRefValue(path, dot.get(nextState, path))
-      }
-   }
-
-   function setFieldValue(path: Paths<typeof initialValues>, value: any) {
-      state$.patch(`values.${path}`, value)
-      setRefValue(path as string, value)
-   }
-
-   function resetFieldsValue() {
-      for (const path in refs.current) {
-         setRefValue(path, dot.get(initialValues, path))
-      }
-      state$.patch(`values`, initialValues)
-   }
-
-   function resetFieldValue(path: Paths<typeof initialValues>) {
-      const nextState = dot.get(initialValues, path as string) || undefined
-      state$.patch(`values.${path}`, nextState)
-      setRefValue(path as string, nextState)
-   }
-
-   function setFieldsTouched(
-      next: Partial<Touched<TO>> | ((next: Touched<TO>) => Touched<TO>)
-   ) {
-      const nextState = typeof next === 'function' ? next(state.touched) : next
-      state$.patch(`touched`, nextState)
-   }
-
-   function setFieldTouched(
-      path: Paths<typeof initialValues>,
-      value: boolean = true
-   ) {
-      state$.patch(`touched.${path}`, value)
-   }
-
-   function resetFieldsTouched() {
-      setFieldsTouched(makeResetAllTouchedPayload())
-   }
-
-   function resetFieldTouched(path: Paths<typeof initialValues>) {
-      const nextState = dot.get(initialTouched, path as string) || false
-      state$.patch(`touched.${path}`, nextState)
-   }
-
-   function setFieldsError(
-      next: Partial<Errors<TO>> | ((next: Errors<TO>) => Errors<TO>)
-   ) {
-      const nextState = typeof next === 'function' ? next(state.errors) : next
-      state$.patch(`errors.${path}`, nextState)
-   }
-
-   function setFieldError(path: Paths<typeof initialValues>, value: any) {
-      state$.patch(`errors.${path}`, value)
-   }
-
-   function resetFieldsError() {
-      state$.set(state => ({ ...state, errors: initialErrors }))
-   }
-
-   function resetFieldError(path: Paths<typeof initialValues>) {
-      const nextState = dot.get(initialErrors, path as string) || false
-      state$.patch(`errors.${path}`, nextState)
-   }
-
    return {
-      register,
       state,
-      onSubmit,
-
-      setForm,
-      resetForm,
-
-      setFieldValue,
-      setFieldsValue,
-      resetFieldValue,
-      resetFieldsValue,
+      register,
 
       setFieldsTouched,
-      setFieldTouched,
       resetFieldsTouched,
+      setFieldTouched,
       resetFieldTouched,
 
-      setFieldError,
       setFieldsError,
+      resetFieldsError,
+      setFieldError,
       resetFieldError,
-      resetFieldsError
+
+      setFieldsValue,
+      resetFieldsValue,
+      setFieldValue,
+      resetFieldValue,
+      handleChange,
+
+      resetForm,
+      setForm,
+      onSubmit
    }
 }
