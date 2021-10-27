@@ -1,5 +1,4 @@
 import React from 'react'
-import { ValidationError } from 'yup'
 import { createState } from '../core/observable'
 import {
    Options,
@@ -9,8 +8,8 @@ import {
    Ref,
    SetType
 } from '../types'
-import { debounce, getNextState, makeDotNotation } from '../utils'
-import * as dot from './../core/dot-prop'
+import { debounce, getNextState, isCheckbox, validate } from '../utils'
+import * as dot from '../utils/dot-prop'
 
 export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    initial?: TInitial
@@ -46,7 +45,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
 
       try {
          if (validationSchema) {
-            await validate(nextState.values)
+            await validate(nextState.values, validationSchema)
             return state$.set({
                values: nextState.values,
                errors: {},
@@ -155,7 +154,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
 
    function handleChange(event: any) {
       const path = 'values.'.concat(event.target.name)
-      if (event.target.type === 'checkbox') {
+      if (isCheckbox(event.target.type)) {
          return state$.patch(path, event.target.checked)
       }
       state$.patch(path, event.target.value)
@@ -230,7 +229,9 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
          e.preventDefault()
          const values = state$.get().values
          try {
-            await validate(values)
+            if (initial?.validationSchema) {
+               await validate(values, initial.validationSchema)
+            }
             fn(values, true)
          } catch (errors) {
             fn(values, false)
@@ -244,20 +245,6 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
             }
          }
       }
-   }
-
-   function validate(values: State<TInitial['initialValues']>) {
-      return initial?.validationSchema
-         ?.validate(values, { abortEarly: false })
-         .then(() => {
-            return {}
-         })
-         .catch((e: ValidationError) => {
-            throw e.inner.reduce((acc, key) => {
-               const path = makeDotNotation(key.path)
-               return dot.set(acc, path, key.message)
-            }, {})
-         })
    }
 
    return {
