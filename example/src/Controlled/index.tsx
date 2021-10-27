@@ -12,7 +12,7 @@ const options = [
 
 const Controlled: React.FC = () => {
    const { register, state, setFieldValue, resetFieldValue } = useForm({
-      mode: 'debounced',
+      mode: 'onChange',
       validationSchema: yup.object().shape({
          email: yup.string().email().required(),
          name: yup.string().required(),
