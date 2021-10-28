@@ -1,26 +1,18 @@
-import * as React from 'react'
+import React from 'react'
 import { render } from '@testing-library/react'
 import { useForm } from '../../src/index'
+import { UseFormReturnType } from '../../src/types'
 
-export function setup({ hookParams, inputParams, onSubmit }: any) {
-   const returnVal: any = {}
+export function makeSut({ hookParams, inputParams, onSubmit }: any) {
+   const hookState: UseFormReturnType<any> = Object.assign({})
 
    function InputComponent() {
-      // const [ready, setReady] = React.useState(false)
-
       const { state, register, ...rest } = useForm<any>(hookParams)
 
-      Object.assign(returnVal, { state, ...rest })
-
-      // React.useEffect(()=>{
-      //    setReady(true)
-      // },[state.touched])
+      Object.assign(hookState, { state, ...rest })
 
       return (
          <form onSubmit={rest.onSubmit(onSubmit)} onReset={rest.resetForm}>
-            {/* {
-              ready && <span data-testid="ready"></span>
-            } */}
             <input
                {...register(inputParams.name)}
                {...inputParams}
@@ -32,7 +24,7 @@ export function setup({ hookParams, inputParams, onSubmit }: any) {
       )
    }
 
-   render(<InputComponent />)
+   const sut = render(<InputComponent />)
 
-   return returnVal
+   return { sut, hookState }
 }

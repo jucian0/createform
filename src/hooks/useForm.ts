@@ -25,6 +25,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    const [state, setState] = React.useState<State<TInitial['initialValues']>>(
       initialState as any
    )
+
    const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
    const fields = React.useRef({})
 

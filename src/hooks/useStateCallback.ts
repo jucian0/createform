@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 type UseStateCallback<T> = [T, React.Dispatch<React.SetStateAction<T>>]
 
