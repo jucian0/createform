@@ -1,5 +1,5 @@
 import { TextField } from '@material-ui/core'
-import * as React from 'react'
+import React from 'react'
 import { useForm } from '../../../src/hooks/useForm'
 import Select from 'react-select'
 import * as yup from 'yup'
@@ -12,6 +12,9 @@ const options = [
 
 const Controlled: React.FC = () => {
    const { register, state, setFieldValue, resetFieldValue } = useForm({
+      initialValues: {
+         name: 'juciano'
+      },
       mode: 'onChange',
       validationSchema: yup.object().shape({
          email: yup.string().email().required(),

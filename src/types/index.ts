@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Schema as YupSchema } from 'yup'
 
 export type SetType<T> = ((value: T) => T) | T
