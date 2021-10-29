@@ -32,13 +32,15 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    async function setValue(event: any) {
       const validationSchema = initial?.validationSchema
       const currentState = state$.get()
+      const nextChecked = event.target.checked
+      const nextValue = isNaN(event.target.value)
+         ? event.target.value
+         : parseInt(event.target.value)
 
       const nextState = dot.set(
          currentState,
          'values.'.concat(event.target.name),
-         isCheckbox(event.target.type)
-            ? event.target.checked
-            : event.target.value
+         isCheckbox(event.target.type) ? nextChecked : nextValue
       )
       const nextTouched = dot.set(
          currentState,
