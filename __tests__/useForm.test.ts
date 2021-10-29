@@ -1,30 +1,60 @@
-// import {act,  fireEvent,screen } from "@testing-library/react"
-// import { fireEvent, screen, waitFor } from '@testing-library/react'
-// import { act } from 'react-test-renderer'
-import { makeSut } from './utils/makeSut'
+import { makeSut, makeUseFormParamsMock } from './utils/makeSut'
 import * as faker from 'faker'
 import { waitFor } from '@testing-library/dom'
+import '@testing-library/jest-dom/extend-expect'
+import { fireEvent } from '@testing-library/react'
 
-const mockInitialParams = {
-   hookParams: {
-      initialValues: {
-         name: faker.datatype.string()
-      },
-      onSubmit: jest.fn()
-   },
-   inputParams: {
-      name: 'text'
-   }
-}
-
-describe('Set initial options', () => {
+describe('Test useForm arguments', () => {
    test('Should set initial values', async () => {
-      const { hookState } = makeSut(mockInitialParams)
-      await waitFor(() => {
-         expect(hookState.state.values).toEqual(
-            mockInitialParams.hookParams.initialValues
-         )
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word()
       })
+      const { hookState } = makeSut(mock)
+      await waitFor(() => {
+         expect(hookState.state.values).toEqual(mock.hookParams.initialValues)
+      })
+   })
+})
+
+describe('onChange mode tests input events', () => {
+   test('Should update input value when dispatch input event', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word()
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.name.firstName()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      await waitFor(() => {
+         expect(hookState.state.values.inputName).toEqual(nextValue)
+      })
+   })
+
+   test('Should update input number value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.datatype.number(),
+         type: 'number'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.datatype.number()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input checkbox value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.datatype.boolean(),
+         type: 'checkbox'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.datatype.number()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
    })
 })
 
