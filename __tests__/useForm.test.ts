@@ -1,4 +1,4 @@
-import { makeSut, makeUseFormParamsMock } from './utils/makeSut'
+import { makeRadioSut, makeSut, makeUseFormParamsMock } from './utils/makeSut'
 import * as faker from 'faker'
 import { waitFor } from '@testing-library/dom'
 import '@testing-library/jest-dom/extend-expect'
@@ -52,6 +52,124 @@ describe('onChange mode tests input events', () => {
       const { hookState, sut } = makeSut(mock)
       const input = sut.getByTestId(mock.inputParams.name)
       const nextValue = faker.datatype.number()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input range value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.datatype.number({ min: 0, max: 100 }),
+         type: 'range'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.datatype.number()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input date value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.date.past(),
+         type: 'date'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = new Date(faker.date.past()).toTimeString()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input time value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.date.past(),
+         type: 'time'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = new Date(faker.date.past()).toTimeString()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input datetime-local value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.date.past(),
+         type: 'datetime-local'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = new Date(faker.date.past()).toTimeString()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input month value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.date.past(),
+         type: 'month'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = new Date(faker.date.past()).toTimeString()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input week value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.date.past(),
+         type: 'week'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = new Date(faker.date.past()).toTimeString()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input color value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.internet.color(),
+         type: 'color'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.internet.color()
+      fireEvent.input(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input radio value when dispatch input event', async () => {
+      const mock = makeUseFormParamsMock({
+         value: 'option-1'
+      })
+      const { hookState, sut } = makeRadioSut(mock)
+      const input = sut.getByTestId('radio-2')
+      const nextValue = 'option-2'
+      fireEvent.click(input)
+
+      console.log(hookState.state.values)
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input select value when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         type: 'select'
+      })
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.random.word()
       fireEvent.input(input, { target: { value: nextValue } })
 
       expect(hookState.state.values.inputName).toEqual(nextValue)
