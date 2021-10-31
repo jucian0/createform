@@ -43,7 +43,7 @@ describe('Test initial state', () => {
    })
 })
 
-describe('Test handle functions to setField/value/error/touched', () => {
+describe('Test handle functions to setField/value/error/touched and resetField/value/error/touched', () => {
    test('Should change input state when run setFieldValue', async () => {
       const mock = makeUseFormParamsMock({
          value: faker.random.word()
@@ -103,7 +103,7 @@ describe('Test handle functions to setField/value/error/touched', () => {
       const newError = faker.random.words()
 
       act(() => {
-         hookState.setFieldValue(mock.inputParams.name, newError)
+         hookState.setFieldError(mock.inputParams.name, newError)
       })
 
       await waitFor(() => {
@@ -115,12 +115,67 @@ describe('Test handle functions to setField/value/error/touched', () => {
       })
 
       await waitFor(() => {
-         expect(hookState.state.errors.inputName).toEqual('')
+         expect(hookState.state.errors.inputName).toEqual(
+            mock.hookParams.initialErrors.inputName
+         )
+      })
+   })
+
+   test('Should reset input state when run resetFieldTouched', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         touched: false
+      })
+      const { hookState } = makeSut(mock)
+      const newTouched = true
+
+      act(() => {
+         hookState.setFieldTouched(mock.inputParams.name, newTouched)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.touched.inputName).toEqual(newTouched)
+      })
+
+      act(() => {
+         hookState.resetFieldTouched(mock.inputParams.name)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.touched.inputName).toEqual(
+            mock.hookParams.initialTouched.inputName
+         )
+      })
+   })
+
+   test('Should reset input state when run resetFieldValue', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word()
+      })
+      const { hookState } = makeSut(mock)
+      const newValue = faker.random.word()
+
+      act(() => {
+         hookState.setFieldValue(mock.inputParams.name, newValue)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.values.inputName).toEqual(newValue)
+      })
+
+      act(() => {
+         hookState.resetFieldValue(mock.inputParams.name)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.values.inputName).toEqual(
+            mock.hookParams.initialValues.inputName
+         )
       })
    })
 })
 
-describe('Test handle functions to setFields/value/error/touched', () => {
+describe('Test handle functions to setFields/value/error/touched and resetFields/values/errors/touched', () => {
    test('Should change input state when run setFieldsValue', async () => {
       const mock = makeUseFormParamsMock({
          value: faker.random.word()
@@ -175,9 +230,92 @@ describe('Test handle functions to setFields/value/error/touched', () => {
          hookState.setFieldsTouched(newTouched)
       })
    })
+
+   test('Should reset input state when run resetFieldsValue', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word()
+      })
+      const { hookState } = makeSut(mock)
+      const newValues = {
+         inputName: faker.random.word(),
+         inputEmail: faker.random.word()
+      }
+
+      act(() => {
+         hookState.setFieldsValue(newValues)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.values).toEqual(newValues)
+      })
+
+      act(() => {
+         hookState.resetFieldsValue()
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.values).toEqual(mock.hookParams.initialValues)
+      })
+   })
+
+   test('Should reset input state when run resetFieldsError', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         error: faker.random.words()
+      })
+      const { hookState } = makeSut(mock)
+      const newErrors = {
+         inputName: faker.random.words(),
+         inputEmail: faker.random.words()
+      }
+
+      act(() => {
+         hookState.setFieldsError(newErrors)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.errors).toEqual(newErrors)
+      })
+
+      act(() => {
+         hookState.resetFieldsError()
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.errors).toEqual(mock.hookParams.initialErrors)
+      })
+   })
+
+   test('Should reset input state when run resetFieldsTouched', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         touched: faker.datatype.boolean()
+      })
+      const { hookState } = makeSut(mock)
+      const newTouched = {
+         inputName: faker.datatype.boolean(),
+         inputEmail: faker.datatype.boolean()
+      }
+
+      act(() => {
+         hookState.setFieldsTouched(newTouched)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.touched).toEqual(newTouched)
+      })
+
+      act(() => {
+         hookState.resetFieldsTouched()
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.touched).toEqual(mock.hookParams.initialTouched)
+      })
+   })
 })
 
-describe('onChange mode tests input events', () => {
+describe('Tests input event and state manipulation', () => {
    test('Should update input value when dispatch input event', async () => {
       const mock = makeUseFormParamsMock({
          value: faker.random.word()
@@ -331,5 +469,66 @@ describe('onChange mode tests input events', () => {
       fireEvent.input(input, { target: { value: nextValue } })
 
       expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+})
+
+describe('Tests useForm mode', () => {
+   test('Should update input text value just when dispatch blur event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.lorem.words(),
+         type: 'text',
+         mode: 'onBlur'
+      })
+
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.lorem.words()
+      fireEvent.input(input, { target: { value: nextValue } })
+      expect(hookState.state.values.inputName).toEqual(
+         mock.hookParams.initialValues.inputName
+      )
+
+      fireEvent.blur(input)
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input text value just when dispatch input event', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.lorem.words(),
+         type: 'text'
+      })
+
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.lorem.words()
+
+      fireEvent.blur(input, { target: { value: nextValue } })
+      expect(hookState.state.values.inputName).toEqual(
+         mock.hookParams.initialValues.inputName
+      )
+
+      fireEvent.input(input, { target: { value: nextValue } })
+      expect(hookState.state.values.inputName).toEqual(nextValue)
+   })
+
+   test('Should update input text value just 500ms after dispatch input event', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.lorem.words(),
+         type: 'text',
+         mode: 'debounced'
+      })
+
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.lorem.words()
+
+      fireEvent.input(input, { target: { value: nextValue } })
+      expect(hookState.state.values.inputName).toEqual(
+         mock.hookParams.initialValues.inputName
+      )
+
+      await waitFor(() => {
+         expect(hookState.state.values.inputName).toEqual(nextValue)
+      })
    })
 })
