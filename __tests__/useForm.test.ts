@@ -1,10 +1,15 @@
-import { makeRadioSut, makeSut, makeUseFormParamsMock } from './utils/makeSut'
+import {
+   makeRadioSut,
+   makeSelectSut,
+   makeSut,
+   makeUseFormParamsMock
+} from './utils/makeSut'
 import * as faker from 'faker'
 import { waitFor } from '@testing-library/dom'
 import '@testing-library/jest-dom/extend-expect'
-import { fireEvent } from '@testing-library/react'
+import { act, fireEvent } from '@testing-library/react'
 
-describe('Test useForm arguments', () => {
+describe('Test initial state', () => {
    test('Should set initial values', async () => {
       const mock = makeUseFormParamsMock({
          value: faker.random.word()
@@ -12,6 +17,162 @@ describe('Test useForm arguments', () => {
       const { hookState } = makeSut(mock)
       await waitFor(() => {
          expect(hookState.state.values).toEqual(mock.hookParams.initialValues)
+      })
+   })
+
+   test('Should set initial errors', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         error: faker.random.words()
+      })
+      const { hookState } = makeSut(mock)
+      await waitFor(() => {
+         expect(hookState.state.errors).toEqual(mock.hookParams.initialErrors)
+      })
+   })
+
+   test('Should set initial touched', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         touched: faker.datatype.boolean()
+      })
+      const { hookState } = makeSut(mock)
+      await waitFor(() => {
+         expect(hookState.state.touched).toEqual(mock.hookParams.initialTouched)
+      })
+   })
+})
+
+describe('Test handle functions to setField/value/error/touched', () => {
+   test('Should change input state when run setFieldValue', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word()
+      })
+      const { hookState } = makeSut(mock)
+      const newValue = faker.random.word()
+
+      act(() => {
+         hookState.setFieldValue(mock.inputParams.name, newValue)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.values.inputName).toEqual(newValue)
+      })
+   })
+
+   test('Should change input state when run setFieldError', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         error: faker.random.words()
+      })
+      const { hookState } = makeSut(mock)
+      const newError = faker.random.words()
+
+      act(() => {
+         hookState.setFieldError(mock.inputParams.name, newError)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.errors.inputName).toEqual(newError)
+      })
+   })
+
+   test('Should change input state when run setFieldTouched', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         touched: false
+      })
+      const { hookState } = makeSut(mock)
+      const newTouched = true
+
+      act(() => {
+         hookState.setFieldTouched(mock.inputParams.name, newTouched)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.touched.inputName).toEqual(newTouched)
+      })
+   })
+
+   test('Should reset input state when run resetFieldError', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         error: faker.random.words()
+      })
+      const { hookState } = makeSut(mock)
+      const newError = faker.random.words()
+
+      act(() => {
+         hookState.setFieldValue(mock.inputParams.name, newError)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.errors.inputName).toEqual(newError)
+      })
+
+      act(() => {
+         hookState.resetFieldError(mock.inputParams.name)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.errors.inputName).toEqual('')
+      })
+   })
+})
+
+describe('Test handle functions to setFields/value/error/touched', () => {
+   test('Should change input state when run setFieldsValue', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word()
+      })
+      const { hookState } = makeSut(mock)
+      const newValues = {
+         inputName: faker.random.word(),
+         inputEmail: faker.random.word()
+      }
+
+      act(() => {
+         hookState.setFieldsValue(newValues)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.values).toEqual(newValues)
+      })
+   })
+
+   test('Should change input state when run setFieldsError', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         error: faker.random.words()
+      })
+      const { hookState } = makeSut(mock)
+      const newErrors = {
+         inputName: faker.random.words(),
+         inputEmail: faker.random.words()
+      }
+
+      act(() => {
+         hookState.setFieldsError(newErrors)
+      })
+
+      await waitFor(() => {
+         expect(hookState.state.errors).toEqual(newErrors)
+      })
+   })
+
+   test('Should change input state when run setFieldsTouched', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.random.word(),
+         touched: faker.datatype.boolean()
+      })
+      const { hookState } = makeSut(mock)
+      const newTouched = {
+         inputName: faker.datatype.boolean(),
+         inputEmail: faker.datatype.boolean()
+      }
+
+      act(() => {
+         hookState.setFieldsTouched(newTouched)
       })
    })
 })
@@ -157,676 +318,18 @@ describe('onChange mode tests input events', () => {
       const nextValue = 'option-2'
       fireEvent.click(input)
 
-      console.log(hookState.state.values)
-
       expect(hookState.state.values.inputName).toEqual(nextValue)
    })
 
    test('Should update input select value when dispatch input event', () => {
       const mock = makeUseFormParamsMock({
-         value: faker.random.word(),
-         type: 'select'
+         value: 'option-1'
       })
-      const { hookState, sut } = makeSut(mock)
+      const { hookState, sut } = makeSelectSut(mock)
       const input = sut.getByTestId(mock.inputParams.name)
-      const nextValue = faker.random.word()
+      const nextValue = 'option-2'
       fireEvent.input(input, { target: { value: nextValue } })
 
       expect(hookState.state.values.inputName).toEqual(nextValue)
    })
 })
-
-// describe('Set initial options', () => {
-//   it('should set initial properties', async () => {
-//     const hookParams = {
-//       initialValues: {
-//         name: 'value-1'
-//       },
-//       initialErrors: {
-//         name: 'invalid value'
-//       },
-//       initialTouched: {
-//         name: false
-//       },
-//       isControlled: true
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-
-//     expect(result.state).toEqual({
-//       values: {
-//         name: 'value-1'
-//       },
-//       errors: {
-//         name: 'invalid value'
-//       },
-//       touched: {
-//         name: false
-//       }
-//     })
-//   })
-// })
-
-// describe('Test inputs events', () => {
-//   it("should change text input's value when dispatch input event", async () => {
-//     const hookParams = {
-//       initialValues: { text: 'my-name-test' },
-//       isControlled: true
-//     }
-
-//     const inputParams = {
-//       name: 'text',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-
-//     const input = screen.getByTestId(inputParams.name)
-
-//     act(() => {
-//       fireEvent.input(input, { target: { value: 'new-name-test' } })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ text: 'new-name-test' })
-//     })
-//   })
-
-//   it("should change number input's value when dispatch input event", async () => {
-//     const hookParams = {
-//       initialValues: { number: '1' },
-//       isControlled: true
-//     }
-
-//     const inputParams = {
-//       name: 'number',
-//       type: 'number'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-
-//     const input = screen.getByTestId(inputParams.name)
-
-//     act(() => {
-//       fireEvent.input(input, { target: { value: 2 } })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ number: '2' })
-//     })
-//   })
-
-//   it("should change date input's value when dispatch input event", async () => {
-//     const initialDate = '2018-01-01'
-//     const finalDate = '2018-12-31'
-
-//     const hookParams = {
-//       initialValues: { date: initialDate },
-//       isControlled: true
-//     }
-
-//     const inputParams = {
-//       name: 'date',
-//       type: 'date'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-
-//     const input = screen.getByTestId(inputParams.name)
-
-//     act(() => {
-//       fireEvent.input(input, { target: { value: finalDate } })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ date: finalDate })
-//     })
-//   })
-
-//   it("should change checkbox input's value when dispatch change event", async () => {
-//     const hookParams = {
-//       initialValues: { checkbox: false },
-//       isControlled: true
-//     }
-
-//     const inputParams = {
-//       name: 'checkbox',
-//       type: 'checkbox'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-
-//     const input = screen.getByTestId(inputParams.name)
-
-//     act(() => {
-//       fireEvent.change(input, { target: { checked: true } })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ checkbox: true })
-//     })
-//   })
-
-//   it("should change radio input's value when dispatch change event", async () => {
-//     const hookParams = {
-//       initialValues: { radio: 'radio-1' },
-//       isControlled: true
-//     }
-
-//     const inputParams = {
-//       name: 'radio',
-//       type: 'radio',
-//       value: 'radio-2'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-
-//     const input = screen.getByTestId(inputParams.name)
-
-//     act(() => {
-//       fireEvent.click(input)
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ radio: 'radio-2' })
-//     })
-//   })
-
-//   it("should change text input's touched state when dispatch blur event", async () => {
-//     const hookParams = {
-//       isControlled: true
-//     }
-
-//     const inputParams = {
-//       name: 'blur',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-
-//     const input = screen.getByTestId(inputParams.name)
-
-//     act(() => {
-//       fireEvent.blur(input)
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({ blur: true })
-//     })
-//   })
-// })
-
-// describe('Test useForm API', () => {
-//   it('should set form state when run setForm', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setForm({
-//         values: {
-//           name: 'Jesse James'
-//         },
-//         errors: {
-//           name: 'name is required'
-//         },
-//         touched: {
-//           name: true
-//         }
-//       })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state).toEqual({
-//         values: { name: 'Jesse James' },
-//         errors: { name: 'name is required' },
-//         touched: { name: true }
-//       })
-//     })
-//   })
-
-//   it('should reset form state when run resetForm', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setForm({
-//         values: {
-//           name: 'Jesse James'
-//         },
-//         errors: {
-//           name: 'name is required'
-//         },
-//         touched: {
-//           name: true
-//         }
-//       })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state).toEqual({
-//         values: { name: 'Jesse James' },
-//         errors: { name: 'name is required' },
-//         touched: { name: true }
-//       })
-//     })
-
-//     act(() => {
-//       result.resetForm()
-//     })
-
-//     expect(result.state).toEqual({
-//       values: { name: 'jesse' },
-//       errors: {},
-//       touched: {}
-//     })
-//   })
-
-//   it('should change input value when run setFieldValue', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldValue('name', 'james')
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ name: 'james' })
-//     })
-//   })
-
-//   it('should change input value when run setFieldsValue', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldsValue({ name: 'james' })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ name: 'james' })
-//     })
-//   })
-
-//   it('should reset field state when run resetFieldValue', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setForm({
-//         values: {
-//           name: 'Jesse James'
-//         }
-//       })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ name: 'Jesse James' })
-//     })
-
-//     act(() => {
-//       result.resetFieldValue('name')
-//     })
-
-//     expect(result.state).toEqual({
-//       values: { name: 'jesse' },
-//       errors: {},
-//       touched: {}
-//     })
-//   })
-
-//   it('should reset fields state when run resetFieldsValue', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setForm({
-//         values: {
-//           name: 'Jesse James'
-//         }
-//       })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.values).toEqual({ name: 'Jesse James' })
-//     })
-
-//     act(() => {
-//       result.resetFieldsValue()
-//     })
-
-//     expect(result.state).toEqual({
-//       values: { name: 'jesse' },
-//       errors: {},
-//       touched: {}
-//     })
-//   })
-
-//   it('should change input touched when run setFieldTouched', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       },
-//       initialTouched: {
-//         name: true
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldTouched('name', false)
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({ name: true })
-//     })
-//   })
-
-//   it('should change inputs touched when run setFieldsTouched', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse',
-//         email: 'jesse@jasse.com'
-//       },
-//       initialTouched: {
-//         name: false,
-//         email: false
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldsTouched({
-//         name: true,
-//         email: true
-//       })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({ name: true, email: true })
-//     })
-//   })
-
-//   it('should reset field touched when run resetFieldsTouched', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldsTouched({ name: true })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({ name: true })
-//     })
-
-//     act(() => {
-//       result.resetFieldsTouched()
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({ name: false })
-//     })
-//   })
-
-//   it('should reset field touched when run resetFieldTouched', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldTouched('name', true)
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({ name: true })
-//     })
-
-//     act(() => {
-//       result.resetFieldTouched('name')
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({ name: false })
-//     })
-//   })
-
-//   it('should change input error when run setFieldError', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldError('name', 'this field is valid')
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.errors).toEqual({ name: 'this field is valid' })
-//     })
-//   })
-
-//   it('should change inputs touched when run setFieldsErrors', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse',
-//         email: 'jesse@jasse.com'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldsError({
-//         name: 'this field is required',
-//         email: 'this field is invalid'
-//       })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.errors).toEqual({
-//         name: 'this field is required',
-//         email: 'this field is invalid'
-//       })
-//     })
-//   })
-
-//   it.only('should reset field error when run resetFieldsError', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldsError({ name: 'this field is required' })
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.errors).toEqual({ name: 'this field is required' })
-//     })
-
-//     act(() => {
-//       result.resetFieldsError()
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.errors).toEqual({})
-//     })
-//   })
-
-//   it('should reset field error when run resetFieldError', async () => {
-//     const hookParams = {
-//       isControlled: true,
-//       initialValues: {
-//         name: 'jesse'
-//       }
-//     }
-
-//     const inputParams = {
-//       name: 'name',
-//       type: 'text'
-//     }
-
-//     const result = makeSut({ hookParams, inputParams })
-//     await screen.findAllByTestId('name')
-
-//     act(() => {
-//       result.setFieldError('name', 'this field is required')
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({
-//         name: 'this field is required'
-//       })
-//     })
-
-//     act(() => {
-//       result.resetFieldTouched('name')
-//     })
-
-//     await waitFor(() => {
-//       expect(result.state.touched).toEqual({})
-//     })
-//   })
-// })
