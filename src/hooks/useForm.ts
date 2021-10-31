@@ -132,9 +132,10 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }, [])
 
    function resetFieldsValue() {
-      state$.set(state$.getInitialState().values as any)
+      state$.set({ ...state, values: state$.getInitialState().values as any })
       for (const field in fields.current) {
-         fields.current[field].value = state$.getInitialPropertyValue(field)
+         const path = 'values.'.concat(field)
+         fields.current[field].value = state$.getInitialPropertyValue(path)
       }
    }
 

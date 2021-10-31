@@ -102,13 +102,15 @@ export function makeUseFormParamsMock({
    name = 'inputName',
    type = 'text',
    touched = false,
-   error = ''
+   error = '',
+   mode = 'onChange'
 }: {
    value?: any
    name?: string
    type?: string
    touched?: boolean
    error?: string
+   mode?: 'onChange' | 'onBlur' | 'debounced'
 }) {
    return {
       hookParams: {
@@ -122,7 +124,7 @@ export function makeUseFormParamsMock({
             inputName: error
          },
          onSubmit: jest.fn(),
-         mode: 'onChange'
+         mode
       },
       inputParams: {
          name,
