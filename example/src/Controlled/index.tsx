@@ -11,19 +11,20 @@ const options = [
 ]
 
 const Controlled: React.FC = () => {
-   const { register, state, setFieldValue, resetFieldValue } = useForm({
-      initialValues: {
-         name: 'juciano'
-      },
-      mode: 'onChange',
-      validationSchema: yup.object().shape({
-         email: yup.string().email().required(),
-         name: yup.string().required(),
-         nested: yup.object().shape({
-            option: yup.string().email()
+   const { register, state, setFieldValue, resetFieldValue, handleChange } =
+      useForm({
+         initialValues: {
+            name: 'juciano'
+         },
+         mode: 'onChange',
+         validationSchema: yup.object().shape({
+            email: yup.string().email().required(),
+            name: yup.string().required(),
+            nested: yup.object().shape({
+               option: yup.string().email()
+            })
          })
       })
-   })
 
    console.log(state)
 
@@ -43,9 +44,11 @@ const Controlled: React.FC = () => {
             <div className="form-group">
                <label>E-mail</label>
                <input
+                  value={state.values?.email}
+                  name="email"
+                  onChange={handleChange}
                   className="form-control"
                   autoComplete="off"
-                  {...register('email')}
                />
             </div>
             <div className="form-group">
