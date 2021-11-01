@@ -1,4 +1,5 @@
 import {
+   makeHandleChangeSut,
    makeRadioSut,
    makeSelectSut,
    makeSut,
@@ -591,5 +592,48 @@ describe('Tests useForm mode', () => {
       await waitFor(() => {
          expect(hookState.state.values.inputName).toEqual(nextValue)
       })
+   })
+
+   test('Should receive form value when submit form', async () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.lorem.words(),
+         type: 'text',
+         mode: 'onSubmit'
+      })
+
+      const { hookState, sut } = makeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.lorem.words()
+      const onSubmitParams = [
+         {
+            inputName: nextValue
+         },
+         true
+      ]
+
+      fireEvent.input(input, { target: { value: nextValue } })
+      expect(hookState.state.values.inputName).toEqual(
+         mock.hookParams.initialValues.inputName
+      )
+
+      fireEvent.submit(sut.getByTestId('form'))
+
+      await waitFor(() => {
+         expect(mock.onSubmit).toHaveBeenCalledWith(...onSubmitParams)
+      })
+   })
+
+   test('Should change input value when run handleChange function', () => {
+      const mock = makeUseFormParamsMock({
+         value: faker.lorem.words(),
+         type: 'text'
+      })
+
+      const { hookState, sut } = makeHandleChangeSut(mock)
+      const input = sut.getByTestId(mock.inputParams.name)
+      const nextValue = faker.lorem.words()
+      fireEvent.change(input, { target: { value: nextValue } })
+
+      expect(hookState.state.values.inputName).toEqual(nextValue)
    })
 })

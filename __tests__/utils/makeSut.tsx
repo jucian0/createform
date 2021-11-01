@@ -11,13 +11,49 @@ export function makeSut({ hookParams, inputParams, onSubmit }: any) {
       Object.assign(hookState, { state, ...rest })
 
       return (
-         <form onSubmit={rest.onSubmit(onSubmit)} onReset={rest.resetForm}>
+         <form
+            onSubmit={rest.onSubmit(onSubmit)}
+            onReset={rest.resetForm}
+            data-testid="form"
+         >
             <input
                {...register(inputParams.name)}
                data-testid={inputParams.name}
             />
             <button type="submit" data-testid="on-submit"></button>
             <button type="reset" data-testid="on-reset"></button>
+         </form>
+      )
+   }
+
+   const sut = render(<InputComponent />)
+
+   return { sut, hookState }
+}
+
+export function makeHandleChangeSut({
+   hookParams,
+   inputParams,
+   onSubmit
+}: any) {
+   const hookState: UseFormReturnType<any> = Object.assign({})
+
+   function InputComponent() {
+      const { state, register, ...rest } = useForm<any>(hookParams)
+      Object.assign(hookState, { state, ...rest })
+
+      return (
+         <form
+            onSubmit={rest.onSubmit(onSubmit)}
+            onReset={rest.resetForm}
+            data-testid="form"
+         >
+            <input
+               onChange={rest.handleChange}
+               name={inputParams.name}
+               value={state.values[inputParams.name]}
+               data-testid={inputParams.name}
+            />
          </form>
       )
    }
@@ -110,7 +146,7 @@ export function makeUseFormParamsMock({
    type?: string
    touched?: boolean
    error?: string
-   mode?: 'onChange' | 'onBlur' | 'debounced'
+   mode?: 'onChange' | 'onBlur' | 'debounced' | 'onSubmit'
 }) {
    return {
       hookParams: {
@@ -123,9 +159,9 @@ export function makeUseFormParamsMock({
          initialErrors: {
             inputName: error
          },
-         onSubmit: jest.fn(),
          mode
       },
+      onSubmit: jest.fn(),
       inputParams: {
          name,
          type

@@ -228,12 +228,20 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
    }
 
+   function getFieldsRefValue() {
+      const values = {}
+      for (const field in fields.current) {
+         values[field] = fields.current[field].value
+      }
+      return values
+   }
+
    function onSubmit(
       fn: (values: TInitial['initialValues'], isValid: boolean) => void
    ) {
       return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         const values = state$.get().values
+         const values = getFieldsRefValue()
          try {
             if (initial?.validationSchema) {
                await validate(values, initial.validationSchema)
