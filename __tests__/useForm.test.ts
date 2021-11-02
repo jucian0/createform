@@ -637,5 +637,3 @@ describe('Tests useForm mode', () => {
       expect(hookState.state.values.inputName).toEqual(nextValue)
    })
 })
-
-describe('Tests exceptions', () => {})
