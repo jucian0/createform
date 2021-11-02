@@ -36,7 +36,7 @@
     "start": "rollup -c rollup.config.ts -w",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
-    "test": "jest --watchAll",
+    "test": "jest",
     "pretty": "prettier --write --tab-width 3 \"src/**/*.{ts,tsx}\"",
     "semantic-release": "semantic-release"
   },
