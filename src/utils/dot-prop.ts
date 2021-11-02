@@ -1,10 +1,5 @@
 function propToPath(prop: any) {
-   return prop
-      .replaceAll('][', '.')
-      .replaceAll(']', '.')
-      .replaceAll('[', '.')
-      .split('.')
-      .filter((e: string) => !!e)
+   return prop.replace(/["|']|\]/g, '').split(/\.|\[/)
 }
 
 function isPrimitive(value: any) {
