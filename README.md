@@ -73,7 +73,7 @@ Use dot notation to create advanced objects or to map object values. Type an ent
 ```jsx
    <input placeholder="Name" {...register("name")}/>
    <input placeholder="E-mail" type="email" {...register("email")}/>
-   <Range {...register("score")}/>
+   <input type="range" {...register("score")}/>
 ```
 
 ### [Post](https://dev.to/jucian0/building-forms-with-useform-1cna)
