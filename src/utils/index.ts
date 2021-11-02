@@ -1,3 +1,6 @@
+import { Schema, ValidationError } from 'yup'
+import * as dot from './dot-prop'
+
 export const isRadio = (type: string) => type === 'radio'
 
 export const isCheckbox = (type: string) => type === 'checkbox'
@@ -28,24 +31,28 @@ export function debounce<TThis, TFn extends Function>(
    }
 }
 
-export function deepComparative<TFV, TFS>(firstValue: TFV, secondValue: TFS) {
-   let result = false
-   if (typeof firstValue === 'object') {
-      result = JSON.stringify(firstValue) !== JSON.stringify(secondValue)
-   } else {
-      result = String(firstValue) !== String(secondValue)
-   }
-
-   return {
-      isEqual: () => result === true,
-      isDifferent: () => result === false
-   }
-}
-
-export function isEmpty(obj: any) {
-   return Object.keys(obj).length > 0
-}
-
 export function makeDotNotation(str: string) {
    return str.split('[').join('.').split(']').join('')
+}
+
+export function getNextState(next: any, state: any) {
+   const nextState = typeof next === 'function' ? next(state) : next
+   return nextState
+}
+
+export function validate<TValues extends {}>(
+   values: TValues,
+   validationSchema: Schema<TValues>
+) {
+   return validationSchema
+      ?.validate(values, { abortEarly: false })
+      .then(() => {
+         return {}
+      })
+      .catch((e: ValidationError) => {
+         throw e.inner.reduce((acc, key) => {
+            const path = makeDotNotation(key.path)
+            return dot.set(acc, path, key.message)
+         }, {})
+      })
 }

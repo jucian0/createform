@@ -1,21 +1,8 @@
 import { TextField } from '@material-ui/core'
-import * as React from 'react'
+import React from 'react'
+import { useForm } from '../../../src/hooks/useForm'
+import Select from 'react-select'
 import * as yup from 'yup'
-import { useForm } from '../../../src'
-
-const validationSchema: any = yup.object().shape({
-   name: yup.string().required('this field is required'),
-   email: yup
-      .string()
-      .required('this field is required')
-      .email('this field must be a valid email'),
-   address: yup.array(
-      yup.object().shape({
-         street: yup.string().required('this field is required'),
-         number: yup.number().required('this field is required')
-      })
-   )
-})
 
 const options = [
    { value: 'chocolate', label: 'Chocolate' },
@@ -23,144 +10,115 @@ const options = [
    { value: 'vanilla', label: 'Vanilla' }
 ]
 
-const initialValues = {
-   name: 'Jesse Woodson James',
-   email: 'jesse@jesse.com',
-   address: [
-      {
-         street: '',
-         number: 70,
-         john: [
-            {
-               name: 'john'
-            }
-         ]
-      }
-   ],
-   options: 'value 1',
-   radio: 'op3',
-   accept: true
-}
-
 const Controlled: React.FC = () => {
-   const {
-      state,
-      register,
-      resetForm,
-      resetFieldValue,
-      setFieldsTouched,
-      setFieldValue
-   } = useForm({ initialValues, validationSchema })
+   const { register, state, setFieldValue, resetFieldValue, handleChange } =
+      useForm({
+         initialValues: {
+            name: 'juciano'
+         },
+         mode: 'onChange',
+         validationSchema: yup.object().shape({
+            email: yup.string().email().required(),
+            name: yup.string().required(),
+            nested: yup.object().shape({
+               option: yup.string().email()
+            })
+         })
+      })
+
+   console.log(state)
+
+   //setFieldsValue(state => ({ ...state }))
 
    return (
       <div className="row">
          <div className="col-lg-12">
-            <h2>Controlled Form</h2>
             <div className="form-group">
-               <TextField
-                  label="Text"
+               <label>Name</label>
+               <input
                   className="form-control"
-                  inputProps={register('name')}
-                  name="name"
+                  autoComplete="off"
+                  {...register('name')}
                />
-               <span className="text-danger">
-                  {state.touched.name && state.errors.name}
-               </span>
             </div>
             <div className="form-group">
                <label>E-mail</label>
                <input
+                  value={state.values?.email}
+                  // name="email"
+                  onChange={handleChange}
                   className="form-control"
                   autoComplete="off"
-                  {...register('email')}
                />
-               <span className="text-danger">
-                  {state.touched.email && state.errors.email}
-               </span>
             </div>
             <div className="form-group">
-               <label>Bio</label>
-               <textarea
-                  className="form-control"
-                  autoComplete="off"
-                  {...register('bio')}
+               <label>Select Option</label>
+               <select {...register('nested.options')}>
+                  <option value="value 1">Option 1</option>
+                  <option value="value 2">Option 2</option>
+                  <option value="value 3">Option 3</option>
+                  <option value="value 4">Option 4</option>
+               </select>
+            </div>
+         </div>
+
+         <div className="form-group" {...register('radio')}>
+            <label>Radio</label>
+            <div className="form-check">
+               <input
+                  className="form-check-input"
+                  type="radio"
+                  name="radio1"
+                  value="option1"
                />
+               <label className="form-check-label" htmlFor="radio1">
+                  Option 1
+               </label>
             </div>
-
-            <div>
-               <h3>Address</h3>
-               <div className="form-group">
-                  <label>Street</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     {...register('address.0.street')}
-                  />
-                  <span className="text-danger">
-                     {state.touched.address?.[0].street &&
-                        state.errors.address?.[0].street}
-                  </span>
-               </div>
-               <div className="form-group">
-                  <label>Number</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     {...register('address.0.number')}
-                  />
-                  <span className="text-danger">
-                     {state.touched.address?.[0].number &&
-                        state.errors.address?.[0].number}
-                  </span>
-               </div>
+            <div className="form-check">
+               <input
+                  className="form-check-input"
+                  type="radio"
+                  name="radio1"
+                  value="option2"
+               />
+               <label className="form-check-label" htmlFor="radio2">
+                  Option 2
+               </label>
             </div>
-            <div className="col-lg-12">
-               <div className="form-group">
-                  <label>Select Option</label>
-                  <select {...register('options')}>
-                     <option value="value 1">Option 1</option>
-                     <option value="value 2">Option 2</option>
-                     <option value="value 3">Option 3</option>
-                     <option value="value 4">Option 4</option>
-                  </select>
-               </div>
-               <div className="form-group">
-                  <label htmlFor="accept">Accept</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     {...register('accept')}
-                     type="checkbox"
+         </div>
+         <div className="form-group">
+            <label>Checkbox</label>
+            <div className="form-check">
+               <input
+                  className="form-check-input"
+                  type="checkbox"
+                  {...register('checkbox')}
+               />
+               <label className="form-check-label" htmlFor="checkbox">
+                  Checkbox
+               </label>
+            </div>
+         </div>
+         <div className="col-lg-12">
+            <div className="form-group">
+               <label>Select</label>
+               <div {...register('select')}>
+                  <Select
+                     options={options}
+                     onChange={e => setFieldValue('select', e?.value)}
                   />
                </div>
             </div>
          </div>
 
-         <div className="col-lg-6">
-            <button
-               type="button"
-               className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.street')}
-            >
-               Reset number
-            </button>
-            <button
-               type="button"
-               className="btn btn-primary"
-               onClick={() => resetFieldValue('address.0.street')}
-            >
-               Reset number
-            </button>
-         </div>
-         <div className="col-lg-6">
-            <button
-               type="button"
-               className="btn btn-primary"
-               onClick={() => resetForm()}
-            >
-               Reset All
-            </button>
-         </div>
+         <button onClick={() => setFieldValue('email', 'juciano@juciano.com')}>
+            Change Field Value
+         </button>
+
+         <button onClick={() => resetFieldValue('email')}>
+            Reset Field Value
+         </button>
       </div>
    )
 }

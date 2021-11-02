@@ -1,13 +1,16 @@
-type Subscribe<TValues> = (e: TValues) => void
+import { State } from '../types'
+import * as dot from '../utils/dot-prop'
+
+type Subscribe<TValues> = (e: State<TValues>) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
 
-export function createState<T extends object>(
+export function createState<T extends State<T>>(
    initialState: T = Object.assign({})
 ) {
    let state = initialState
    let subscribers: Subscribers<T> = []
 
-   function getState() {
+   function get(): State<T> {
       return state
    }
 
@@ -19,24 +22,43 @@ export function createState<T extends object>(
       }
    }
 
-   function setState(next: Partial<T> | ((state: T) => T)) {
-      const nextState = typeof next === 'function' ? next(getState()) : next
-      state = {
-         ...state,
-         ...nextState
-      }
+   function set(nextState: T) {
+      state = nextState
+
       notify()
+   }
+
+   function patch(path: string, next: any) {
+      const nextState = dot.set(state, path, next)
+      state = nextState
+      notify()
+   }
+
+   function getPropertyValue(path: string) {
+      return dot.get(state, path)
+   }
+
+   function getInitialPropertyValue(path: string) {
+      return dot.get(initialState, path)
+   }
+
+   function getInitialState(): State<T> {
+      return initialState
    }
 
    function notify() {
       subscribers.forEach(fn => {
-         fn(getState())
+         fn(get())
       })
    }
 
    return {
-      getState,
-      setState,
-      subscribe
+      get,
+      set,
+      patch,
+      subscribe,
+      getPropertyValue,
+      getInitialState,
+      getInitialPropertyValue
    }
 }
