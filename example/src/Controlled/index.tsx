@@ -45,7 +45,7 @@ const Controlled: React.FC = () => {
                <label>E-mail</label>
                <input
                   value={state.values?.email}
-                  name="email"
+                  // name="email"
                   onChange={handleChange}
                   className="form-control"
                   autoComplete="off"

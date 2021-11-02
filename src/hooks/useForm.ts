@@ -10,6 +10,7 @@ import {
 } from '../types'
 import { debounce, getNextState, isCheckbox, validate } from '../utils'
 import * as dot from '../utils/dot-prop'
+import { createException } from '../utils/exceptions'
 
 export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    initial?: TInitial
@@ -92,6 +93,12 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }
 
    function register(name: string): RegisterReturn {
+      if (!name) {
+         createException(
+            'Register Function',
+            'argument field name is necessary'
+         )
+      }
       const ref = React.useRef<Ref>(null)
 
       React.useEffect(() => {
@@ -140,6 +147,9 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }
 
    function setFieldsValue(next: SetType<TInitial['initialValues']>) {
+      if (!next) {
+         createException('SetFieldsValue Function', 'argument next is required')
+      }
       const values = getNextState(next, state?.values)
       state$.patch('values', values)
       for (const field in fields.current) {
@@ -150,6 +160,12 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }
 
    function setFieldValue(field: string, value: any) {
+      if (!value || !field) {
+         createException(
+            'SetFieldValue Function',
+            'argument field and value are required'
+         )
+      }
       const path = 'values.'.concat(field)
 
       state$.patch(path, value)
@@ -159,30 +175,57 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }
 
    function handleChange(event: any) {
+      if (!event.target.name) {
+         createException(
+            'HandleChange Function',
+            'property input name is necessary'
+         )
+      }
       const path = 'values.'.concat(event.target.name)
       if (isCheckbox(event.target.type)) {
-         return state$.patch(path, event.target.checked)
+         state$.patch(path, event.target.checked)
       }
       state$.patch(path, event.target.value)
    }
 
    function resetFieldValue(field: string) {
+      if (!field) {
+         createException(
+            'ResetFieldValue Function',
+            'argument field is necessary'
+         )
+      }
       const path = 'values.'.concat(field)
       state$.patch(path, state$.getInitialPropertyValue(path))
       fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
    function setFieldsError(next: SetType<TInitial['initialErrors']>) {
+      if (!next) {
+         createException(
+            'SetFieldsError Function',
+            'argument next is necessary'
+         )
+      }
       const errors = getNextState(next, state?.errors)
       state$.patch('errors', errors)
    }
 
    function setFieldError(field: string, error: string) {
+      if (!error || !field) {
+         createException(
+            'SetFieldError Function',
+            'argument field and error are necessary'
+         )
+      }
       const path = 'errors.'.concat(field)
       state$.patch(path, error)
    }
 
    function resetFieldError(field: string) {
+      if (!field) {
+         createException('`resetFieldError()` - field is necessary')
+      }
       const path = 'errors.'.concat(field)
       state$.patch(path, state$.getInitialPropertyValue(path))
    }
@@ -192,6 +235,9 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }
 
    function setFieldsTouched(next: SetType<TInitial['initialTouched']>) {
+      if (!next) {
+         return makeAllTouched()
+      }
       const touched = getNextState(next, state?.values)
       state$.patch('touched', touched)
    }
@@ -201,14 +247,29 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }
 
    function setFieldTouched(field: string) {
+      if (!field) {
+         createException(
+            'SetFieldTouched Function',
+            'name is necessary to set field as touched'
+         )
+      }
       state$.patch('touched.'.concat(field), true)
    }
 
    function resetFieldTouched(field: string) {
+      if (!field) {
+         createException(
+            'ResetFieldTouched Function',
+            'Field argument is necessary to reset a field'
+         )
+      }
       state$.patch('touched.'.concat(field), false)
    }
 
    function setForm(next: SetType<State<TInitial>>) {
+      if (!next) {
+         state$.set(state$.getInitialState())
+      }
       const nextState = getNextState(next, state)
 
       setFieldsValue(nextState.values)
@@ -239,6 +300,12 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    function onSubmit(
       fn: (values: TInitial['initialValues'], isValid: boolean) => void
    ) {
+      if (!fn) {
+         createException(
+            'OnSubmit Function',
+            'callback function is not defined'
+         )
+      }
       return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
          const values = getFieldsRefValue()
