@@ -3,24 +3,53 @@ name: Semantic Release
 on:
   push:
     branches:
+      - '+([0-9])?(.{+([0-9]),x}).x'
       - 'main'
+      - 'next'
+      - 'next-major'
+      - 'beta'
+      - 'alpha'
+      - '!all-contributors/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: 🛑 - Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
         with:
-          persist-credentials: false
+          access_token: ${{ secrets.GH_TOKEN }}
 
-      - uses: actions/setup-node@v1
+      - name: ⬇️ - Checkout repo
+        uses: actions/checkout@v2
+
+      - name: ⎔ - Setup node
+        uses: actions/setup-node@v1
         with:
-          node-version: '16.11.0'
-      - run: yarn install
-      - run: yarn test
-      - run: yarn build
-      - run: yarn semantic-release
+          node-version: 16.11.0
+
+      - name: 📥 - Download deps
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: 🏗 - Run build script
+        run: npm run build
+
+      - name: 🚀 Release
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          semantic_version: 17
+          branches: |
+            [
+              '+([0-9])?(.{+([0-9]),x}).x',
+              'main',
+              'next',
+              'next-major',
+              {name: 'beta', prerelease: true},
+              {name: 'alpha', prerelease: true}
+            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
