@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "module": "esnext",
+    "esModuleInterop": true,
     "target": "es5",
     "lib": [
       "es6",
@@ -35,3 +36,5 @@
     "rollup.config.ts"
   ]
 }
+
+

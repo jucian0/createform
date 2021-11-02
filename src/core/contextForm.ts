@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { UseFormReturnType } from '../types'
 
 export const FormContext = React.createContext<UseFormReturnType<any>>(

@@ -1,19 +1,19 @@
-import * as React from 'react'
+import React from 'react'
 import { Schema as YupSchema } from 'yup'
+
+export type SetType<T> = ((value: T) => T) | T
 
 /**
  * Input reference is a union with all kinds of native inputs.
  */
-export type Ref = {
-   current: HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
-}
+export type Ref = HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement
 
 /**
  * This is the type of Register function, we just need the name and the reference of input
  */
-type RegisterReturn = {
+export type RegisterReturn = {
    name: string
-   ref: Ref
+   ref: React.RefObject<Ref>
 }
 
 /**
@@ -56,10 +56,8 @@ export type Options<T> = {
    readonly initialErrors?: Errors<T>
    /** represents a initial values of visited inputs */
    readonly initialTouched?: Touched<T>
-   /**receives  true as a value if the form should be a controlled form  */
-   readonly isControlled?: boolean
-   /** receive a number if the form should be a debounced form */
-   readonly debounced?: number
+   /** represents the why that the form will works */
+   readonly mode?: 'onSubmit' | 'onChange' | 'onBlur' | 'debounced'
    /** validation schema provided by yup */
    readonly validationSchema?: YupSchema<T>
    /** watch every change in useForm even if is a uncontrolled form */
@@ -70,9 +68,9 @@ export type Options<T> = {
  * state is one of properties that is returned by useForm hook, this object contains the current state of form when the form is controlled or debounced.
  */
 export type State<T> = {
-   readonly values: T
-   readonly errors: Errors<T>
-   readonly touched: Touched<T>
+   values: T
+   errors: Errors<T>
+   touched: Touched<T>
 }
 
 /**
@@ -92,6 +90,8 @@ export type UseFormReturnType<T> = {
    resetFieldsValue: () => void
    /** reset the value of a specific field */
    resetFieldValue: (path: Paths<T>) => void
+   /** handle input changes */
+   handleChange: (e: React.ChangeEvent<Ref>) => void
 
    /** set all fields as touched */
    setFieldsTouched: (next: ChangeState<Touched<T>>) => void

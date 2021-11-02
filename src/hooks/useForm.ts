@@ -1,384 +1,355 @@
-import * as React from 'react'
-import * as dot from 'object-path-immutable'
-import { debounce, isCheckbox, isRadio, makeDotNotation } from '../utils'
-import { ValidationError } from 'yup'
+import React from 'react'
 import { createState } from '../core/observable'
 import {
-   Change,
-   Errors,
-   InputsRef,
    Options,
-   Paths,
-   Ref,
    State,
-   Touched,
-   UseFormReturnType
+   UseFormReturnType,
+   RegisterReturn,
+   Ref,
+   SetType
 } from '../types'
+import { debounce, getNextState, isCheckbox, validate } from '../utils'
+import * as dot from '../utils/dot-prop'
+import { createException } from '../utils/exceptions'
 
-export function useForm<TO>({
-   initialErrors = {} as any,
-   initialValues = {} as any,
-   initialTouched = {} as any,
-   ...options
-}: Options<TO>): UseFormReturnType<TO> {
-   const refs = React.useRef<InputsRef>({} as any)
-
+export function useForm<TInitial extends Options<TInitial['initialValues']>>(
+   initial?: TInitial
+): UseFormReturnType<TInitial['initialValues']> {
+   const initialState = {
+      values: initial?.initialValues,
+      errors: initial?.initialErrors,
+      touched: initial?.initialTouched
+   }
    const { current: state$ } = React.useRef(
-      createState({
-         values: initialValues,
-         errors: initialErrors,
-         touched: initialTouched
-      })
+      createState<any>(initialState as any)
+   )
+   const [state, setState] = React.useState<State<TInitial['initialValues']>>(
+      initialState as any
    )
 
-   const [state, setState] = React.useState<State<TO>>({
-      values: initialValues,
-      errors: initialErrors,
-      touched: initialTouched
-   })
+   const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
+   const fields = React.useRef({})
 
-   const setValueDebounce = React.useCallback(
-      debounce(setState, options.debounced || 300),
-      []
-   )
+   async function setValue(event: any) {
+      const validationSchema = initial?.validationSchema
+      const currentState = state$.get()
+      const nextChecked = event.target.checked
+      const nextValue = isNaN(event.target.value)
+         ? event.target.value
+         : parseInt(event.target.value)
 
-   function isControlledOrDebounce() {
-      return options.isControlled || !!options.debounced
-   }
+      const nextState = dot.set(
+         currentState,
+         'values.'.concat(event.target.name),
+         isCheckbox(event.target.type) ? nextChecked : nextValue
+      )
+      const nextTouched = dot.set(
+         currentState,
+         'touched.'.concat(event.target.name),
+         true
+      )
 
-   function register(path: string) {
-      const newRefs: InputsRef = {
-         ...refs.current,
-         [path]: React.createRef<HTMLInputElement>() as Ref
-      }
-
-      refs.current = newRefs
-      return { name: path, ref: refs.current[path] }
-   }
-
-   function handleInputEvent(e: Event) {
-      const target = e.target as Change['target']
-      if (options.watch) {
-         options.watch(state.values)
-      }
-      return state$.setState(state => ({
-         ...state,
-         values: dot.set(state.values, target.name, target.value)
-      }))
-   }
-
-   function handleChangeEvent(e: Event) {
-      const target = e.target as Change['target']
-      if (options.watch) {
-         options.watch(state.values)
-      }
-      const value = isCheckbox(target.type) ? target.checked : target.value
-      return state$.setState(state => ({
-         ...state,
-         values: dot.set(state.values, target.name, value)
-      }))
-   }
-
-   function handleBlurEvent(e: Event) {
-      const target = e.target as Change['target']
-      return state$.setState(state => ({
-         ...state,
-         touched: dot.set(state.touched, target.name, true)
-      }))
-   }
-
-   function addEvents() {
-      Object.keys(refs.current).forEach(path => {
-         if (
-            isCheckbox(refs.current[path].current.type) ||
-            isRadio(refs.current[path].current.type)
-         ) {
-            refs.current[path].current.addEventListener(
-               'change',
-               handleChangeEvent
-            )
-            refs.current[path].current.addEventListener('blur', handleBlurEvent)
-         } else {
-            refs.current[path].current.addEventListener(
-               'input',
-               handleInputEvent
-            )
-            refs.current[path].current.addEventListener('blur', handleBlurEvent)
+      try {
+         if (validationSchema) {
+            await validate(nextState.values, validationSchema)
+            return state$.set({
+               values: nextState.values,
+               errors: {},
+               touched: nextTouched.touched
+            })
          }
-      })
-   }
 
-   function removeEvents() {
-      Object.keys(refs.current).forEach(path => {
-         if (
-            isCheckbox(refs.current[path].current?.type) ||
-            isRadio(refs.current[path].current?.type)
-         ) {
-            refs.current[path].current.removeEventListener(
-               'change',
-               handleChangeEvent
-            )
-            refs.current[path].current.removeEventListener(
-               'blur',
-               handleBlurEvent
-            )
-         } else if ((refs as any).current[path].current?.removeEventListener) {
-            refs.current[path].current.removeEventListener(
-               'input',
-               handleInputEvent
-            )
-            refs.current[path].current.removeEventListener(
-               'blur',
-               handleBlurEvent
-            )
-         }
-      })
-   }
-
-   function setRefValue(path: string, value: any) {
-      if (!refs.current[path]) {
-         return
+         return state$.set({
+            values: nextState.values,
+            errors: nextState.errors,
+            touched: nextTouched.touched
+         })
+      } catch (errors) {
+         return state$.set({
+            values: nextState.values,
+            errors: errors,
+            touched: nextTouched.touched
+         })
       }
-      if (isCheckbox(refs.current[path].current.type)) {
-         return (refs.current[path].current.checked = value)
-      } else if (refs.current[path]?.current?.children) {
-         Array.from(refs.current[path]?.current?.children).forEach(
-            (element: any) => {
-               element.checked = element.value === value
-            }
+   }
+
+   function setRefValue(ref: any, value: any) {
+      if (ref.current.type === 'radio') {
+         const inputs = Array.from<HTMLInputElement>(
+            ref.current.form.querySelectorAll(
+               'input[name="' + ref.current.name + '"]'
+            )
+         )
+
+         for (const input of inputs) {
+            input.checked = input.value === value
+         }
+      } else {
+         fields.current[ref.current.name] = ref.current
+         ref.current.value = state$.getPropertyValue(
+            'values.'.concat(ref.current.name)
          )
       }
-      return (refs.current[path].current.value = value || null)
    }
 
-   function makeResetAllTouchedPayload() {
-      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
-         return dot.set(acc, path, dot.get(initialTouched || {}, path) || false)
-      }, {} as Touched<TO>)
-   }
+   function register(name: string): RegisterReturn {
+      if (!name) {
+         createException(
+            'Register Function',
+            'argument field name is necessary'
+         )
+      }
+      const ref = React.useRef<Ref>(null)
 
-   function makeAllTouchedPayload() {
-      return Object.keys(refs.current).reduce<Touched<TO>>((acc, path) => {
-         return dot.set(acc, path, true)
-      }, {} as Touched<TO>)
-   }
-
-   function onSubmit(fn: (values: TO, isValid: boolean) => void) {
-      return async (e: React.BaseSyntheticEvent) => {
-         e.preventDefault()
-         const values = state$.getState().values
-         try {
-            await validate(values)
-            fn(values, true)
-         } catch (errors) {
-            fn(values, false)
-            state$.setState(state => ({
-               ...state,
-               errors,
-               touched: makeAllTouchedPayload()
-            }))
-
-            if (!isControlledOrDebounce()) {
-               setState(state => ({
-                  ...state,
-                  errors,
-                  values,
-                  touched: makeAllTouchedPayload()
-               }))
+      React.useEffect(() => {
+         if (initial?.mode === 'onChange') {
+            ref.current?.addEventListener('input', e => setValue(e))
+         } else if (initial?.mode === 'onBlur') {
+            ref.current?.addEventListener('blur', e => setValue(e))
+         } else if (initial?.mode === 'debounced') {
+            ref.current?.addEventListener('input', e => setStateDebounced(e))
+         }
+         return () => {
+            if (initial?.mode === 'onChange') {
+               ref.current?.removeEventListener('input', setValue)
+            } else if (initial?.mode === 'onBlur') {
+               ref.current?.removeEventListener('blur', setValue)
+            } else if (initial?.mode === 'debounced') {
+               ref.current?.removeEventListener('input', setStateDebounced)
             }
          }
-      }
-   }
+      }, [])
 
-   function validate(values: State<TO>['values']) {
-      return options.validationSchema
-         ?.validate(values, { abortEarly: false })
-         .then(() => {
-            return {}
-         })
-         .catch((e: ValidationError) => {
-            throw e.inner.reduce((acc, key) => {
-               const path = makeDotNotation(key.path)
-               return dot.set(acc, path, key.message)
-            }, {})
-         })
-   }
+      React.useEffect(() => {
+         const value = state$.getPropertyValue('values.'.concat(name))
+         if (value) {
+            setRefValue(ref, value)
+         }
+      }, [])
 
-   async function handleChange(next: State<TO>) {
-      try {
-         await validate(next.values)
-         if (options.isControlled) {
-            setState(next)
-         } else if (options.debounced) {
-            setValueDebounce(next)
-         }
-      } catch (errors) {
-         if (options.isControlled) {
-            setState({ ...next, errors })
-         } else if (options.debounced) {
-            setValueDebounce({ ...next, errors })
-         }
+      return {
+         name,
+         ref
       }
    }
 
    React.useEffect(() => {
-      const subscriber = state$.subscribe(handleChange)
-
-      return () => {
-         subscriber()
-      }
+      const unsubscribe = state$.subscribe(setState)
+      return () => unsubscribe()
    }, [])
 
-   React.useLayoutEffect(() => {
-      if (initialValues) {
-         Object.keys(refs.current).forEach(path => {
-            setRefValue(path, dot.get(initialValues, path))
-         })
-      }
-
-      addEvents()
-      return () => {
-         removeEvents()
-      }
-   }, [refs])
-
-   function setForm(next: State<TO> | ((state: State<TO>) => State<TO>)) {
-      const nextState = typeof next === 'function' ? next(state) : next
-
-      state$.setState(nextState as any)
-
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(
-            path,
-            dot.get(nextState.values, path) || dot.get(nextState.values, path)
-         )
-      })
-   }
-
-   function resetForm() {
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(initialValues, path))
-      })
-      state$.setState({
-         values: initialValues,
-         errors: initialErrors,
-         touched: initialTouched
-      })
-   }
-
-   function setFieldsValue(next: Partial<TO> | ((values: TO) => TO)) {
-      const nextState = typeof next === 'function' ? next(state.values) : next
-
-      state$.setState(state => ({ ...state, values: nextState as TO }))
-
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(nextState, path) || dot.get(nextState, path))
-      })
-   }
-
-   function setFieldValue(path: Paths<typeof initialValues>, value: any) {
-      state$.setState(state => ({
-         ...state,
-         values: dot.set(state.values, path as string, value)
-      }))
-      setRefValue(path as string, value)
-   }
-
    function resetFieldsValue() {
-      Object.keys(refs.current).forEach(path => {
-         setRefValue(path, dot.get(initialValues, path) || null)
-      })
-      state$.setState(state => ({ ...state, values: initialValues }))
+      state$.set({ ...state, values: state$.getInitialState().values as any })
+      for (const field in fields.current) {
+         const path = 'values.'.concat(field)
+         fields.current[field].value = state$.getInitialPropertyValue(path)
+      }
    }
 
-   function resetFieldValue(path: Paths<typeof initialValues>) {
-      const value = dot.get(initialValues, path as string) || undefined
-      state$.setState(state => ({
-         ...state,
-         values: dot.set(state.values, path as string, value)
-      }))
-      setRefValue(path as string, value)
+   function setFieldsValue(next: SetType<TInitial['initialValues']>) {
+      if (!next) {
+         createException('SetFieldsValue Function', 'argument next is required')
+      }
+      const values = getNextState(next, state?.values)
+      state$.patch('values', values)
+      for (const field in fields.current) {
+         if (fields.current[field]) {
+            fields.current[field].value = dot.get(values, field)
+         }
+      }
    }
 
-   function setFieldsTouched(
-      next: Partial<Touched<TO>> | ((next: Touched<TO>) => Touched<TO>)
-   ) {
-      const nextState = typeof next === 'function' ? next(state.touched) : next
-      state$.setState(state => ({
-         ...state,
-         touched: nextState as Touched<TO>
-      }))
+   function setFieldValue(field: string, value: any) {
+      if (!value || !field) {
+         createException(
+            'SetFieldValue Function',
+            'argument field and value are required'
+         )
+      }
+      const path = 'values.'.concat(field)
+
+      state$.patch(path, value)
+      if (fields.current[field]) {
+         fields.current[field].value = value
+      }
    }
 
-   function setFieldTouched(
-      path: Paths<typeof initialValues>,
-      value: boolean = true
-   ) {
-      state$.setState(state => ({
-         ...state,
-         touched: dot.set(state.touched, path as string, value)
-      }))
+   function handleChange(event: any) {
+      if (!event.target.name) {
+         createException(
+            'HandleChange Function',
+            'property input name is necessary'
+         )
+      }
+      const path = 'values.'.concat(event.target.name)
+      if (isCheckbox(event.target.type)) {
+         state$.patch(path, event.target.checked)
+      }
+      state$.patch(path, event.target.value)
    }
 
-   function resetFieldsTouched() {
-      setFieldsTouched(makeResetAllTouchedPayload())
+   function resetFieldValue(field: string) {
+      if (!field) {
+         createException(
+            'ResetFieldValue Function',
+            'argument field is necessary'
+         )
+      }
+      const path = 'values.'.concat(field)
+      state$.patch(path, state$.getInitialPropertyValue(path))
+      fields.current[field].value = state$.getInitialPropertyValue(path)
    }
 
-   function resetFieldTouched(path: Paths<typeof initialValues>) {
-      const value = dot.get(initialTouched, path as string) || false
-      state$.setState(state => ({
-         ...state,
-         touched: dot.set(state.touched, path as string, value)
-      }))
+   function setFieldsError(next: SetType<TInitial['initialErrors']>) {
+      if (!next) {
+         createException(
+            'SetFieldsError Function',
+            'argument next is necessary'
+         )
+      }
+      const errors = getNextState(next, state?.errors)
+      state$.patch('errors', errors)
    }
 
-   function setFieldsError(
-      next: Partial<Errors<TO>> | ((next: Errors<TO>) => Errors<TO>)
-   ) {
-      const nextState = typeof next === 'function' ? next(state.errors) : next
-      state$.setState(state => ({ ...state, errors: nextState as Errors<TO> }))
+   function setFieldError(field: string, error: string) {
+      if (!error || !field) {
+         createException(
+            'SetFieldError Function',
+            'argument field and error are necessary'
+         )
+      }
+      const path = 'errors.'.concat(field)
+      state$.patch(path, error)
    }
 
-   function setFieldError(path: Paths<typeof initialValues>, value: any) {
-      state$.setState(state => ({
-         ...state,
-         errors: dot.set(state.errors, path as string, value)
-      }))
+   function resetFieldError(field: string) {
+      if (!field) {
+         createException('`resetFieldError()` - field is necessary')
+      }
+      const path = 'errors.'.concat(field)
+      state$.patch(path, state$.getInitialPropertyValue(path))
    }
 
    function resetFieldsError() {
-      state$.setState(state => ({ ...state, errors: initialErrors }))
+      state$.patch('errors', state$.getInitialState().errors)
    }
 
-   function resetFieldError(path: Paths<typeof initialValues>) {
-      const value = dot.get(initialErrors, path as string) || false
-      state$.setState(state => ({
-         ...state,
-         errors: dot.set(state.errors, path as string, value)
-      }))
+   function setFieldsTouched(next: SetType<TInitial['initialTouched']>) {
+      if (!next) {
+         return makeAllTouched()
+      }
+      const touched = getNextState(next, state?.values)
+      state$.patch('touched', touched)
+   }
+
+   function resetFieldsTouched() {
+      state$.patch('touched', state$.getInitialState().touched)
+   }
+
+   function setFieldTouched(field: string) {
+      if (!field) {
+         createException(
+            'SetFieldTouched Function',
+            'name is necessary to set field as touched'
+         )
+      }
+      state$.patch('touched.'.concat(field), true)
+   }
+
+   function resetFieldTouched(field: string) {
+      if (!field) {
+         createException(
+            'ResetFieldTouched Function',
+            'Field argument is necessary to reset a field'
+         )
+      }
+      state$.patch('touched.'.concat(field), false)
+   }
+
+   function setForm(next: SetType<State<TInitial>>) {
+      if (!next) {
+         state$.set(state$.getInitialState())
+      }
+      const nextState = getNextState(next, state)
+
+      setFieldsValue(nextState.values)
+      setFieldsError(nextState.errors)
+      setFieldsTouched(nextState.touched)
+   }
+
+   function resetForm() {
+      setFieldsValue(state$.getInitialState().values)
+      setFieldsError(state$.getInitialState().errors)
+      setFieldsTouched(state$.getInitialState().touched)
+   }
+
+   function makeAllTouched() {
+      for (const field in fields.current) {
+         setFieldTouched(field)
+      }
+   }
+
+   function getFieldsRefValue() {
+      const values = {}
+      for (const field in fields.current) {
+         values[field] = fields.current[field].value
+      }
+      return values
+   }
+
+   function onSubmit(
+      fn: (values: TInitial['initialValues'], isValid: boolean) => void
+   ) {
+      if (!fn) {
+         createException(
+            'OnSubmit Function',
+            'callback function is not defined'
+         )
+      }
+      return async (e: React.BaseSyntheticEvent) => {
+         e.preventDefault()
+         const values = getFieldsRefValue()
+         try {
+            if (initial?.validationSchema) {
+               await validate(values, initial.validationSchema)
+            }
+            fn(values, true)
+         } catch (errors) {
+            fn(values, false)
+            state$.set({
+               ...state,
+               errors,
+               touched: makeAllTouched()
+            })
+
+            if (initial?.mode === 'onSubmit') {
+            }
+         }
+      }
    }
 
    return {
-      register,
       state,
-      onSubmit,
-
-      setForm,
-      resetForm,
-
-      setFieldValue,
-      setFieldsValue,
-      resetFieldValue,
-      resetFieldsValue,
+      register,
 
       setFieldsTouched,
-      setFieldTouched,
       resetFieldsTouched,
+      setFieldTouched,
       resetFieldTouched,
 
-      setFieldError,
       setFieldsError,
+      resetFieldsError,
+      setFieldError,
       resetFieldError,
-      resetFieldsError
+
+      setFieldsValue,
+      resetFieldsValue,
+      setFieldValue,
+      resetFieldValue,
+      handleChange,
+
+      resetForm,
+      setForm,
+      onSubmit
    }
 }
