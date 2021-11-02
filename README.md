@@ -51,21 +51,21 @@ this approach prevents you to type more code to convert an object from form to b
 <br />
 
 ```javascript
-import { useForm } from "@use-form/use-form";
+import { useForm } from '@use-form/use-form'
 
 /*
  *  initial Values optional
  */
 const initialValues = {
-  name: "Jesse",
-  email: "jesse@jesse.com",
-  score: 25,
-};
+  name: 'Jesse',
+  email: 'jesse@jesse.com',
+  score: 25
+}
 
 const {
   register,
-  state: { values },
-} = useForm({ initialValues, isControlled: true });
+  state: { values }
+} = useForm({ initialValues, mode: 'onChange' })
 ```
 
 Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
