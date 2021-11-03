@@ -10,7 +10,8 @@
     "@material-ui/core": "*",
     "bootstrap": "^4.6.0",
     "react-app-polyfill": "^1.0.0",
-    "react-select": "^5.1.0"
+    "react-select": "^5.1.0",
+    "yup": "^0.32.11"
   },
   "alias": {
     "react": "../node_modules/react",
