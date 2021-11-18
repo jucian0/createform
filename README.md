@@ -88,8 +88,6 @@ Give a ⭐️ if this project helped you!
 
 [![Stargazers repo roster for @use-form/use-form](https://reporoster.com/stars/use-form/use-form)](https://github.com/use-form/use-form/stargazers)
 
-[![Forkers repo roster for @use-form/use-form](https://reporoster.com/forks/use-form/use-form)](https://github.com/use-form/use-form/network/members)
-
 ## 📝 License
 
 Copyright © 2020 [useForm](https://github.com/use-form).<br />
