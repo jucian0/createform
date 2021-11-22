@@ -86,9 +86,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
          }
       } else {
          fields.current[ref.current.name] = ref.current
-         ref.current.value = state$.getPropertyValue(
-            'values.'.concat(ref.current.name)
-         )
+         ref.current.value = value
       }
    }
 
@@ -122,9 +120,10 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
 
       React.useEffect(() => {
          const value = state$.getPropertyValue('values.'.concat(name))
-         if (value) {
-            setRefValue(ref, value)
+         if (typeof value === 'undefined') {
+            return setRefValue(ref, '')
          }
+         return setRefValue(ref, value)
       }, [])
 
       return {
