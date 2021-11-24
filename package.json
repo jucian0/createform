@@ -122,10 +122,9 @@
     "semantic-release": "^18.0.0"
   },
   "dependencies": {
-    "object-path-immutable": "4.1.1",
-    "yup": "^0.29.0"
   },
   "peerDependencies": {
+    "yup": "^0.29.0",
     "react": ">=16.8.0"
   }
 }
