@@ -67,7 +67,11 @@ export function get<T extends object>(defaultObject: T, prop: string) {
    function getPropertyValue(object: object = {}, index: number): any {
       const clone = Object.assign({}, object)
       if (paths.length === index + 1) {
-         if (Array.isArray(clone[paths[index]])) {
+         if (typeof Array.isArray(clone[paths[index]]) !== 'undefined') {
+            console.log(clone[paths[index]])
+            if (!clone[paths[index]]) {
+               return clone[paths[index]]
+            }
             return clone[paths[index]].slice()
          } else if (typeof clone[paths[index]] === 'object') {
             return Object.assign({}, clone[paths[index]])
