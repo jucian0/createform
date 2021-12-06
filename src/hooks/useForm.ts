@@ -152,7 +152,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       const values = getNextState(next, state?.values)
       state$.patch('values', values)
       for (const field in fields.current) {
-         if (fields.current[field]) {
+         if (typeof fields.current[field] !== 'undefined') {
             fields.current[field].value = dot.get(values, field)
          }
       }
