@@ -70,6 +70,9 @@ export function get<T extends object>(defaultObject: T, prop: string) {
          if (Array.isArray(clone[paths[index]])) {
             return clone[paths[index]].slice()
          } else if (typeof clone[paths[index]] === 'object') {
+            if (clone[paths[index]] === null) {
+               return null
+            }
             return Object.assign({}, clone[paths[index]])
          }
          return clone[paths[index]]

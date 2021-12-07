@@ -2,7 +2,12 @@
 
 <h1 align="center">Welcome to useForm 👋</h1>
 
-[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE) [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/use-form/use-form/tree/master/test) ![npm bundle size](https://img.shields.io/bundlephobia/min/@use-form/use-form) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@use-form/use-form) [![npm version](https://img.shields.io/badge/npm-v1.0-ff69b4)](https://www.npmjs.com/package/@use-form/use-form) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/use-form/use-form&hashtags=reactjs,hook,javascript,forms)
+[![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE)
+[![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/use-form/use-form/tree/master/test)
+[![Size](https://badgen.net/badge/miniziped%20size/3.3/blue)](https://bundlephobia.com/package/@use-form/use-form@2.0.2)
+[![Size](https://badgen.net/badge/minifield%20size/9.7/blue)](https://bundlephobia.com/package/@use-form/use-form@2.0.2)
+[![npm version](https://badgen.net/badge/npm/v2.0.2/pink)](https://www.npmjs.com/package/@use-form/use-form)
+[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/use-form/use-form&hashtags=reactjs,hook,javascript,forms)
 
 > useFom provide a way to create complex forms easily.
 
@@ -116,7 +121,9 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 
 Give a ⭐️ if this project helped you!
 
+[![Stargazers repo roster for @use-form/use-form](https://reporoster.com/stars/use-form/use-form)](https://github.com/use-form/use-form/stargazers)
+
 ## 📝 License
 
-Copyright © 2020 [useForm](https://github.com/use-form).<br />
+Copyright © 2021 [useForm](https://github.com/use-form).<br />
 This project is [MIT](https://github.com/use-form/use-form/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
