@@ -27,7 +27,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       initialState as any
    )
 
-   const setStateDebounced = React.useCallback(debounce(setValue, 500), [])
+   const setStateDebounced = React.useCallback(debounce(setState, 500), [])
    const fields = React.useRef({})
 
    async function setValue(event: any) {
@@ -100,22 +100,20 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       const ref = React.useRef<Ref>(null)
 
       React.useEffect(() => {
-         if (initial?.mode === 'onChange') {
-            ref.current?.addEventListener('input', e => setValue(e))
-         } else if (initial?.mode === 'onBlur') {
-            ref.current?.addEventListener('blur', e => setValue(e))
-         } else if (initial?.mode === 'debounced') {
-            ref.current?.addEventListener('input', e => setStateDebounced(e))
-         }
+         ref.current?.addEventListener('input', setValue)
          return () => {
-            if (initial?.mode === 'onChange') {
-               ref.current?.removeEventListener('input', setValue)
-            } else if (initial?.mode === 'onBlur') {
-               ref.current?.removeEventListener('blur', setValue)
-            } else if (initial?.mode === 'debounced') {
-               ref.current?.removeEventListener('input', setStateDebounced)
+            ref.current?.removeEventListener('input', setValue)
+         }
+      }, [])
+
+      React.useEffect(() => {
+         if (initial?.mode === 'onBlur') {
+            ref.current?.addEventListener('blur', handleOnBlur)
+            return () => {
+               ref.current?.removeEventListener('blur', handleOnBlur)
             }
          }
+         return () => {}
       }, [])
 
       React.useEffect(() => {
@@ -132,8 +130,20 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
    }
 
+   function handleOnBlur() {
+      setState(state$.get())
+   }
+
+   function persistNextState(nextState: State<TInitial['initialValues']>) {
+      if (initial?.mode === 'debounced') {
+         setStateDebounced(nextState)
+      } else if (initial?.mode === 'onChange') {
+         setState(nextState)
+      }
+   }
+
    React.useEffect(() => {
-      const unsubscribe = state$.subscribe(setState)
+      const unsubscribe = state$.subscribe(persistNextState)
       return () => unsubscribe()
    }, [])
 
@@ -143,6 +153,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
          const path = 'values.'.concat(field)
          fields.current[field].value = state$.getInitialPropertyValue(path)
       }
+      setState(state$.get())
    }
 
    function setFieldsValue(next: SetType<TInitial['initialValues']>) {
@@ -156,6 +167,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
             fields.current[field].value = dot.get(values, field)
          }
       }
+      setState(state$.get())
    }
 
    function setFieldValue(field: string, value: any) {
@@ -171,6 +183,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       if (fields.current[field]) {
          fields.current[field].value = value
       }
+      setState(state$.get())
    }
 
    function handleChange(event: any) {
@@ -185,6 +198,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
          state$.patch(path, event.target.checked)
       }
       state$.patch(path, event.target.value)
+      setState(state$.get())
    }
 
    function resetFieldValue(field: string) {
@@ -197,6 +211,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       const path = 'values.'.concat(field)
       state$.patch(path, state$.getInitialPropertyValue(path))
       fields.current[field].value = state$.getInitialPropertyValue(path)
+      setState(state$.get())
    }
 
    function setFieldsError(next: SetType<TInitial['initialErrors']>) {
@@ -208,6 +223,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
       const errors = getNextState(next, state?.errors)
       state$.patch('errors', errors)
+      setState(state$.get())
    }
 
    function setFieldError(field: string, error: string) {
@@ -219,6 +235,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
       const path = 'errors.'.concat(field)
       state$.patch(path, error)
+      setState(state$.get())
    }
 
    function resetFieldError(field: string) {
@@ -227,10 +244,12 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
       const path = 'errors.'.concat(field)
       state$.patch(path, state$.getInitialPropertyValue(path))
+      setState(state$.get())
    }
 
    function resetFieldsError() {
       state$.patch('errors', state$.getInitialState().errors)
+      setState(state$.get())
    }
 
    function setFieldsTouched(next: SetType<TInitial['initialTouched']>) {
@@ -239,10 +258,12 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
       const touched = getNextState(next, state?.values)
       state$.patch('touched', touched)
+      setState(state$.get())
    }
 
    function resetFieldsTouched() {
       state$.patch('touched', state$.getInitialState().touched)
+      setState(state$.get())
    }
 
    function setFieldTouched(field: string) {
@@ -253,6 +274,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
          )
       }
       state$.patch('touched.'.concat(field), true)
+      setState(state$.get())
    }
 
    function resetFieldTouched(field: string) {
@@ -263,6 +285,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
          )
       }
       state$.patch('touched.'.concat(field), false)
+      setState(state$.get())
    }
 
    function setForm(next: SetType<State<TInitial>>) {
@@ -288,14 +311,6 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
    }
 
-   function getFieldsRefValue() {
-      const values = {}
-      for (const field in fields.current) {
-         values[field] = fields.current[field].value
-      }
-      return values
-   }
-
    function onSubmit(
       fn: (values: TInitial['initialValues'], isValid: boolean) => void
    ) {
@@ -307,7 +322,7 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
       }
       return async (e: React.BaseSyntheticEvent) => {
          e.preventDefault()
-         const values = getFieldsRefValue()
+         const values = state$.getPropertyValue('values')
          try {
             if (initial?.validationSchema) {
                await validate(values, initial.validationSchema)
@@ -320,9 +335,6 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
                errors,
                touched: makeAllTouched()
             })
-
-            if (initial?.mode === 'onSubmit') {
-            }
          }
       }
    }
