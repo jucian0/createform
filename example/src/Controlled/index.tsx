@@ -1,8 +1,8 @@
-import { TextField } from '@material-ui/core'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from '../../../src/hooks/useForm'
+import { useFormContext } from '../../../src/hooks/useContextForm'
+import { FormContextProvider } from '../../../src/core/contextForm'
 import Select from 'react-select'
-import * as yup from 'yup'
 
 const options = [
    { value: 'chocolate', label: 'Chocolate' },
@@ -11,72 +11,109 @@ const options = [
 ]
 
 const Controlled: React.FC = () => {
-   const {
-      register,
-      state,
-      setFieldValue,
-      resetFieldValue,
-      handleChange,
-      onSubmit
-   } = useForm({
+   const { state, register, setFieldsValue, onSubmit, ...form } = useForm({
       initialValues: {
-         name: 'juciano'
-      },
-      mode: 'onBlur'
-      //  validationSchema: yup.object().shape({
-      //    email: yup.string().email().required(),
-      //    name: yup.string().required(),
-      //    nested: yup.object().shape({
-      //      option: yup.string().email()
-      //    })
-      //  })
+         name: 'juciano',
+         email: 'juciano@juciano.com'
+         // password: '123456',
+      }
    })
 
-   console.log(state.values)
+   console.log(state)
 
    return (
-      <form
-         noValidate
-         onSubmit={onSubmit(e => {
-            console.log(e)
-         })}
+      <FormContextProvider
+         value={{
+            state,
+            register,
+            onSubmit,
+            ...form
+         }}
       >
-         <div className="row">
-            <div className="col-lg-12">
-               <div className="form-group">
-                  <label>Name</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     {...register('name')}
-                  />
+         <form
+            noValidate
+            onSubmit={onSubmit(e => {
+               console.log(e)
+            })}
+         >
+            <div className="row">
+               <div className="col-lg-12">
+                  <div className="form-group">
+                     <label>Name</label>
+                     <input
+                        className="form-control"
+                        autoComplete="off"
+                        {...register('name')}
+                     />
+                  </div>
                </div>
-            </div>
-            <div className="col-lg-12">
-               <div className="form-group">
-                  <label>E-mail</label>
-                  <input
-                     className="form-control"
-                     type="email"
-                     autoComplete="off"
-                     {...register('email')}
-                  />
+               <div className="col-lg-12">
+                  <div className="form-group">
+                     <label>E-mail</label>
+                     <input
+                        className="form-control"
+                        type="email"
+                        autoComplete="off"
+                        {...register('email')}
+                     />
+                  </div>
                </div>
-            </div>
-            <div className="col-lg-12">
-               <div className="form-group">
-                  <label>password</label>
-                  <input
-                     className="form-control"
-                     autoComplete="off"
-                     type="password"
-                     {...register('password')}
-                  />
+               <InnerForm />
+               <div className="col-lg-12">
+                  <div className="form-group">
+                     <label>password</label>
+                     <input
+                        className="form-control"
+                        autoComplete="off"
+                        type="password"
+                        {...register('password')}
+                     />
+                  </div>
                </div>
+               <button type={'submit'}>Submit</button>
             </div>
-            <button type={'submit'}>Submit</button>
+         </form>
+      </FormContextProvider>
+   )
+}
+
+function InnerForm() {
+   const { register, setFieldValue, state, setFieldTouched } = useFormContext()
+
+   // console.log(form.state.values)
+
+   return (
+      <div className="row">
+         <div className="col-lg-12">
+            <div className="form-group">
+               <label>context</label>
+               <input
+                  className="form-control"
+                  autoComplete="off"
+                  {...register('context')}
+               />
+            </div>
          </div>
-      </form>
+         <div className="col-lg-12">
+            <div className="form-group">
+               <label> Select</label>
+               <Select
+                  options={options}
+                  value={state.values.select}
+                  onBlur={() => setFieldTouched('select', true)}
+                  onChange={e => {
+                     setFieldValue('select', e)
+                  }}
+               />
+            </div>
+         </div>
+         <button
+            type={'button'}
+            onClick={() => setFieldValue('name', 'juciano c barbosa')}
+         >
+            Change
+         </button>
+      </div>
    )
 }
 
