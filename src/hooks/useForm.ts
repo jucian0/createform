@@ -8,7 +8,14 @@ import {
    Ref,
    SetType
 } from '../types'
-import { debounce, getNextState, isCheckbox, validate } from '../utils'
+import {
+   debounce,
+   extractRadioButtons,
+   getNextState,
+   isCheckbox,
+   isRadio,
+   validate
+} from '../utils'
 import * as dot from '../utils/dot-prop'
 import { createException } from '../utils/exceptions'
 
@@ -74,12 +81,8 @@ export function useForm<TInitial extends Options<TInitial['initialValues']>>(
    }
 
    function setRefValue(ref: any, value: any) {
-      if (ref.current.type === 'radio') {
-         const inputs = Array.from<HTMLInputElement>(
-            ref.current.form.querySelectorAll(
-               'input[name="' + ref.current.name + '"]'
-            )
-         )
+      if (isRadio(ref)) {
+         const inputs = extractRadioButtons(ref) as HTMLInputElement[]
 
          for (const input of inputs) {
             input.checked = input.value === value
