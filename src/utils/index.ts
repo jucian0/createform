@@ -1,7 +1,14 @@
+import React from 'react'
 import { Schema, ValidationError } from 'yup'
 import * as dot from './dot-prop'
 
-export const isRadio = (type: string) => type === 'radio'
+export const isRadio = (ref: React.RefObject<HTMLDivElement>) => {
+   return ref.current?.querySelector('input[type="radio"]')
+}
+
+export function extractRadioButtons(ref: React.RefObject<HTMLDivElement>) {
+   return Array.from(ref.current?.querySelectorAll('input[type="radio"]') || [])
+}
 
 export const isCheckbox = (type: string) => type === 'checkbox'
 
