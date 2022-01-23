@@ -57,9 +57,9 @@ The second step is to create a component to render your form, you can use the `u
    
       return (
          <form onSubmit={handleSubmit(onSubmit)}>
-         <input type="email" ref={register('email')} />
-         <input type="password" ref={register('password')}/>
-         <button type="submit">Submit</button>
+           <input type="email" ref={register('email')} />
+           <input type="password" ref={register('password')}/>
+           <button type="submit">Submit</button>
          </form>
       )
    }
