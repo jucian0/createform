@@ -14,103 +14,61 @@
 ### 🏠 [Homepage](https://useform.org)
 
 ### ✨ [Demo](https://codesandbox.io/s/useform-2u2ju)
+# UseForm
 
-<a href="https://codesandbox.io/s/useform-2u2ju">
-  <img width="150" alt="Example in CodeSandbox" src="https://codesandbox.io/static/img/play-codesandbox.svg">
-</a>
+> Create hooks to manage your forms.
+
+
+UseForm is an open source project that allow you to create form easily, different from the others options, this package guide you to create custom hooks to manage your forms, you can use the same form in different components without context API.
+
+ - As other packages, you can also use yup validation to validate your form.
+ - You can also use different approach to handle your form, like `onSubmit | onChange | debounce`.
+ - Less code, than other options.
 
 ## Motivation
 
-There are many ways to create forms in React, and there are many form libraries available, with different features. I must admit that there a lot of good form libraries,
-so, why one more?
+Today we have a lot of form packages, and this project don't pretend to be the number one, this is just a new way to create hooks to manage your forms. But if you guys like this project, we can publish it, and maintain it.
 
-UseForm was born because I found great difficulty when I wanted to build complex forms with different steps or levels and with many fields.
-When we need to build complex forms we can encounter issues like:
+## First step
+The first step is to create your form with the `createForm` function, this function returns a hook that you can use to manage your form, wherever you want to use.
 
-- A lot of rendering - Every change is made in the form state is reflected and the form component tree is rendered again and again.
-- A lot of properties - When you use some libraries it is necessary to put many properties in one input, creating a lot of unnecessary code.
-- Just one approach - You can use controlled forms or uncontrolled forms never both together in the same library.
+``` javascript
 
-UseForm is a library that solves all these problems.
+export const useLoginForm = createForm({
+  initialValues: {
+    email: 'juciano@juciano.com',
+    password: 'yourpassword',
+  }
+})
+```
 
-## Description
-
-Forms are an important part of web applications, and with react it's possible to create greats forms,  
-react hooks are a game-changer when we think about forms, with hooks it is very simple to create forms, and you can go on without libraries.  
-But when we wanna complex forms with many validations and nested objects with several layer and properties is appropriate to use a library form to manager the state of inputs and its validations.  
-For this reason, there is useForm, with useForm we can make greats forms and complex validations with less line code.
+## Second step
+The second step is to create a component to render your form, you can use the `useLoginForm` hook to get the form state and manage it.
 
 ```jsx
-// FORMIk EXAMPLE
-<input
-  name="fieldName"
-  onChange={handleChange}
-  value={form.values.fieldName}
-  onBlur={handleBlur}
-/>
+   import { useLoginForm } from 'react-create-form'
+   
+   const LoginForm = () => {
+      const { handleSubmit, register } = useLoginForm()
 
-//USEFORM EXAMPLE
-<input {...register('fieldName')}/>
+      function onSubmit(values) {
+        console.log(values)
+      }
+   
+      return (
+         <form onSubmit={handleSubmit(onSubmit)}>
+         <input type="email" ref={register('email')} />
+         <input type="password" ref={register('password')}/>
+         <button type="submit">Submit</button>
+         </form>
+      )
+   }
 ```
 
-UseForm provides a way to create complex forms easily, this hook returns an object of values ​​in the same shape that it receives, this is possible using dot notation. Therefore,
-it does not matter if there is a nested object or has many properties or array,
-the result is the same. This process turns very easily to create forms from nested objects,
-the same layers and properties are replicated in the final object,
-this approach prevents you to type more code to convert an object from form to backend object type. The same process is realized with errors object and touched objects.
 
-## What to expect with useForm
+# It's All.
 
-- Performer forms - useForm provides a way to complete a form and submit it without any rerender, by default useForm creates uncontrolled forms.
-- Easy to write - useForm has an easy way to write forms with less code.
-  register function return necessary input's properties and it is all we need to manage all events in a native HTML `input`. Also, you can write forms without form tag.
-- Easy validation - By default useform uses yup validation, we can write complex validation without effort.
-- Easy to use - useForm is very easy to use, you can register a field with a single line of code.
-- No dependencies - useForm does not depend on any library to work.
-
-## Installation
-
-```
-  npm i @use-form/use-form
-```
-
-```
-  yarn add @use-form/use-form
-```
-
-## Usage
-
-`useForm` provides a `register` function, this function return all necessary properties to manage the input's events and validation.
-
-<QuickStartDemo />
-<br />
-
-```javascript
-import { useForm } from '@use-form/use-form'
-
-/*
- *  initial Values optional
- */
-const initialValues = {
-  name: 'Jesse',
-  email: 'jesse@jesse.com',
-  score: 25
-}
-
-const {
-  register,
-  state: { values }
-} = useForm({ initialValues, mode: 'onChange' })
-```
-
-Use dot notation to create nested objects or to map object values. Type an entry name and type or an entry property object.
-
-```jsx
-   <input placeholder="Name" {...register("name")}/>
-   <input placeholder="E-mail" type="email" {...register("email")}/>
-   <input type="range" {...register("score")}/>
-```
-
+## Read the full documentation [here](https://useform.org/docs/).
 ### [Post](https://dev.to/jucian0/building-forms-with-useform-1cna)
 
 ## 🤝 Contributing
