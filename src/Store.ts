@@ -1,16 +1,13 @@
-import { State } from '../types'
-import * as dot from '../utils/dot-prop'
+import * as Dot from './ObjectUtils'
 
-type Subscribe<TValues> = (e: State<TValues>) => void
+type Subscribe<TValues> = (e: TValues) => void
 type Subscribers<TValues = {}> = Array<Subscribe<TValues>>
 
-export function createState<T extends State<T>>(
-   initialState: T = Object.assign({})
-) {
+export function createStore<T extends {}>(initialState: T = Object.assign({})) {
    let state = initialState
    let subscribers: Subscribers<T> = []
 
-   function get(): State<T> {
+   function get(): T {
       return state
    }
 
@@ -24,25 +21,28 @@ export function createState<T extends State<T>>(
 
    function set(nextState: T) {
       state = nextState
-
       notify()
    }
 
    function patch(path: string, next: any) {
-      const nextState = dot.set(state, path, next)
-      state = nextState
-      notify()
+      const nextState = Dot.set(state, path, next)
+      if (typeof nextState !== 'undefined') {
+         state = nextState
+         notify()
+      } else {
+         throw new Error(`The path '${path}' is not defined`)
+      }
    }
 
    function getPropertyValue(path: string) {
-      return dot.get(state, path)
+      return Dot.get(state, path)
    }
 
    function getInitialPropertyValue(path: string) {
-      return dot.get(initialState, path)
+      return Dot.get(initialState, path)
    }
 
-   function getInitialState(): State<T> {
+   function getInitialState(): T {
       return initialState
    }
 
