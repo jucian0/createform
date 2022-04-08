@@ -46,7 +46,7 @@ export const useLoginForm = createForm({
 The second step is to create a component to render your form, you can use the `useLoginForm` hook to get the form state and manage it.
 
 ```jsx
-   import { useLoginForm } from 'react-create-form'
+   import { useLoginForm } from './useLoginForm.js'
    
    const LoginForm = () => {
       const { handleSubmit, register } = useLoginForm()
