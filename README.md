@@ -83,5 +83,5 @@ Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2021 [useForm](https://github.com/use-form).<br />
+Copyright © 2022 [useForm](https://github.com/useForm).<br />
 This project is [MIT](https://github.com/use-form/use-form/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
