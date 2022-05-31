@@ -29,6 +29,18 @@ UseForm is an open source project that allow you to create form easily, differen
 
 Today we have a lot of form packages, and this project don't pretend to be the number one, this is just a new way to create hooks to manage your forms. But if you guys like this project, we can publish it, and maintain it.
 
+## Instalation
+
+### NPM
+```bash
+npm i @use-form/use-form
+```
+
+YARN
+```bash
+yarn add @use-form/use-form
+```
+
 ## First step
 The first step is to create your form with the `createForm` function, this function returns a hook that you can use to manage your form, wherever you want to use.
 
