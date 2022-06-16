@@ -4,9 +4,9 @@
 
 [![GitHub license](https://img.shields.io/badge/License-mit-green)](https://github.com/Jucian0/useform/blob/master/LICENSE)
 [![GitHub coverage](https://img.shields.io/badge/coverage-96.8%25-brightgreen)](https://github.com/use-form/use-form/tree/master/test)
-[![Size](https://badgen.net/badge/miniziped%20size/3.3/blue)](https://bundlephobia.com/package/@use-form/use-form@2.0.2)
-[![Size](https://badgen.net/badge/minifield%20size/9.7/blue)](https://bundlephobia.com/package/@use-form/use-form@2.0.2)
-[![npm version](https://badgen.net/badge/npm/v3.0/pink)](https://www.npmjs.com/package/@use-form/use-form)
+[![Size](https://badgen.net/badge/miniziped%20size/3.3/blue)](https://bundlephobia.com/package/useform@2.0.2)
+[![Size](https://badgen.net/badge/minifield%20size/9.7/blue)](https://bundlephobia.com/package/useform@2.0.2)
+[![npm version](https://badgen.net/badge/npm/v3.0/pink)](https://www.npmjs.com/package/useform)
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=React+hook+for+forms+and+validations&url=https://github.com/use-form/use-form&hashtags=reactjs,hook,javascript,forms)
 
 > useFom provide a way to create complex forms easily.
@@ -33,12 +33,12 @@ Today we have a lot of form packages, and this project don't pretend to be the n
 
 ### NPM
 ```bash
-npm i @use-form/use-form
+npm i useform
 ```
 
 ### YARN
 ```bash
-yarn add @use-form/use-form
+yarn add useform
 ```
 
 ## First step
@@ -91,7 +91,7 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 
 Give a ⭐️ if this project helped you!
 
-[![Stargazers repo roster for @use-form/use-form](https://reporoster.com/stars/jucian0/useform)](https://github.com/jucian0/useform/stargazers)
+[![Stargazers repo roster for useform](https://reporoster.com/stars/jucian0/useform)](https://github.com/jucian0/useform/stargazers)
 
 ## 📝 License
 
