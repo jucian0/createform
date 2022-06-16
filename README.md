@@ -85,15 +85,15 @@ The second step is to create a component to render your form, you can use the `u
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/use-form/use-form/issues). You can also take a look at the [contributing guide](https://github.com/Jucian0/use-form/blob/main/CONTRIBUTING.md).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/jucian0/useform/issues). You can also take a look at the [contributing guide](https://github.com/Jucian0/useform/blob/main/CONTRIBUTING.md).
 
 ## Show your support
 
 Give a ⭐️ if this project helped you!
 
-[![Stargazers repo roster for @use-form/use-form](https://reporoster.com/stars/use-form/use-form)](https://github.com/use-form/use-form/stargazers)
+[![Stargazers repo roster for @use-form/use-form](https://reporoster.com/stars/jucian0/useform)](https://github.com/jucian0/useform/stargazers)
 
 ## 📝 License
 
-Copyright © 2022 [useForm](https://github.com/useForm).<br />
+Copyright © 2022 [jucian0](https://github.com/jucian0).<br />
 This project is [MIT](https://github.com/use-form/use-form/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
