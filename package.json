@@ -1,5 +1,5 @@
 {
-  "name": "@use-form/use-form",
+  "name": "useform",
   "version": "1.2.1",
   "description": "UseFom provides a way to create complex forms easily.",
   "keywords": [
@@ -22,7 +22,7 @@
   "author": "Jucian0 <juciano@outlook.com.br>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/use-form/use-form",
+    "url": "https://github.com/jucian0/useform",
     "homepage": "https://useform.org/"
   },
   "license": "MIT",
@@ -122,8 +122,7 @@
     "semantic-release": "^18.0.0",
     "jest-each": "^27.4.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {
     "yup": "^0.29.0",
     "react": ">=16.8.0"
