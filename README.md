@@ -33,18 +33,19 @@ Today we have a lot of form packages, and this project doesn't pretend to be the
 
 ### NPM
 ```bash
-npm i useform
+npm i @use-form/use-form
 ```
 
 ### YARN
 ```bash
-yarn add useform
+yarn add @use-form/use-form
 ```
 
 ## First step
 The first step is to create your form with the `createForm` function, this function returns a hook that you can use to manage your form, wherever you want to use.
 
 ``` javascript
+import {createForm} from '@use-form/use-form'
 
 export const useLoginForm = createForm({
   initialValues: {
@@ -96,4 +97,4 @@ Give a ⭐️ if this project helped you!
 ## 📝 License
 
 Copyright © 2022 [jucian0](https://github.com/jucian0).<br />
-This project is [MIT](https://github.com/use-form/use-form/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
+This project is [MIT](https://github.com/jucian0/use-form/blob/53debd6986650f76561795f2069d6eebc5db6c65/LICENSE) licensed.
