@@ -19,7 +19,7 @@ jobs:
       - name: 🛑 - Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
-          access_token: ${{ secrets.GH_TOKEN }}
+          access_token: ${{ secrets.GH_TOKEN-1 }}
 
       - name: ⬇️ - Checkout repo
         uses: actions/checkout@v2
@@ -51,5 +51,5 @@ jobs:
               {name: 'alpha', prerelease: true}
             ]
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN-1 }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
