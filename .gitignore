@@ -4,3 +4,9 @@ dist
 yarn-error.log
 yarn.lock
 coverage
+
+# OS generated files
+.DS_Store
+.Trashes
+ehthumbs.db
+Thumbs.db
