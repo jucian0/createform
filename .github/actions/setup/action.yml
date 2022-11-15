@@ -1,0 +1,31 @@
+name: Setup
+
+description: Setup Node.js, cache and install dependencies
+
+inputs:
+  node_version:
+    description: Node.js version
+    required: false
+    default: "16"
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout all commits
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup git user to "🤖 Jucian0 Bot"
+      shell: bash
+      run: git config user.email "-" && git config user.name "🤖 Jucian0 Bot"
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node_version }}
+        registry-url: https://registry.npmjs.org
+
+    - name: yarn install
+      shell: bash
+      run: yarn install --immutable --immutable-cache
