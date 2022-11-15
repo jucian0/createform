@@ -1,0 +1,97 @@
+---
+title: Form validation
+description: Learn how to validate form values using use-form.
+tags: react, form, useform, use-form, debounce, debounced, hook, yup, validation, form-error, error
+---
+
+# Forms validations
+
+## Validation
+
+Every website with forms should have validations, but what are form validations? Go to any popular website with a registration form, and you will be notice that they provide feedback when you don't fill in the form correctly. You'll see messages such as:
+
+- "This field is required" (You can't leave this field blank).
+- "Please enter your phone number in the format xxx-xxxx" (A specific data format is required for it to be considered valid).
+- "Please enter a valid email address" (the data you entered is not in the right format).
+- "Your password needs to be between 8 and 30 characters long and contain one uppercase letter, one symbol, and a number." (A very specific data format is required for your data).
+
+### But why is this so important?
+
+Form validation is a very important part of the web development process. It's a way to make sure that the data you enter is valid. If you don't validate your data, it's possible that your data will be lost or corrupted.
+
+Server-side validations are the last part of the validation, which means, even if the data is in the correct format it's possible that the data can't be stored because some data can't be duplicated like email or username, this kind of validation is done in server-side. Client-side validation deal with incorrect data format, like a valid email, or a valid password, which means, that before the data is submitted the client-side validates if it is a valid data format.
+
+## Description
+
+There are several validations solutions available, but when using `useForm` the default solution is Yup. With yup the process of validations is simple and powerful.
+
+The `useForm` returns an error object, that has all errors, and this object is updated whenever the input state is changed or when the form is submitted if your form has validation.
+
+Usually you wannt to show the error message just when a field is touched, you can do that by using the `touched` object. Thouched object is an object that has all the fields that are touched, and the value of the field is true if the field is touched.
+
+## Usage
+
+Validation is performed whenever the state is changed. By default, `useForm` uses the uncontrolled inputs option, this means that the values ​​are accessible when the onSubmit event is dispatched.
+
+```jsx
+import { createForm } from "@use-form/use-form";
+import * as yup from "yup";
+
+const useForm = createForm({
+  initialValues: {
+    name: "Jesse",
+    email: "jesse@jesse.com",
+    pets: ["felix"],
+    accept: false,
+  },
+});
+
+const validation = yup.object().shape({
+  name: yup.string().required("This field is required"),
+  email: yup
+    .string()
+    .email("This field must be a valid e-mail")
+    .required("This field is required"),
+  pets: yup.array(yup.string().required("This field is required")),
+  accept: yup.bool().oneOf([true], "Field must be checked"),
+});
+
+function Form() {
+  const { register, state, handleSubmit } = useForm({ mode: "onChange" });
+
+  const { errors, touched } = state;
+
+  function onSubmit(data) {
+    console.log(data);
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <fieldset>
+        <input ref={register("name")} />
+        <span>{touched.name && errors.name}</span>
+      </fieldset>
+      <fieldset>
+        <input ref={register("email")} />
+        <span>{touched.email && errors.email}</span>
+      </fieldset>
+      <fieldset>
+        <input ref={register("pets")} />
+        <span>{touched.pets && errors.pets}</span>
+      </fieldset>
+      <input ref={register("pets.0")} />
+      <fieldset>
+        <input ref={register("accept")} />
+        <span>{touched.accept && errors.accept}</span>
+      </fieldset>
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+> If you don't want to use Yup validation, you can use any other validation library, or write your own validation logic.
+
+## Demo
+
+<Demo url="https://codesandbox.io/s/use-form-validation-form-jmv9e" />
