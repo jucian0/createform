@@ -1,0 +1,80 @@
+---
+title: Custom components
+description: Learn how to use useForm to work with custom components.
+tags: react, form, useform, use-form, debounce, debounced, hook, react-select, select
+---
+
+# Custom components
+
+### What are custom components?
+
+Usually, custom components are used to create a better user experience, for example when you want to provide a way to user select a collection of items or collect a range of dates or times, you can reach the same result using native elements, but with custom components, you can do it in a more user-friendly way.
+
+Different from native elements, custom components have an internal state controlled by state management, which means that they will be updated when the value changes, however, native elements are not, because you can use a reference to the element to update its value.
+
+### Let's see some examples of custom components.
+
+- Datepikers - are a component that allows you to select a date.
+- Timepikers - are a component that allows you to select a time.
+- Sliders - are a component that allows you to select a range of values.
+- Selects, multi-selects components - are a component that allows you to select single or multiple values.
+- Drag and drop components - are a component that allows you to drag and drop items.
+
+## How to use custom components with useForm
+
+To use custom components with useForm, you need to use the `<Wrapper>` component and pass the component as a prop. Another important thing is that the custom component should have those props: `value`, `onChange`, `onBlur`. The `value` prop is the value of the component, the `onChange` prop is the function that will be called when the value changes and the `onBlur` prop is the function that will be called when the component loses focus.
+
+### Why do we need to use the `<Wrapper>` component?
+
+The `register` function is the only way to connect a field to the form, and the `register` function returns a reference to the component, then we need to use the `<Wrapper>` component to get the reference.
+Usually, custom components don't work with reference, in consequence, we need to use a wrapper to connect the custom component with a reference and finally connect to the form. And then you can use the `register` function to register the custom component.
+
+<br />
+
+- The `<Wrapper>` component is a wrapper that will be used to wrap the custom component, it will be used to add the `onChange` and `onBlur` props to the native event handlers.
+- The `<Wrapper>` component is also used to add the `value` prop to the custom component.
+
+## How to use custom components with useField
+
+When we are creating the form doesn't matter if we are using native HTML elements or not, it's just a function that creates a store and returns a function to manage the form. So we don't need to worry about it for now. We just need to create the form store, also we can provide the initial values, initial errors, initial touched, and the validation schema, but for now, we will just provide the initial values.
+
+```javascriptimport { createForm } from '@use-form/core'
+
+const useUserForm = createForm({
+initialValues: {
+names: []
+},
+})
+
+```
+
+So, now we are going to create the form component that will be used to manage the form, and we will use the `<Wrapper>` component to wrap the custom component. All the props that the custom component will receive will be the props that the `<Wrapper>` component will receive.
+
+To register the custom component, we will use the `register` function, and we will pass it to `<Wrapper>` component by the `ref` prop.
+
+```jsx
+import { Wrapper } from '@use-form/use-form'
+import Select from 'select-component'
+
+funtion UserForm(){
+const { register, handleSubmit } = useUserForm()
+
+const onSubmit = (data) => {
+console.log(data)
+}
+
+return (
+
+<form onSubmit={handleSubmit(onSubmit)}>
+  <Wrapper component={Select} ref={register("names")} />
+  options={[
+    { value: "John", label: "John" },
+    { value: "Jane", label: "Jane" },
+    { value: "Jack", label: "Jack" },
+  ]}
+  />
+</form>
+) }
+```
+
+> The wrapper component will look at the custom component props, and if the component doesn't have the following properties, `onChange`, `onBlur`, and `value` it will throw an error. In this case, you should build your own Wrapper component, or you can customize the component to add the `onChange` and `onBlur` props.

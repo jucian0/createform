@@ -1,0 +1,166 @@
+{
+    "path": "/home/barbosa/javascript/useform/docs/pages",
+    "name": "pages",
+    "children": [
+        {
+            "path": "/home/barbosa/javascript/useform/docs/pages/docs",
+            "name": "docs",
+            "children": [
+                {
+                    "path": "/home/barbosa/javascript/useform/docs/pages/docs/creating-a-form",
+                    "name": "creating-a-form",
+                    "children": [
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/creating-a-form/custom-components.mdx",
+                            "name": "custom-components.mdx",
+                            "meta": {
+                                "title": "Custom components",
+                                "description": "Learn how to use useForm to work with custom components.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, react-select, select"
+                            },
+                            "url": "/docs/creating-a-form/custom-components",
+                            "relativePath": "/docs/pages/docs/creating-a-form/custom-components.mdx"
+                        },
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/creating-a-form/form-validation.mdx",
+                            "name": "form-validation.mdx",
+                            "meta": {
+                                "title": "Form validation",
+                                "description": "Learn how to validate form values using use-form.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, yup, validation, form-error, error"
+                            },
+                            "url": "/docs/creating-a-form/form-validation",
+                            "relativePath": "/docs/pages/docs/creating-a-form/form-validation.mdx"
+                        },
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/creating-a-form/native-elements.mdx",
+                            "name": "native-elements.mdx",
+                            "meta": {
+                                "title": "Native HTML elements",
+                                "description": "Learn how to use native HTML elements in order to create better forms.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, native-forms, html, input, select, radio, checkbox"
+                            },
+                            "url": "/docs/creating-a-form/native-elements",
+                            "relativePath": "/docs/pages/docs/creating-a-form/native-elements.mdx"
+                        }
+                    ],
+                    "title": "Creating a form",
+                    "relativePath": "/docs/pages/docs/creating-a-form"
+                },
+                {
+                    "path": "/home/barbosa/javascript/useform/docs/pages/docs/how-it-works",
+                    "name": "how-it-works",
+                    "children": [
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/how-it-works/concept.mdx",
+                            "name": "concept.mdx",
+                            "meta": {
+                                "title": "Concept",
+                                "description": "How UseForm works, and why we decided to do it this way.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook"
+                            },
+                            "url": "/docs/how-it-works/concept",
+                            "relativePath": "/docs/pages/docs/how-it-works/concept.mdx"
+                        }
+                    ],
+                    "title": "How it works",
+                    "relativePath": "/docs/pages/docs/how-it-works"
+                },
+                {
+                    "path": "/home/barbosa/javascript/useform/docs/pages/docs/introduction",
+                    "name": "introduction",
+                    "children": [
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/introduction/index.mdx",
+                            "name": "index.mdx",
+                            "meta": {
+                                "title": "Readme",
+                                "description": "Your fist step to create form easily without effort.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook"
+                            },
+                            "url": "/docs/introduction/",
+                            "relativePath": "/docs/pages/docs/introduction/index.mdx"
+                        },
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/introduction/quick-start.mdx",
+                            "name": "quick-start.mdx",
+                            "meta": {
+                                "title": "Quick Start",
+                                "description": "Your first step to creating forms.",
+                                "tags": "react, form, useform, use-form, hook"
+                            },
+                            "url": "/docs/introduction/quick-start",
+                            "relativePath": "/docs/pages/docs/introduction/quick-start.mdx"
+                        }
+                    ],
+                    "title": "Introduction",
+                    "relativePath": "/docs/pages/docs/introduction"
+                },
+                {
+                    "path": "/home/barbosa/javascript/useform/docs/pages/docs/tutorials",
+                    "name": "tutorials",
+                    "children": [
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/tutorials/creating-forms.mdx",
+                            "name": "creating-forms.mdx",
+                            "meta": {
+                                "title": "Creating forms",
+                                "description": "This tutorial will show you how to create forms easily with useform.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, create, creating-a-form"
+                            },
+                            "url": "/docs/tutorials/creating-forms",
+                            "relativePath": "/docs/pages/docs/tutorials/creating-forms.mdx"
+                        }
+                    ],
+                    "title": "Tutorials",
+                    "relativePath": "/docs/pages/docs/tutorials"
+                },
+                {
+                    "path": "/home/barbosa/javascript/useform/docs/pages/docs/using-your-form",
+                    "name": "using-your-form",
+                    "children": [
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/using-your-form/debounced-form.mdx",
+                            "name": "debounced-form.mdx",
+                            "meta": {
+                                "title": "debounced mode",
+                                "description": "When you use debounced form the debounce parameter delays the updating of the state until the user has stopped changing inputs for a predetermined amount of time.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook"
+                            },
+                            "url": "/docs/using-your-form/debounced-form",
+                            "relativePath": "/docs/pages/docs/using-your-form/debounced-form.mdx"
+                        },
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/using-your-form/onchange-form.mdx",
+                            "name": "onchange-form.mdx",
+                            "meta": {
+                                "title": "onChange mode",
+                                "description": "When using controlled forms, the input value is set to state values and then updated via React events. React form controlled is the most popular aproach in reactjs.",
+                                "tags": "react, form, useform, use-form, hook, controlled-form, controlled"
+                            },
+                            "url": "/docs/using-your-form/onchange-form",
+                            "relativePath": "/docs/pages/docs/using-your-form/onchange-form.mdx"
+                        },
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/using-your-form/onsubmit-form.mdx",
+                            "name": "onsubmit-form.mdx",
+                            "meta": {
+                                "title": "onSubmit mode",
+                                "description": "Uncontrolled forms are the most performant way to create react forms. With uncontrolled input values, there is no updating or changing of any states. What you submit is what you get.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, onsubmit"
+                            },
+                            "url": "/docs/using-your-form/onsubmit-form",
+                            "relativePath": "/docs/pages/docs/using-your-form/onsubmit-form.mdx"
+                        }
+                    ],
+                    "title": "Using your form",
+                    "relativePath": "/docs/pages/docs/using-your-form"
+                }
+            ],
+            "title": "Docs",
+            "relativePath": "/docs/pages/docs"
+        }
+    ],
+    "title": "Pages",
+    "relativePath": "/docs/pages"
+}
