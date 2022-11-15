@@ -1,50 +1,23 @@
-name: Semantic Release
+name: Release
 
 on:
   push:
     branches:
-      - "+([0-9])?(.{+([0-9]),x}).x"
       - "main"
-      - "next"
-      - "next-major"
-      - "beta"
-      - "alpha"
-      - "!all-contributors/**"
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
+    if: github.ref == 'refs/heads/main'
+
     steps:
-      - name: ⬇️ - Checkout repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - name: ⎔ - Setup node
-        uses: actions/setup-node@v1
+      - name: Release
+        uses: ./.github/actions/release
         with:
-          node-version: 14
-
-      - name: 📥 - Download deps
-        uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
-
-      - name: 🏗 - Run build script
-        run: npm run build
-
-      - name: 🚀 Release
-        uses: cycjimmy/semantic-release-action@v2
-        with:
-          semantic_version: 17
-          branches: |
-            [
-              '+([0-9])?(.{+([0-9]),x}).x',
-              'main',
-              'next',
-              'next-major',
-              {name: 'beta', prerelease: true},
-              {name: 'alpha', prerelease: true}
-            ]
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN }}
+          npm_token: ${{ secrets.NPM_TOKEN }}
