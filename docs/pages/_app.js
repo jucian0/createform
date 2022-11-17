@@ -1,8 +1,6 @@
-import { darkTheme, lightTheme } from "./../styles/theme";
-import { Demo } from "./../demo";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
-import { Engrafia } from "engrafia";
+import { darkTheme, lightTheme } from './../styles/theme';
+import { Demo } from './../demo';
+import { Engrafia } from 'engrafia';
 
 function App({ Component, pageProps }) {
   return (
