@@ -33,7 +33,7 @@ Today we have a lot of form packages, and this project doesn't pretend to be the
 
 ### NPM
 ```bash
-npm i @use-form/use-form
+npm i @use-form/use-form //
 ```
 
 ### YARN
