@@ -60,7 +60,7 @@
   ],
   "dependencies": {
     "core-js": "^3.6.5",
-    "next": "^13.0.3",
+    "next": "^13.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "regenerator-runtime": "0.13.7",
@@ -80,5 +80,5 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "type": "commonjs"
+  "type": "module"
 }
