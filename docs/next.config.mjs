@@ -5,5 +5,5 @@ import compose from 'compose-function';
 const composed = compose(engrafia, withImages);
 
 export default composed({
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx', 'markdown'],
 });
