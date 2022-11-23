@@ -2042,10 +2042,10 @@
     webpack "^4 || ^5"
     webpack-node-externals "^3.0.0"
 
-"@nrwl/devkit@15.1.1":
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-15.1.1.tgz#b8748796e1dc401ebea5df933aeccaa421d4208e"
-  integrity sha512-Dh26LjMh/BMmoOja2WSSVSAaVDI59qIg46dZmfU7fcu+Y4FFMor3PMAAo5QVbfLasbx4HG6vrvQlhuwWnXm4hw==
+"@nrwl/devkit@15.2.0":
+  version "15.2.0"
+  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-15.2.0.tgz#bb62f65947457012e570583b1b645f196533e50b"
+  integrity sha512-njvwu5gWvV1GLlnLs50CIfKQ7piSw81DmlAtnHI/UD9DwzOrQwasd189X5dMrPMDwlif/WObvzcbdMS8M9wm/w==
   dependencies:
     "@phenomnomnominal/tsquery" "4.1.1"
     ejs "^3.1.7"
@@ -2053,10 +2053,10 @@
     semver "7.3.4"
     tslib "^2.3.0"
 
-"@nrwl/devkit@15.2.0":
-  version "15.2.0"
-  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-15.2.0.tgz#bb62f65947457012e570583b1b645f196533e50b"
-  integrity sha512-njvwu5gWvV1GLlnLs50CIfKQ7piSw81DmlAtnHI/UD9DwzOrQwasd189X5dMrPMDwlif/WObvzcbdMS8M9wm/w==
+"@nrwl/devkit@15.2.1":
+  version "15.2.1"
+  resolved "https://registry.yarnpkg.com/@nrwl/devkit/-/devkit-15.2.1.tgz#3907ee18d4bcb9ab36fc950c48c9cb0466ff8ab8"
+  integrity sha512-si6DK0sjtr6Ln+7hh9QD50KqxnOxuP20xJ0fxMVafT/Lz/qtxuCPw9lwJWVagMHWw3pQAtN6lbkWiLOwj8+YPA==
   dependencies:
     "@phenomnomnominal/tsquery" "4.1.1"
     ejs "^3.1.7"
@@ -4207,9 +4207,9 @@
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
 "@yarnpkg/parsers@^3.0.0-rc.18":
-  version "3.0.0-rc.30"
-  resolved "https://registry.yarnpkg.com/@yarnpkg/parsers/-/parsers-3.0.0-rc.30.tgz#07086c1be5e713b50a06b5069afb5f4495879da9"
-  integrity sha512-95BoSadF1Qyxeh8BleNxRP8eczG4faqOxIgowwCtZD+Ahihlu5PxI1KG35IXNbR52GR0V5EV+eR94g+4gTPP9g==
+  version "3.0.0-rc.31"
+  resolved "https://registry.yarnpkg.com/@yarnpkg/parsers/-/parsers-3.0.0-rc.31.tgz#fbcce77c3783b2be8a381edf70bea3182e0b8b16"
+  integrity sha512-7M67TPmTM5OmtoypK0KHV3vIY9z0v4qZ6zF7flH8THLgjGuoA7naop8pEfL9x5vCtid1PDC4A4COrcym4WAZpQ==
   dependencies:
     js-yaml "^3.10.0"
     tslib "^2.4.0"
@@ -4606,9 +4606,9 @@ axe-core@^4.4.3:
   integrity sha512-u2MVsXfew5HBvjsczCv+xlwdNnB1oQR9HlAcsejZttNjKKSkeDNVwB1vMThIUIFI9GoT57Vtk8iQLwqOfAkboA==
 
 axios@^1.0.0:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.1.3.tgz#8274250dada2edf53814ed7db644b9c2866c1e35"
-  integrity sha512-00tXVRwKx/FZr/IDVFt4C+f9FYairX517WoGCL6dpOntqLkZofjhu43F/Xl44UOpqa+9sLFDrG/XAnFsUYgkDA==
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.0.tgz#1cb65bd75162c70e9f8d118a905126c4a201d383"
+  integrity sha512-zT7wZyNYu3N5Bu0wuZ6QccIf93Qk1eV8LOewxgjOZFd2DenOs98cJ7+Y6703d0wkaXGY6/nZd4EweJaHz9uzQw==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -5130,9 +5130,9 @@ chrome-trace-event@^1.0.2:
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
 ci-info@^3.2.0:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.6.1.tgz#7594f1c95cb7fdfddee7af95a13af7dbc67afdcf"
-  integrity sha512-up5ggbaDqOqJ4UqLKZ2naVkyqSJQgJi5lwD6b6mM748ysrghDBX0bx/qJTUHzw7zu6Mq4gycviSF5hJnwceD8w==
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.6.2.tgz#362ea15378f1c39378ba786affbc1c9ef015ecfd"
+  integrity sha512-lVZdhvbEudris15CLytp2u6Y0p5EKfztae9Fqa189MfNmln9F33XuH69v5fvNfiRN5/0eAUz2yJL3mo+nhaRKg==
 
 cjs-module-lexer@^1.0.0:
   version "1.2.2"
@@ -5892,9 +5892,9 @@ csstype@^3.0.2:
   integrity sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==
 
 cypress@^11.0.0:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-11.1.0.tgz#b8f16495a8a5d8f9a7dd3374ae7b2cef45e9c779"
-  integrity sha512-kzizbG9s3p3ahWqxUwG/21NqLWEGtScMevMyUPeYlcmMX9RzVxWM18MkA3B4Cb3jKx72hSyIE2mHgHymfCM1bg==
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-11.2.0.tgz#63edef8c387b687066c5493f6f0ad7b9ced4b2b7"
+  integrity sha512-u61UGwtu7lpsNWLUma/FKNOsrjcI6wleNmda/TyKHe0dOBcVjbCPlp1N6uwFZ0doXev7f/91YDpU9bqDCFeBLA==
   dependencies:
     "@cypress/request" "^2.88.10"
     "@cypress/xvfb" "^1.2.4"
@@ -6394,11 +6394,11 @@ engrafia@latest:
     toml "3.0.0"
 
 enhanced-resolve@^5.0.0, enhanced-resolve@^5.10.0, enhanced-resolve@^5.7.0:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.10.0.tgz#0dc579c3bb2a1032e357ac45b8f3a6f3ad4fb1e6"
-  integrity sha512-T0yTFjdpldGY8PmuXXR0PyQ1ufZpEGiHVrp7zHKB7jdR4qlmZHhONVM5AQOAWXuF/w3dnHbEQVrNptJgt7F+cQ==
+  version "5.11.0"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.11.0.tgz#543cf6c847a85adba0c4a5e2170bded4d493919a"
+  integrity sha512-0Gcraf7gAJSQoPg+bTSXNhuzAYtXqLc4C011vb8S3B8XUSEkGYNBk20c68X9291VF4vvsCD8SPkr6Mza+DwU+g==
   dependencies:
-    graceful-fs "^4.2.4"
+    graceful-fs "^4.2.9"
     tapable "^2.2.0"
 
 enquirer@^2.3.6, enquirer@~2.3.6:
@@ -7609,7 +7609,7 @@ gopd@^1.0.1:
   dependencies:
     get-intrinsic "^1.1.3"
 
-graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
+graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
@@ -9905,11 +9905,11 @@ next@^13.0.4:
     "@next/swc-win32-x64-msvc" "13.0.4"
 
 ngx-deploy-npm@^4.3.5:
-  version "4.3.6"
-  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-4.3.6.tgz#aa2b1bf388a7d94592b73b7aa63eb5f9f395050b"
-  integrity sha512-1HTTXNWkEIpS7uYo0PqpC/CKRuwG2SfnMKJVOl2zOyAXn1ICjjC9uws9HOhFw7wqcYNo975ayrSWLq1LfvLFjA==
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-4.3.7.tgz#773175b8a27443d795e238f0ce8d2bb1ee096361"
+  integrity sha512-iwuOWifKmOHecVX8QGA92SyBmlF9A+PhHuQFSehF2DvRD8jjv3igVxyC/YbX5FR2FmSNfB4dBYUDdjljz/sMVg==
   dependencies:
-    "@nrwl/devkit" "15.1.1"
+    "@nrwl/devkit" "15.2.1"
 
 node-abort-controller@^3.0.1:
   version "3.0.1"
