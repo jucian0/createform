@@ -18,21 +18,20 @@ Controlled inputs are the most popular in the react ecosystem, are easier to wri
 
 `useForm` provides a `register` function, this function returns all properties to manager a field.
 
-````jsx
-import { createForm } from '@use-form/use-form'
+```jsx
+import { createForm } from '@use-form/use-form';
 
 const useForm = createForm({
-initialValues: {
-name: 'Anna',
-address: [
-{
-street: '123 Main St',
-city: 'Anytown',
-},
-]
-}
-})
-
+  initialValues: {
+    name: 'Anna',
+    address: [
+      {
+        street: '123 Main St',
+        city: 'Anytown',
+      },
+    ],
+  },
+});
 ```
 
 Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
@@ -43,17 +42,16 @@ Use dot notation to create advanced objects or to map object values. Type an ent
 > `info.array[2]`.
 
 ```jsx
-   function Form(){
-    const { register } = useForm({ mode: 'onChange'})
+function Form() {
+  const { register } = useForm({ mode: 'onChange' });
 
-    return (
-      <form>
-        <input ref={register('name')} />
-        <input ref={register('address.street')} />
-        <input ref={register('address.city')} />
-      </form>
-    )
-
+  return (
+    <form>
+      <input ref={register('name')} />
+      <input ref={register('address.street')} />
+      <input ref={register('address.city')} />
+    </form>
+  );
 }
 ```
 
