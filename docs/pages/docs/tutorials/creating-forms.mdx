@@ -1,7 +1,7 @@
 ---
 title: Creating forms
 description: This tutorial will show you how to create forms easily with useform.
-tags: react, form, useform, use-form, debounce, debounced, hook, create, creating-a-form
+tags: react, form, useform, use-form, debounce, debounced, hook, create, creating-a-form, html
 ---
 
 ![useform, reactjs](https://res.cloudinary.com/practicaldev/image/fetch/s--SOHJ-nn6--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/a0qtwoo6xz02au5p958w.png)
@@ -70,42 +70,42 @@ By default, `useForm` uses the uncontrolled approach.
 When working with real application validations forms are very common because this is the way you can verify if the input's value is correct or not. There are several validations solutions available, but when using useForm the default solution is Yup. With yup the process of validation is simple and powerful.
 
 ```jsx
-import { createForm } from "@use-form/use-form";
-import * as yup from "yup";
+import { createForm } from '@use-form/use-form';
+import * as yup from 'yup';
 
 export const usePersonForm = createForm({
   initialValues: {
-    name: "Jesse",
-    email: "jesse@jesse.com",
-    pets: ["felix", "lucky"],
+    name: 'Jesse',
+    email: 'jesse@jesse.com',
+    pets: ['felix', 'lucky'],
     accepted: false,
   },
 });
 
 const validation = yup.object().shape({
-  name: yup.string().required("This field is required"),
+  name: yup.string().required('This field is required'),
   email: yup
     .string()
-    .email("This field must be a valid e-mail")
-    .required("This field is required"),
-  pets: yup.array(yup.string().required("This field is required")),
-  accept: yup.bool().oneOf([true], "Field must be checked"),
+    .email('This field must be a valid e-mail')
+    .required('This field is required'),
+  pets: yup.array(yup.string().required('This field is required')),
+  accept: yup.bool().oneOf([true], 'Field must be checked'),
 });
 
 function ControlledForm() {
   const { register, state } = usePersonForm({
     validation,
-    mode: "onChange",
+    mode: 'onChange',
   });
   return (
     <>
-      <input ref={register("name")} />
+      <input ref={register('name')} />
       <span>{touched.name && errors.name}</span>
-      <input type="email" ref={register("email")} />
+      <input type="email" ref={register('email')} />
       <span>{touched.email && errors.email}</span>
-      <input ref={register("pets.0")} />
+      <input ref={register('pets.0')} />
       <span>{touched.pets?.[0] && errors.pets?.[0]}</span>
-      <input type="checkbox" ref={register("accept")} />
+      <input type="checkbox" ref={register('accept')} />
       <span>{touched.accept && errors.accept}</span>
     </>
   );
@@ -117,17 +117,17 @@ function ControlledForm() {
 When you want to share the form state with other components you just need to use the form created before.
 
 ```jsx
-import { usePersonForm } from "./../usePersonForm";
+import { usePersonForm } from './../usePersonForm';
 
 function StepForm() {
   const { register, state } = usePersonForm();
   return (
     <>
-      <input ref={register("name")} />
-      <input ref={register("email")} />
-      <input ref={register("pets.0")} />
-      <input ref={register("pets.1")} />
-      <input ref={register("accept")} />
+      <input ref={register('name')} />
+      <input ref={register('email')} />
+      <input ref={register('pets.0')} />
+      <input ref={register('pets.1')} />
+      <input ref={register('accept')} />
     </>
   );
 }
