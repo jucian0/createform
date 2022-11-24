@@ -39,7 +39,7 @@ export const getStaticProps = async () => {
         title: 'Form builder',
         description:
           'Use Form provides you a simple way to create forms with React.',
-        tags: 'reactjs, forms, use-form, useform',
+        tags: 'reactjs, forms, use-form, useform, form',
       },
     },
   };
@@ -232,10 +232,8 @@ export default function Index() {
               Less code{' '}
             </Text>
             <Text css={{ mb: '$14' }}>
-              Trust us, you will not find another better way to write forms in
-              ReactJS, write less code, use it wherever you want. You don't need
-              to add a function to handle all needed events in an input, you
-              just need to use the <code>register</code> function.
+              {`Trust us, you will not find another better way to write forms in ReactJS, write less code, use it wherever you want. You don't need to add a function to handle all needed events in an input, you just need to use the `}
+              <code>register</code> {`function.`}
               <Badge isSquared color="secondary" variant="flat">
                 <Link href="/docs/how-it-works/concept">Read more</Link>
               </Badge>
