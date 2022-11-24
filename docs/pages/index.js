@@ -48,6 +48,15 @@ export default function Index() {
   const t = useTranslation();
   return (
     <>
+      {/* <img
+        src="/imgs/002.svg"
+        style={{
+          position: 'absolute',
+          maxWidth: '100%',
+          height: 'auto',
+        }}
+      /> */}
+
       <Grid.Container
         justify="center"
         direction="column"
@@ -58,16 +67,23 @@ export default function Index() {
           justify="center"
           direction="column"
           alignItems="center"
-          css={{ marginTop: '3rem', marginBottom: '3rem', zIndex: 2 }}
+          css={{ maxW: '90rem' }}
         >
-          <Text as="h1" color="$primary">
+          <Text
+            h1
+            css={{
+              textGradient: '45deg, #0b132b -20%, #6fffe9 50%',
+            }}
+            weight="bold"
+            size="5rem"
+          >
             UseForm
           </Text>
-          <Text size="$2xl" color="$accents8">
+
+          <Text as="h2" css={{ zIndex: '$1' }}>
             Use Form provides you a simple way to create forms with React
           </Text>
         </Grid.Container>
-
         <Grid.Container
           gap={2}
           justify="center"

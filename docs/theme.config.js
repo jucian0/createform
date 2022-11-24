@@ -1,15 +1,15 @@
-import { NextSeo } from "next-seo";
-import Head from "next/head";
-import { RiGithubFill } from "react-icons/ri";
+import { NextSeo } from 'next-seo';
+import Head from 'next/head';
+import { RiGithubFill } from 'react-icons/ri';
 
 export default {
-  title: "UseForm",
-  description: "Easily, and delightful documentation website generator!",
-  rootDocs: "docs",
+  title: 'UseForm',
+  description: 'Easily, and delightful documentation website generator!',
+  rootDocs: 'docs',
   repository: {
-    url: "https://github.com/Jucian0/useform",
-    branch: "main",
-    author: "Jucian0",
+    url: 'https://github.com/Jucian0/useform',
+    branch: 'main',
+    author: 'Jucian0',
   },
   nav: {
     logo: (
@@ -26,24 +26,30 @@ export default {
         />
       </svg>
     ),
-    textLogo: "UseForm",
+    textLogo: 'UseForm',
     links: [
       {
-        title: "Docs",
-        href: "/docs/introduction",
+        title: 'Docs',
+        href: '/docs/introduction',
       },
     ],
     iconsLinks: [
       {
         icon: <RiGithubFill fill="var(--nextui-colors-accents6)" size={20} />,
-        href: "https://github.com/Jucian0/useform",
+        href: 'https://github.com/Jucian0/useform',
         external: true,
       },
     ],
-    search_bar: "Search",
+    search_bar: 'Search',
   },
   footer: {
-    text: "UseForm 2022",
+    text: (
+      <>
+        UseForm 2022 Developed by:{' '}
+        <a href={'https://github.com/Jucian0'}> Juciano</a> {' and '}
+        <a href="https://engrafia.vercel.app/">Engrafia</a>
+      </>
+    ),
     logo: (
       <svg
         width="47"
@@ -58,7 +64,7 @@ export default {
         />
       </svg>
     ),
-    textLogo: "",
+    textLogo: '',
   },
   head: ({ title, meta }) => (
     <>
@@ -67,18 +73,18 @@ export default {
         description={meta.description}
         canonical="https://useform.vercel.app"
         openGraph={{
-          url: "https://useform.vercel.app",
+          url: 'https://useform.vercel.app',
           title: `${title} | ${meta.title}`,
           description: meta.description,
           images: [
             {
-              url: meta.image ?? "https://useform.vercel.app/imgs/lib_logo.png",
+              url: meta.image ?? 'https://useform.vercel.app/imgs/lib_logo.png',
             },
           ],
-          siteName: "UseForm",
+          siteName: 'UseForm',
         }}
         twitter={{
-          cardType: "summary_large_image",
+          cardType: 'summary_large_image',
         }}
       />
       <Head>
