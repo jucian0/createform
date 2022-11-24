@@ -1,34 +1,36 @@
-import { Button, Card, Grid, Text, styled } from '@nextui-org/react';
+import { Button, Card, Grid, Text, Badge } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import { CgPerformance } from 'react-icons/cg';
 import { IoRocketOutline } from 'react-icons/io5';
 import { MdOutlineDashboardCustomize } from 'react-icons/md';
-import { useTranslation } from 'engrafia';
+import { useTranslation, Code } from 'engrafia';
 import { Demo } from './../demo';
+import Link from 'next/link';
 
-const CodeSandBox = styled({
-  width: '100%',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  flexDirection: 'column',
+const createForm = `const useForm = createForm({
+  initialValues: {
+    name: "Jesse Woodson James",
+    email: "jesse@jesse.com",
+    bio: ""
+  }
+});`;
 
-  h1: {
-    fontSize: '3em',
-    fontFamily: "'Roboto',sans-serif",
-    color: '$primary',
-  },
+const pyCode = `const Controlled: React.FC = () => {
+  const { register } = useForm({
+    mode: "onChange",
+    onChange: (e) => console.log(e)
+  });
 
-  div: {
-    width: '1040px',
-    padding: '2px',
-    '.sandbox': {
-      border: 'none',
-      borderRadius: '8px',
-      boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-    },
-  },
-});
+  return (
+    <form>
+      <input
+        className="form-control"
+        autoComplete="off"
+        ref={register("name")}
+      />
+    </form>
+  )
+}`;
 
 export const getStaticProps = async () => {
   return {
@@ -57,12 +59,7 @@ export default function Index() {
         }}
       /> */}
 
-      <Grid.Container
-        justify="center"
-        direction="column"
-        alignItems="center"
-        css={{ p: '$20' }}
-      >
+      <Grid.Container justify="center" direction="column" alignItems="center">
         <Grid.Container
           justify="center"
           direction="column"
@@ -112,10 +109,21 @@ export default function Index() {
             yarn add @use-form/use-form
           </Card>
         </Grid.Container>
-        <Demo url="https://codesandbox.io/embed/useform-forked-oojuq?fontsize=14&hidenavigation=1&theme=dark" />
+        <Grid.Container
+          justify="center"
+          direction="column"
+          alignItems="center"
+          css={{ maxW: '90rem' }}
+        >
+          <Demo url="https://codesandbox.io/embed/useform-forked-oojuq?fontsize=14&hidenavigation=1&theme=dark" />
+        </Grid.Container>
       </Grid.Container>
 
-      <Grid.Container gap={2} justify="center" css={{ zIndex: 1, mb: 200 }}>
+      <Grid.Container
+        gap={2}
+        justify="center"
+        css={{ zIndex: 1, mb: 200, mt: 100 }}
+      >
         <Grid>
           <Card
             css={{
@@ -208,6 +216,40 @@ export default function Index() {
             </Card.Body>
           </Card>
         </Grid>
+
+        <Grid
+          css={{ borderTop: '1px solid $border', w: '80rem', my: '5rem' }}
+        />
+
+        <Grid.Container gap={2} css={{ zIndex: 1, maxW: '80rem', mb: '8rem' }}>
+          <Grid css={{ w: '50%' }}>
+            <Text
+              h1
+              css={{
+                lineHeight: '$xs',
+              }}
+            >
+              Less code{' '}
+            </Text>
+            <Text css={{ mb: '$14' }}>
+              Trust us, you will not find another better way to write forms in
+              ReactJS, write less code, use it wherever you want. You don't need
+              to add a function to handle all needed events in an input, you
+              just need to use the <code>register</code> function.
+              <Badge isSquared color="secondary" variant="flat">
+                <Link href="/docs/how-it-works/concept">Read more</Link>
+              </Badge>
+            </Text>
+            <Code className="javascript" boxShadow="$md">
+              {createForm}
+            </Code>
+          </Grid>
+          <Grid css={{ w: '50%' }}>
+            <Code className="python" boxShadow="$md">
+              {pyCode}
+            </Code>
+          </Grid>
+        </Grid.Container>
       </Grid.Container>
     </>
   );
