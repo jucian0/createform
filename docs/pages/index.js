@@ -1,10 +1,10 @@
-import Iframe from 'react-iframe';
 import { Button, Card, Grid, Text, styled } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import { CgPerformance } from 'react-icons/cg';
 import { IoRocketOutline } from 'react-icons/io5';
 import { MdOutlineDashboardCustomize } from 'react-icons/md';
 import { useTranslation } from 'engrafia';
+import { Demo } from './../demo';
 
 const CodeSandBox = styled({
   width: '100%',
@@ -96,18 +96,7 @@ export default function Index() {
             yarn add @use-form/use-form
           </Card>
         </Grid.Container>
-        <CodeSandBox>
-          <div>
-            <Iframe
-              url="https://codesandbox.io/embed/useform-forked-oojuq?fontsize=14&hidenavigation=1&theme=dark"
-              width="100%"
-              height="650px"
-              className="sandbox"
-              id="myId"
-              position="relative"
-            />
-          </div>
-        </CodeSandBox>
+        <Demo url="https://codesandbox.io/embed/useform-forked-oojuq?fontsize=14&hidenavigation=1&theme=dark" />
       </Grid.Container>
 
       <Grid.Container gap={2} justify="center" css={{ zIndex: 1, mb: 200 }}>
