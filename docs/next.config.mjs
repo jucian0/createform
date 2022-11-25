@@ -6,4 +6,6 @@ const composed = compose(engrafia, withImages);
 
 export default composed({
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  siteUrl: process.env.SITE_URL || 'https://react-useform.vercel.app',
+  generateRobotsTxt: true,
 });

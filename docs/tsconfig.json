@@ -19,7 +19,8 @@
     "**/*.js",
     "**/*.jsx",
     "next-env.d.ts",
-    "next.config.js"
+    "next.config.js",
+    "next-sitemap.config.mjs"
   ],
   "exclude": ["node_modules", "jest.config.ts"]
 }
