@@ -6,6 +6,7 @@ export default {
   title: 'UseForm',
   description: 'Easily, and delightful documentation website generator!',
   rootDocs: 'docs',
+  loadSidebarIcons: true,
   repository: {
     url: 'https://github.com/Jucian0/useform',
     branch: 'main',

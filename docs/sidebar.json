@@ -106,7 +106,7 @@
                             "meta": {
                                 "title": "Creating forms",
                                 "description": "This tutorial will show you how to create forms easily with useform.",
-                                "tags": "react, form, useform, use-form, debounce, debounced, hook, create, creating-a-form"
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, create, creating-a-form, html"
                             },
                             "url": "/docs/tutorials/creating-forms",
                             "relativePath": "/docs/pages/docs/tutorials/creating-forms.mdx"
