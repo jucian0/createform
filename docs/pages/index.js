@@ -36,7 +36,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       data: {
-        title: 'Form builder',
+        title: 'React form library',
         description:
           'Use Form provides you a simple way to create forms with React.',
         tags: 'reactjs, forms, use-form, useform, form',
