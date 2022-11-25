@@ -49,7 +49,7 @@ export default function Index() {
   const router = useRouter();
   const t = useTranslation();
   return (
-    <>
+    <Grid.Container justify="center">
       {/* <img
         src="/imgs/002.svg"
         style={{
@@ -218,10 +218,10 @@ export default function Index() {
         </Grid>
 
         <Grid
-          css={{ borderTop: '1px solid $border', w: '80rem', my: '5rem' }}
+          css={{ borderTop: '1px solid $border', w: '90rem', my: '5rem' }}
         />
 
-        <Grid.Container gap={2} css={{ zIndex: 1, maxW: '80rem', mb: '8rem' }}>
+        <Grid.Container gap={2} css={{ zIndex: 1, maxW: '90rem', mb: '8rem' }}>
           <Grid css={{ w: '50%' }}>
             <Text
               h1
@@ -249,6 +249,6 @@ export default function Index() {
           </Grid>
         </Grid.Container>
       </Grid.Container>
-    </>
+    </Grid.Container>
   );
 }
