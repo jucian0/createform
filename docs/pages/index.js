@@ -78,7 +78,7 @@ export default function Index() {
           </Text>
 
           <Text as="h2" css={{ zIndex: '$1' }}>
-            Use Form provides you a simple way to create forms with React
+            Use Form provides you with a simple way to create forms with React
           </Text>
         </Grid.Container>
         <Grid.Container
