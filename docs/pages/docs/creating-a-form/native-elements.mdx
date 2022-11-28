@@ -35,7 +35,7 @@ In order to have a full form example, we need to create a form component and use
 
 > The `register` function is a function that receives the name of the field and returns a reference to the element. The reference is used to register the element, trigger, and listen to events. If you are using a library like Material UI or something similar, make sure that the input component use `React.forwardRef`, otherwise you will need to use a Wrapper to register the element.
 
-````jsx
+```jsx
 funtion UserForm(){
   const { register, handleSubmit } = useUserForm()
 
