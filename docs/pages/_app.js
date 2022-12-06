@@ -1,6 +1,7 @@
 import { darkTheme, lightTheme } from './../styles/theme';
 import { Demo } from './../demo';
 import { Engrafia } from 'engrafia';
+import Head from 'next/head';
 
 function App({ Component, pageProps }) {
   const meta = pageProps.meta;
