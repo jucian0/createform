@@ -110,6 +110,17 @@
                             },
                             "url": "/docs/tutorials/creating-forms",
                             "relativePath": "/docs/pages/docs/tutorials/creating-forms.mdx"
+                        },
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/tutorials/reactjs-building-forms.md",
+                            "name": "reactjs-building-forms.md",
+                            "meta": {
+                                "title": "ReactJs Building forms",
+                                "description": "Hello friends, today I will talk to you about forms in React.",
+                                "tags": "react, form, webdev, javascript"
+                            },
+                            "url": "/docs/tutorials/reactjs-building-forms",
+                            "relativePath": "/docs/pages/docs/tutorials/reactjs-building-forms.md"
                         }
                     ],
                     "title": "Tutorials",
