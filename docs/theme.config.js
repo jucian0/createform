@@ -1,5 +1,3 @@
-import { NextSeo } from 'next-seo';
-import Head from 'next/head';
 import { RiGithubFill } from 'react-icons/ri';
 
 export default {

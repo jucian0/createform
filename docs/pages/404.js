@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const getStaticProps = async () => {
   return {
     props: {
-      data: {
+      meta: {
         title: '404',
         description: 'Page not found',
         tags: 'use-form, useform, nextjs, reactjs',
@@ -30,7 +30,7 @@ export function Index() {
         justify="center"
         direction="column"
         alignItems="center"
-        css={{ maxW: '90rem' }}
+        css={{ maxW: '87rem' }}
       >
         <Text
           h1
