@@ -15,6 +15,7 @@ function App({ Component, pageProps }) {
       }}
     >
       <Head>
+        <link href="https://css.gg/link.css" rel="stylesheet" />
         <title>{`UseForm | ${meta?.title}`}</title>
         <meta name="description" content={meta?.description} />
         <meta name="robots" content="index,follow" />

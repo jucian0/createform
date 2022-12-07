@@ -4,7 +4,7 @@ import { CgPerformance } from 'react-icons/cg';
 import { IoRocketOutline } from 'react-icons/io5';
 import { MdOutlineDashboardCustomize } from 'react-icons/md';
 import { useTranslation, Code } from 'engrafia';
-import { Demo } from './../demo';
+import { Demo } from '../demo';
 import Link from 'next/link';
 
 const createForm = `const useForm = createForm({
@@ -35,7 +35,7 @@ const pyCode = `const Controlled: React.FC = () => {
 export const getStaticProps = async () => {
   return {
     props: {
-      data: {
+      meta: {
         title: 'React form library',
         description:
           'Use Form provides you a simple way to create forms with React.',
@@ -50,21 +50,12 @@ export default function Index() {
   const t = useTranslation();
   return (
     <Grid.Container justify="center">
-      {/* <img
-        src="/imgs/002.svg"
-        style={{
-          position: 'absolute',
-          maxWidth: '100%',
-          height: 'auto',
-        }}
-      /> */}
-
       <Grid.Container justify="center" direction="column" alignItems="center">
         <Grid.Container
           justify="center"
           direction="column"
           alignItems="center"
-          css={{ maxW: '90rem' }}
+          css={{ maxW: '87rem' }}
         >
           <Text
             h1
@@ -113,7 +104,7 @@ export default function Index() {
           justify="center"
           direction="column"
           alignItems="center"
-          css={{ maxW: '90rem' }}
+          css={{ maxW: '87rem' }}
         >
           <Demo url="https://codesandbox.io/embed/useform-forked-oojuq?fontsize=14&hidenavigation=1&theme=dark" />
         </Grid.Container>
@@ -218,10 +209,10 @@ export default function Index() {
         </Grid>
 
         <Grid
-          css={{ borderTop: '1px solid $border', w: '90rem', my: '5rem' }}
+          css={{ borderTop: '1px solid $border', w: '87rem', my: '5rem' }}
         />
 
-        <Grid.Container gap={2} css={{ zIndex: 1, maxW: '90rem', mb: '8rem' }}>
+        <Grid.Container gap={2} css={{ zIndex: 1, maxW: '87rem', mb: '8rem' }}>
           <Grid css={{ w: '50%' }}>
             <Text
               h1
