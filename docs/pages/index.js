@@ -15,7 +15,7 @@ const createForm = `const useForm = createForm({
   }
 });`;
 
-const pyCode = `const Controlled: React.FC = () => {
+const useform = `const Controlled: React.FC = () => {
   const { register } = useForm({
     mode: "onChange",
     onChange: (e) => console.log(e)
@@ -234,8 +234,8 @@ export default function Index() {
             </Code>
           </Grid>
           <Grid css={{ w: '50%' }}>
-            <Code className="python" boxShadow="$md">
-              {pyCode}
+            <Code className="javascript" boxShadow="$md">
+              {useform}
             </Code>
           </Grid>
         </Grid.Container>
