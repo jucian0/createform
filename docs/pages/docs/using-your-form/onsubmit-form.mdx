@@ -59,24 +59,23 @@ import { Wrapper } from '@use-form/use-form'
 import Select from 'select-component'
 
 funtion UserForm(){
-const { register, handleSubmit } = useUserForm()
+  const { register, handleSubmit } = useUserForm()
 
-const onSubmit = (data) => {
-console.log(data)
-}
+  const onSubmit = (data) => {
+    console.log(data)
+  }
 
-return (
-
-<form onSubmit={handleSubmit(onSubmit)}>
-  <Wrapper component={Select} ref={register("names")} />
-  options={[
-    { value: "John", label: "John" },
-    { value: "Jane", label: "Jane" },
-    { value: "Jack", label: "Jack" },
-  ]}
-  />
-</form>
-)
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Wrapper component={Select} ref={register("names")} />
+        options={[
+          { value: "John", label: "John" },
+          { value: "Jane", label: "Jane" },
+          { value: "Jack", label: "Jack" },
+        ]}
+      />
+    </form>
+  )
 }
 ```
 
