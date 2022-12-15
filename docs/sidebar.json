@@ -7,6 +7,25 @@
             "name": "docs",
             "children": [
                 {
+                    "path": "/home/barbosa/javascript/useform/docs/pages/docs/api-reference",
+                    "name": "api-reference",
+                    "children": [
+                        {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/api-reference/create-form.md",
+                            "name": "create-form.md",
+                            "meta": {
+                                "title": "createForm",
+                                "description": "This guide describes all resources of createForm function.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, yup, validation, form-error, error"
+                            },
+                            "url": "/docs/api-reference/create-form",
+                            "relativePath": "/docs/pages/docs/api-reference/create-form.md"
+                        }
+                    ],
+                    "title": "Api reference",
+                    "relativePath": "/docs/pages/docs/api-reference"
+                },
+                {
                     "path": "/home/barbosa/javascript/useform/docs/pages/docs/creating-a-form",
                     "name": "creating-a-form",
                     "children": [

@@ -8,7 +8,15 @@ tags: react, form, useform, use-form, debounce, debounced, hook, yup, validation
 
 ## Validation
 
-Every website with forms should have validations, but what are form validations? Go to any popular website with a registration form, and you will be notice that they provide feedback when you don't fill in the form correctly. You'll see messages such as:
+Form validation is the process of ensuring that the values entered into a form by the user are correct and complete. This is typically done using a combination of client-side and server-side validation.
+
+- Client-side validation is performed using JavaScript, and it involves checking the form values on the client (the user's web browser) before they are submitted to the server. This can help to catch any obvious mistakes or missing values, and it can provide immediate feedback to the user so that they can fix any problems before they submit the form.
+
+- Server-side validation is performed on the server after the form has been submitted. This involves checking the form values against a set of rules or a validation schema to ensure that they are correct and complete. If there are any problems with the form values, the server can return an error message to the user, or it can take some other action, such as rejecting the form submission or redirecting the user to another page.
+
+Overall, form validation is an important part of the form submission process, and it helps to ensure that the data entered into a form is accurate and complete. This can help to prevent mistakes and improve the user experience.
+
+### Some examples
 
 - "This field is required" (You can't leave this field blank).
 - "Please enter your phone number in the format xxx-xxxx" (A specific data format is required for it to be considered valid).
@@ -23,7 +31,17 @@ Server-side validations are the last part of the validation, which means, even i
 
 ## Description
 
-There are several validations solutions available, but when using `useForm` the default solution is Yup. With yup the process of validations is simple and powerful.
+There are several validations solutions available, but when using `useForm` the default solution is Yup. **Yup** is a JavaScript library that provides a powerful and easy-to-use validation schema. To use Yup for form validation, you can create a validation schema that defines the rules for each field in the form, and then use that schema to validate the form values.
+
+```jsx
+const formSchema = yup.object().shape({
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .required('Password is required'),
+});
+```
 
 The `useForm` returns an error object, that has all errors, and this object is updated whenever the input state is changed or when the form is submitted if your form has validation.
 
@@ -34,30 +52,30 @@ Usually you wannt to show the error message just when a field is touched, you ca
 Validation is performed whenever the state is changed. By default, `useForm` uses the uncontrolled inputs option, this means that the values ​​are accessible when the onSubmit event is dispatched.
 
 ```jsx
-import { createForm } from "@use-form/use-form";
-import * as yup from "yup";
+import { createForm } from '@use-form/use-form';
+import * as yup from 'yup';
 
 const useForm = createForm({
   initialValues: {
-    name: "Jesse",
-    email: "jesse@jesse.com",
-    pets: ["felix"],
+    name: 'Jesse',
+    email: 'jesse@jesse.com',
+    pets: ['felix'],
     accept: false,
   },
 });
 
 const validation = yup.object().shape({
-  name: yup.string().required("This field is required"),
+  name: yup.string().required('This field is required'),
   email: yup
     .string()
-    .email("This field must be a valid e-mail")
-    .required("This field is required"),
-  pets: yup.array(yup.string().required("This field is required")),
-  accept: yup.bool().oneOf([true], "Field must be checked"),
+    .email('This field must be a valid e-mail')
+    .required('This field is required'),
+  pets: yup.array(yup.string().required('This field is required')),
+  accept: yup.bool().oneOf([true], 'Field must be checked'),
 });
 
 function Form() {
-  const { register, state, handleSubmit } = useForm({ mode: "onChange" });
+  const { register, state, handleSubmit } = useForm({ mode: 'onChange' });
 
   const { errors, touched } = state;
 
@@ -68,20 +86,20 @@ function Form() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <fieldset>
-        <input ref={register("name")} />
+        <input ref={register('name')} />
         <span>{touched.name && errors.name}</span>
       </fieldset>
       <fieldset>
-        <input ref={register("email")} />
+        <input ref={register('email')} />
         <span>{touched.email && errors.email}</span>
       </fieldset>
       <fieldset>
-        <input ref={register("pets")} />
+        <input ref={register('pets')} />
         <span>{touched.pets && errors.pets}</span>
       </fieldset>
-      <input ref={register("pets.0")} />
+      <input ref={register('pets.0')} />
       <fieldset>
-        <input ref={register("accept")} />
+        <input ref={register('accept')} />
         <span>{touched.accept && errors.accept}</span>
       </fieldset>
       <button type="submit">Submit</button>

@@ -1,5 +1,5 @@
 import { darkTheme, lightTheme } from './../styles/theme';
-import { Demo } from './../demo';
+import { Demo, List, Paragraph, Strong } from './../demo';
 import { Engrafia } from 'engrafia';
 import Head from 'next/head';
 
@@ -8,7 +8,7 @@ function App({ Component, pageProps }) {
 
   return (
     <Engrafia
-      mdxComponents={{ Demo }}
+      mdxComponents={{ Demo, ul: List, p: Paragraph, strong: Strong }}
       themes={{
         light: lightTheme,
         dark: darkTheme,

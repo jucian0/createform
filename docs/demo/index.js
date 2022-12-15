@@ -1,4 +1,5 @@
-import { styled } from '@nextui-org/react';
+import { styled, useTheme } from '@nextui-org/react';
+
 import Iframe from 'react-iframe';
 
 const CodeSandBox = styled('div', {
@@ -40,3 +41,32 @@ export function Demo(props) {
     </CodeSandBox>
   );
 }
+
+export const List = ({ children }) => {
+  const { theme } = useTheme();
+
+  return (
+    <ul className="mdx-ul">
+      {children}
+      <style jsx>
+        {`
+          ul {
+            list-style-type: disc;
+          }
+          :global(.mdx-ul strong) {
+            color: ${theme?.colors.code.value};
+          }
+        `}
+      </style>
+    </ul>
+  );
+};
+
+export const Paragraph = styled('p', {
+  fontSize: '1.125rem',
+  marginBottom: '1.25rem',
+});
+
+export const Strong = styled('strong', {
+  color: '$text!important',
+});
