@@ -47,10 +47,10 @@ In this first example I will show you how you can build a simple form and how yo
 import { createForm } from "@use-form/use-form";
 
 const useAuthForm = createForm({
-initialValues:{
-name: 'Jesse',
-email: 'jesse@jesse.com',
-score: 25,
+  initialValues:{
+    name: 'Jesse',
+    email: 'jesse@jesse.com',
+    score: 25,
 }});
 
 const { register, state: { values }} = useAuthForm({mode: 'onChange'});
