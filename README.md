@@ -1,4 +1,4 @@
-![Logo](img/logo3.png)
+![Logo-useform-react](img/logo3.png)
 
 <h1 align="center">Welcome to useForm 👋</h1>
 
