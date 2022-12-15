@@ -120,7 +120,7 @@ export default function Index() {
             css={{
               p: '$6',
               mw: '400px',
-              h: 280,
+              h: 320,
               shadow: '$sm',
 
               backdropFilter: 'saturate(180%) blur(14px)',
@@ -151,7 +151,7 @@ export default function Index() {
             css={{
               p: '$6',
               mw: '400px',
-              h: 280,
+              h: 320,
               shadow: '$sm',
 
               backdropFilter: 'saturate(180%) blur(14px)',
@@ -182,7 +182,7 @@ export default function Index() {
             css={{
               p: '$6',
               mw: '400px',
-              h: 280,
+              h: 320,
               shadow: '$sm',
               backdropFilter: 'saturate(180%) blur(14px)',
               background: 'rgba(255, 255, 255, 0.05)',
