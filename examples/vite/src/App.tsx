@@ -7,7 +7,7 @@ import './styles.css';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import { createForm, Wrapper } from '@use-form/use-form';
-
+import { z } from 'zod';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const validationSchema = yup.object().shape({
@@ -17,16 +17,12 @@ const validationSchema = yup.object().shape({
   gender: yup.string().required(),
 });
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div className="App">
-      <FormComponent />
-      {/* <FormComponent2/>  */}
-    </div>
-  );
-}
+const zValidatiton = z.object({
+  email: z.string().email(),
+  password: z.string().max(3),
+  agree: z.boolean(),
+  gender: z.string(),
+});
 
 const useLoginForm = createForm({
   initialValues: {
@@ -46,7 +42,7 @@ const useLoginForm = createForm({
     },
     date: null,
   },
-  validationSchema,
+  validationSchema: zValidatiton,
   // initialErrors: {
   //    email: 'E-mail ja esta sendo usado'
   // }
@@ -132,7 +128,7 @@ function FormComponent() {
     }));
   }
 
-  //  console.log('state', state)
+  console.log('state', state.errors);
 
   return (
     <div>
@@ -214,11 +210,13 @@ function FormComponent2() {
   );
 }
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+export function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className="App">
+      <FormComponent />
+      {/* <FormComponent2/>  */}
+    </div>
+  );
+}
