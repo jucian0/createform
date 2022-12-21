@@ -1,4 +1,3 @@
-import { Schema, ValidationError } from 'yup';
 import * as Dot from './ObjectUtils';
 
 export function makeDotNotation(str: string) {
@@ -7,15 +6,29 @@ export function makeDotNotation(str: string) {
 
 export async function validate<TValues extends {}>(
   values: TValues,
-  validationSchema: Schema<TValues>
+  validationSchema: any
 ) {
+  if (validationSchema?._def?.typeName) {
+    return validationSchema
+      .parseAsync(values)
+      .then(() => {
+        return {};
+      })
+      .catch((e: any) => {
+        throw JSON.parse(e).reduce((acc: {}, key: any) => {
+          const path = key.path.join('.');
+          return Dot.set(acc, path, key.message);
+        }, {});
+      });
+  }
+
   return validationSchema
     ?.validate(values, { abortEarly: false })
     .then(() => {
       return {};
     })
-    .catch((e: ValidationError) => {
-      throw e.inner.reduce((acc, key) => {
+    .catch((e: any) => {
+      throw e.inner.reduce((acc: {}, key: any) => {
         const path = makeDotNotation(key.path);
         return Dot.set(acc, path, key.message);
       }, {});
