@@ -140,7 +140,7 @@ export default function Index() {
             <Card.Body css={{ py: '$2' }}>
               <Text>
                 {
-                  'Create a form an use as onSubmit, onChange or debounced mode. Create powerful forms with UseForm. You can create your own form with your own fields, and you can use your own validation rules. UseForm allows you to create form, and use it as a controlled or uncontrolled form.'
+                  'Looking to create a form that can handle onSubmit, onChange, or debounced events? With UseForm, you have the power to create forms with custom fields and validation rules. UseForm lets you create forms that can be used in either controlled or uncontrolled mode, giving you the flexibility to design the form that best fits your needs. So why wait? Start creating powerful forms with UseForm today!'
                 }
               </Text>
             </Card.Body>
