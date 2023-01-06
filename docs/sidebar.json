@@ -46,7 +46,7 @@
                             "meta": {
                                 "title": "Form validation",
                                 "description": "Learn how to validate form values using use-form.",
-                                "tags": "react, form, useform, use-form, debounce, debounced, hook, yup, validation, form-error, error"
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, yup, validation, form-error, error, zod"
                             },
                             "url": "/docs/creating-a-form/form-validation",
                             "relativePath": "/docs/pages/docs/creating-a-form/form-validation.mdx"

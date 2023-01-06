@@ -1,7 +1,7 @@
 ---
 title: Form validation
 description: Learn how to validate form values using use-form.
-tags: react, form, useform, use-form, debounce, debounced, hook, yup, validation, form-error, error
+tags: react, form, useform, use-form, debounce, debounced, hook, yup, validation, form-error, error, zod
 ---
 
 # Forms validations
@@ -30,6 +30,10 @@ Form validation is a very important part of the web development process. It's a 
 Server-side validations are the last part of the validation, which means, even if the data is in the correct format it's possible that the data can't be stored because some data can't be duplicated like email or username, this kind of validation is done in server-side. Client-side validation deal with incorrect data format, like a valid email, or a valid password, which means, that before the data is submitted the client-side validates if it is a valid data format.
 
 ## Description
+
+**Update**
+
+> We are excited to announce that our form now supports Zod validation! Zod is a powerful and lightweight library for validating and handling data in TypeScript. With Zod, you can easily create complex, type-safe schemas for your form data and automatically validate user input. This will help ensure that your form is always receiving accurate and reliable data. Give it a try and let us know what you think!
 
 There are several validations solutions available, but when using `useForm` the default solution is Yup. **Yup** is a JavaScript library that provides a powerful and easy-to-use validation schema. To use Yup for form validation, you can create a validation schema that defines the rules for each field in the form, and then use that schema to validate the form values.
 
