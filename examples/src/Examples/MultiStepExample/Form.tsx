@@ -14,6 +14,8 @@ export function PersonForm() {
     form.reset();
   }
 
+  console.log(form.state.values);
+
   return (
     <form onReset={handleReset} onSubmit={form.handleSubmit(handleSubmit)}>
       <Wizard>

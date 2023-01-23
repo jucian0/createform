@@ -47,6 +47,8 @@ export type CreateFormArgs<T> = {
   readonly initialTouched?: Touched<T>;
   /** validation schema provided by yup */
   readonly validationSchema?: any; //YupSchema<T>
+
+  readonly mode?: 'debounce' | 'onChange' | 'onSubmit';
 };
 
 /**

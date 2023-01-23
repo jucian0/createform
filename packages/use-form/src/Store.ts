@@ -1,34 +1,38 @@
+import { debounce } from './Debounce';
 import * as Dot from './ObjectUtils';
+import { Mode } from './Types';
 
 type Subscribe<TValues> = (e: TValues) => void;
-type Subscribers<TValues = {}> = Array<Subscribe<TValues>>;
 
-export function createStore<T extends {}>(initialState: T = Object.assign({})) {
+export function createStore<T extends {}>(
+  initialState: T = Object.assign({}),
+  delay = 0
+) {
   let state = initialState;
-  let subscribers: Subscribers<T> = [];
+  let subscribers: Map<Mode, Subscribe<T>> = new Map();
 
   function get(): T {
     return state;
   }
 
-  function subscribe(fn: Subscribe<T>) {
-    subscribers = [...subscribers, fn];
+  function subscribe(fn: Subscribe<T>, mode: Mode) {
+    subscribers.set(mode, fn);
 
     return () => {
-      subscribers = subscribers.filter((l) => l !== fn);
+      subscribers.delete(mode);
     };
   }
 
-  function set(nextState: T) {
+  function set(nextState: T, event: Mode = 'onChange') {
     state = nextState;
-    notify();
+    debouncedNotify(event);
   }
 
-  function patch(path: string, next: any) {
+  function patch(path: string, next: any, event: Mode = 'onChange') {
     const nextState = Dot.set(state, path, next);
     if (typeof nextState !== 'undefined') {
       state = nextState;
-      notify();
+      debouncedNotify(event);
     } else {
       throw new Error(`The path '${path}' is not defined`);
     }
@@ -46,11 +50,10 @@ export function createStore<T extends {}>(initialState: T = Object.assign({})) {
     return initialState;
   }
 
-  function notify() {
-    subscribers.forEach((fn) => {
-      fn(get());
-    });
-  }
+  const debouncedNotify = debounce((event: Mode = 'onSubmit') => {
+    const callback = subscribers.get(event);
+    callback?.(get());
+  }, delay);
 
   return {
     get,
