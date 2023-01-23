@@ -12,8 +12,8 @@
       ],
       "options": {
         "format": [
-          "esm",
-          "cjs"
+          "cjs",
+          "esm"
         ],
         "outputPath": "dist/packages/use-form",
         "tsConfig": "packages/use-form/tsconfig.lib.json",
