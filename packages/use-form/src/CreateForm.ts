@@ -380,7 +380,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
     }, []);
 
     return {
-      form: $store,
+      $form: $store,
       register,
       setFieldValue,
       setFieldsValue,
