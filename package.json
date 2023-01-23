@@ -64,7 +64,12 @@
     "vite-tsconfig-paths": "^4.0.1",
     "vitest": "^0.25.1",
     "yup": "^0.27.0",
-    "zod": "^3.20.2"
+    "zod": "^3.20.2",
+    "react-use-wizard": "latest",
+    "@chakra-ui/react": "latest",
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "framer-motion": "latest"
   },
   "workspaces": [
     "packages/**",
