@@ -1,7 +1,7 @@
 {
-  "name": "vite",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/vite/src",
+  "name": "examples",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/examples/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -11,7 +11,7 @@
       ],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/packages/vite"
+        "outputPath": "dist/packages/examples"
       },
       "configurations": {
         "development": {},
@@ -22,15 +22,15 @@
       "executor": "@nrwl/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "vite:build"
+        "buildTarget": "examples:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "vite:build:development",
+          "buildTarget": "examples:build:development",
           "hmr": true
         },
         "production": {
-          "buildTarget": "vite:build:production",
+          "buildTarget": "examples:build:production",
           "hmr": false
         }
       }
@@ -51,7 +51,7 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "packages/vite/**/*.{ts,tsx,js,jsx}"
+          "packages/examples/**/*.{ts,tsx,js,jsx}"
         ]
       }
     }
