@@ -19,5 +19,8 @@
     "homepage": "https://useform.org/"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  }
 }
