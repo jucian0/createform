@@ -7,18 +7,13 @@ import {
   Field,
   HookArgs,
   KeyValue,
-  State,
   Touched,
 } from './Types';
 import * as Dot from './ObjectUtils';
 import { extractRadioElements, isCheckbox, isRadio } from './FieldsUtils';
-import { debounce } from './Debounce';
 import { validate } from './Validate';
 import { StateChange } from '.';
-import {
-  InvalidArgumentException,
-  InvalidOperationException,
-} from './Exception';
+import { InvalidArgumentException } from './Exception';
 
 const defaultValues = {
   initialValues: {},
@@ -39,18 +34,23 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
     ...args,
   };
 
+  const mode = args.mode === 'debounce' ? 'onChange' : args.mode;
+  const debouncedTime = args.mode === 'debounce' ? 500 : 0;
   /**
    * This is the store of the form,
    * it is an object that contains the values of form,
    * errors of form,
    * touched of form.
    **/
-  const $store = createStore({
-    values: initialValues,
-    errors: initialErrors,
-    touched: initialTouched,
-    isValid: Dot.isEmpty(initialErrors),
-  });
+  const $store = createStore(
+    {
+      values: initialValues,
+      errors: initialErrors,
+      touched: initialTouched,
+      isValid: Dot.isEmpty(initialErrors),
+    },
+    debouncedTime
+  );
 
   return (hookArgs?: HookArgs<T['initialValues']>) => {
     /**
@@ -59,80 +59,18 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      **/
     const inputsRefs = React.useRef<KeyValue<React.RefObject<Field>>>({});
 
-    /**
-     * This is the state of the form,
-     * it is an object that contains the values of form,
-     * errors of form,
-     * touched of form.
-     **/
-    const [state, setState] = React.useState<State<T['initialValues']>>(
-      $store.get()
+    const state = React.useSyncExternalStore(
+      (fn) => $store.subscribe(fn, mode ?? 'onSubmit'),
+      $store.get
     );
 
     /**
-     * Debounce mode is a mode that is used when the form is debounced,
-     **/
-    const setStateDebounced = React.useCallback(debounce(setState, 500), []);
-
-    /**
-     * This is the function that is used to set the state of the form, using debounce mode.
-     * Because we are using native events to update the input value consequently we have many events that are fired at the same time,
-     * so we need to debounce the state update to avoid the state to be updated many times.
-     * @param state
-     **/
-    const persistNextStateDebounced = React.useCallback(
-      debounce(persistNextState, 100),
-      []
-    );
-
-    /**
-     * Register a new input to the form,
-     * this function is called by the Input component.
-     * @param name the name of the input
-     **/
-    function register(name: string) {
-      if (!name) {
-        throw new InvalidArgumentException('Input name is required');
-      }
-
-      const ref = React.useRef<Field>(null);
-      inputsRefs.current[name] = ref;
-
-      React.useEffect(() => {
-        if (ref.current) {
-          ref.current.name = name;
-          return persistInitialValues(name, Dot.get(state.values as T, name));
-        }
-        throw new InvalidOperationException(
-          'your input is not rendered yet, or you have not provided a name to the input, or you have not using the register function in the Input component'
-        );
-      }, [ref]);
-
-      React.useEffect(() => {
-        ref.current?.addEventListener('input', handleChange as any);
-        return () => {
-          ref.current?.removeEventListener('input', handleChange as any);
-        };
-      }, []);
-
-      React.useEffect(() => {
-        if (ref.current) {
-          ref.current.addEventListener('blur', handleBlur as any);
-        }
-        return () => {
-          ref.current?.removeEventListener('blur', handleBlur as any);
-        };
-      }, []);
-
-      return ref;
-    }
-
-    /**
-     * This function will handle input events of the form,
+     * This function will handle change events of the form,
      * @param event the event that will be handled
      **/
-    async function handleChange(event: EventChange) {
+    async function onChange(event: EventChange) {
       const { name, value, checked } = event.target;
+
       const nextValue =
         event.detail !== undefined && (event as any).detail !== 0
           ? event.detail
@@ -144,6 +82,29 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
         $store.patch(`values.${name}`, nextValue);
       }
 
+      if (hookArgs?.onChange) {
+        hookArgs.onChange($store.getPropertyValue('values'));
+      }
+    }
+
+    /**
+     * This function will handle blur events
+     * @param event the event that will be handled
+     **/
+    function onBlur(event: React.FocusEvent<HTMLInputElement>) {
+      const { name } = event.target;
+      $store.patch(`touched.${name}`, true);
+
+      if (hookArgs?.onBlur) {
+        hookArgs.onBlur($store.getPropertyValue('values'));
+      }
+
+      if (validationSchema) {
+        handleValidate();
+      }
+    }
+
+    async function handleValidate() {
       try {
         await validate($store.getPropertyValue('values'), validationSchema);
         $store.patch('isValid', true);
@@ -152,20 +113,50 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
         $store.patch('isValid', false);
         $store.patch('errors', errors);
       }
-      hookArgs?.onChange?.($store.getPropertyValue('values'));
     }
 
     /**
-     * This function will handle blur events
-     * @param event the event that will be handled
+     * This function will set the value into input ref,
+     * @param name the name of the input
+     * @param value the value of the input
      **/
-    function handleBlur(event: React.FocusEvent<HTMLInputElement>) {
-      const { name } = event.target;
-      $store.patch(`touched.${name}`, true);
-
-      if (hookArgs?.onBlur) {
-        hookArgs.onBlur(state.values);
+    function setFieldRefValue(name: string, value: any) {
+      const ref = inputsRefs.current[name];
+      if (ref && ref.current) {
+        ref.current.value = value;
+        if (isCheckbox(ref.current)) {
+          ref.current.checked = value;
+        } else if (isRadio(ref.current)) {
+          const radios = extractRadioElements(ref.current);
+          for (const radio of radios) {
+            radio.checked = radio.value === value;
+          }
+        }
+      } else {
+        throw Error(
+          `Input with name '${name}' is not registered, verify the input name.`
+        );
       }
+    }
+
+    function register(name: string) {
+      if (!name) {
+        throw new InvalidArgumentException('Input name is required');
+      }
+      const defaultValue = Dot.get(state.values, name);
+      const ref = React.useRef(null);
+
+      React.useEffect(() => {
+        (inputsRefs.current as any)[name] = ref;
+      }, [ref]);
+
+      return {
+        ref,
+        defaultValue,
+        onChange,
+        onBlur,
+        name,
+      };
     }
 
     /**
@@ -184,19 +175,45 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       return (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const state = $store.get();
+        $store.set(state, 'onSubmit');
         const { values, isValid } = state;
-        setState(state);
         submit(values, isValid);
       };
     }
 
     /**
-     * Persist initial values in native fields
-     * @param values the values of the form
+     * This function will handle form submit
      **/
-    function persistInitialValues(name: string, value: any) {
-      console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-      setFieldValue(name, value);
+    function handleReset(
+      reset: (values: T['initialValues'], isValid: boolean) => void
+    ) {
+      if (typeof reset !== 'function') {
+        throw Error('Submit function is required');
+      }
+      /**
+       * This function will handle submit event
+       * @param event the event that will be handled
+       **/
+      return (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        $store.set(
+          {
+            values: initialValues,
+            errors: initialErrors,
+            touched: initialTouched,
+            isValid: false,
+          },
+          'onSubmit'
+        );
+
+        for (const key in inputsRefs.current) {
+          (inputsRefs.current[key].current as any).value = Dot.get(
+            initialValues,
+            key
+          );
+        }
+      };
     }
 
     /**
@@ -205,23 +222,11 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      * @param value the value of the input
      **/
     function setFieldValue(name: string, value: any) {
-      const ref = inputsRefs.current[name];
-      if (ref && ref.current) {
-        ref.current.value = value;
-        if (isCheckbox(ref.current)) {
-          ref.current.checked = value;
-        } else if (isRadio(ref.current)) {
-          const radios = extractRadioElements(ref.current);
-          for (const radio of radios) {
-            radio.checked = radio.value === value;
-          }
-        }
-        /**---- Trigger change event ----*/
-        ref.current.dispatchEvent(new Event('input'));
-      } else {
-        throw Error(
-          `Input with name '${name}' is not registered, verify the input name.`
-        );
+      try {
+        setFieldRefValue(name, value);
+        $store.patch(`values.${name}`, value);
+      } catch (e) {
+        console.error(e);
       }
     }
 
@@ -238,9 +243,10 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
         for (const name of names) {
           const next = Dot.get(nextValues, name);
           if (next !== undefined) {
-            setFieldValue(name, next);
+            setFieldRefValue(name, next);
           }
         }
+        $store.patch('values', nextValues);
       } catch (e) {
         console.error(e);
       }
@@ -251,11 +257,11 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      * @param name the name of the input
      * @param error the error of the input
      **/
-    function setFieldError(name: string, error: string) {
+    function setFieldError(name: string, message: string) {
       try {
-        $store.patch(`errors.${name}`, error);
+        $store.patch(`errors.${name}`, message);
       } catch (e) {
-        console.error(e);
+        console.log(e);
       }
     }
 
@@ -278,9 +284,9 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      * @param name the name of the input
      * @param touched the touched of the input
      **/
-    function setFieldTouched(name: string, touched = true) {
+    function setFieldTouched(name: string, value = true) {
       try {
-        $store.patch(`touched.${name}`, touched);
+        $store.patch(`touched.${name}`, value);
       } catch (e) {
         console.error(e);
       }
@@ -295,24 +301,10 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
         typeof next === 'function' ? next($store.get().touched) : next;
       const names = Object.keys(inputsRefs.current);
       try {
-        if (!nextTouched) {
-          for (const name of names) {
-            setFieldTouched(name);
-          }
-        }
         $store.patch('touched', nextTouched);
       } catch (e) {
         console.error(e);
       }
-    }
-
-    /**
-     * This function will reset the form as initial state,
-     **/
-    function reset() {
-      setFieldsValue(initialValues as T['initialValues']);
-      setFieldsError(initialErrors as Errors<T['initialErrors']>);
-      setFieldsTouched(initialTouched as Touched<T['initialTouched']>);
     }
 
     /**
@@ -336,67 +328,21 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       $store.patch('touched', initialTouched as Touched<T['initialTouched']>);
     }
 
-    /**
-     * This function will patch the state of the form, by setting the value of the input into form store,
-     * @param name the name of the input
-     * @param value the value of the input
-     **/
-    function setFieldStoreValue(name: string, value: any) {
-      try {
-        $store.patch(`values.${name}`, value);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    /**
-     * This function will patch the state of the form, by setting the touched of the input into form store,
-     * @param name the name of the input
-     * @param touched the touched of the input
-     **/
-    function setFieldStoreTouched(name: string, touched = true) {
-      try {
-        $store.patch(`touched.${name}`, touched);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    function persistNextState(nextState: State<T['initialValues']>) {
-      if (hookArgs?.mode === 'debounce') {
-        setStateDebounced(nextState);
-      } else if (hookArgs?.mode === 'onChange') {
-        setState(nextState);
-      }
-    }
-
-    /**
-     * Subscribe to the store to get the next state and update the form
-     **/
-    React.useEffect(() => {
-      const unsubscribe = $store.subscribe(persistNextStateDebounced);
-      return () => {
-        unsubscribe();
-      };
-    }, []);
-
     return {
       $form: $store,
+      state,
       register,
+      handleReset,
+      handleSubmit,
       setFieldValue,
-      setFieldsValue,
       setFieldError,
-      setFieldsError,
       setFieldTouched,
+      setFieldsValue,
+      setFieldsError,
       setFieldsTouched,
-      reset,
-      resetValues,
       resetErrors,
       resetTouched,
-      handleSubmit,
-      setFieldStoreTouched,
-      setFieldStoreValue,
-      state,
+      resetValues,
     };
   };
 }

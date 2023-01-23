@@ -1,5 +1,5 @@
-import './styles.css';
 import { createForm } from '@use-form/use-form';
+import { Button, Input, Stack } from '@chakra-ui/react';
 
 const useLoginForm = createForm({
   initialValues: {
@@ -7,121 +7,38 @@ const useLoginForm = createForm({
     password: '1234567',
     agree: true,
     gender: 'masculine',
-    distance: 10,
   },
+  mode: 'debounce',
 });
 
 export function FormExample() {
-  const {
-    state,
-    register,
-    setFieldValue,
-    setFieldsValue,
-    reset,
-    resetValues,
-    resetTouched,
-    resetErrors,
-    setFieldsError,
-    setFieldsTouched,
-    handleSubmit,
-  } = useLoginForm({
-    mode: 'onChange',
-  });
+  const { state, register, handleReset, handleSubmit } = useLoginForm();
 
-  function handleEmail() {
-    setFieldValue('email', 'jose@jose.com');
+  console.log('state', state.values);
+
+  function onSubmit(e: any) {
+    console.log(e);
   }
 
-  function handleReset() {
-    reset();
+  function onReset(e: any) {
+    // console.log(e);
   }
-
-  function handleResetValues() {
-    resetValues();
-  }
-
-  function handleResetTouched() {
-    resetTouched();
-  }
-
-  function handleResetErrors() {
-    resetErrors();
-  }
-
-  function handleAllValues() {
-    setFieldsValue({
-      email: 'jose@jose.com',
-      password: '1234567891011121314151618',
-      gender: 'female',
-      agree: false,
-      distance: 10,
-    });
-
-    setFieldsTouched((state) => ({
-      ...state,
-      email: true,
-    }));
-  }
-
-  function handleSetErrors() {
-    setFieldsError((state) => ({
-      ...state,
-      password: 'Senha deve conter no mínimo 8 caracteres',
-    }));
-  }
-
-  console.log('state', state.errors);
 
   return (
-    <div>
+    <Stack p={30}>
       <h1>Form</h1>
-      <form
-        onSubmit={handleSubmit((e, isValid) => {
-          console.log(e, isValid);
-        })}
-      >
-        <input type="text" ref={register('email')} />
-        <input type="password" autoComplete="on" ref={register('password')} />
-        <input type="checkbox" ref={register('agree')} />
-        <select ref={register('location.state')}>
-          <option value="">Select a state</option>
-          <option value="SP">SP</option>
-          <option value="RJ">RJ</option>
-          <option value="MG">MG</option>
-        </select>
-        <div ref={register('gender')}>
-          <input type="radio" name="gender" id="1" value="masculine" />
-          Masculine
-          <input type="radio" name="gender" id="2" value="female" />
-          Female
-        </div>
-        <input type="text" ref={register('location.city')} />
-        <input type="text" ref={register('location.zip')} />
-        <input type="range" ref={register('distance')} />
+      <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset(onReset)}>
+        <Input mt={5} type="text" {...register('email')} />
+        <Input mt={5} type="password" {...register('password')} />
+        <Input mt={5} type="checkbox" {...register('agree')} />
+        <Input mt={5} type="text" {...register('location.city')} />
+        <Input mt={5} type="text" {...register('location.zip')} />
 
-        <button type="submit">Submit</button>
-        <button onClick={handleEmail} type="button">
-          Set email
-        </button>
-        <button onClick={handleAllValues} type="button">
-          Set All values
-        </button>
-        <button onClick={handleReset} type="button">
-          Reset
-        </button>
-        <button onClick={handleResetValues} type="button">
-          Reset Values
-        </button>
-        <button onClick={handleResetTouched} type="button">
-          Reset Touched
-        </button>
-        <button onClick={handleResetErrors} type="button">
-          Reset Errors
-        </button>
-        <button onClick={handleSetErrors} type="button">
-          Set Errors
-        </button>
+        <Stack direction="row" spacing={4} justify="center" mt={5}>
+          <Button type="submit">Submit</Button>
+          <Button type="reset">Reset</Button>
+        </Stack>
       </form>
-    </div>
+    </Stack>
   );
 }
