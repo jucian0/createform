@@ -36,6 +36,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
   };
 
   const mode = args.mode === 'debounce' ? 'onChange' : args.mode;
+  const shouldNotify = mode === 'onChange';
   const debouncedTime = args.mode === 'debounce' ? 500 : 0;
   /**
    * This is the store of the form,
@@ -43,15 +44,12 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
    * errors of form,
    * touched of form.
    **/
-  const $store = createStore(
-    {
-      values: initialValues,
-      errors: initialErrors,
-      touched: initialTouched,
-      isValid: Dot.isEmpty(initialErrors),
-    },
-    debouncedTime
-  );
+  const $store = createStore({
+    values: initialValues,
+    errors: initialErrors,
+    touched: initialTouched,
+    isValid: Dot.isEmpty(initialErrors),
+  });
 
   /**
    * This is the reference of all native inputs of the form,
@@ -60,10 +58,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
   const inputsRefs = {} as { [k: string]: React.RefObject<any> };
 
   return (hookArgs?: HookArgs<T['initialValues']>) => {
-    const state = React.useSyncExternalStore(
-      (fn) => $store.subscribe(fn, mode ?? 'onSubmit'),
-      $store.get
-    );
+    const state = React.useSyncExternalStore($store.subscribe, $store.get);
 
     /**
      * This function will handle change events of the form,
@@ -78,9 +73,9 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
           : value;
 
       if (isCheckbox(event.target as Field)) {
-        $store.patch(`values.${name}`, checked);
+        $store.patch(`values.${name}`, checked).notify(shouldNotify);
       } else {
-        $store.patch(`values.${name}`, nextValue);
+        $store.patch(`values.${name}`, nextValue).notify(shouldNotify);
       }
 
       if (hookArgs?.onChange) {
@@ -107,9 +102,9 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
           `touched.${name}`,
           true
         );
-        $store.set(next);
+        $store.set(next).notify(shouldNotify);
       } else {
-        $store.patch(`touched.${name}`, true);
+        $store.patch(`touched.${name}`, true).notify(shouldNotify);
       }
     }
 
@@ -193,10 +188,10 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
           const touched = setAllFieldsState(true);
           const validationResult = await handleValidate();
           const next: any = { ...state, touched, ...validationResult };
-          $store.set(next, 'onSubmit');
+          $store.set(next).notify(true);
           submit(next.values, validationResult.isValid);
         } else {
-          $store.set(state, 'onSubmit');
+          $store.set(state).notify(true);
           submit(state.values, state.isValid);
         }
       };
@@ -216,15 +211,14 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       return (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        $store.set(
-          {
+        $store
+          .set({
             values: initialValues,
             errors: initialErrors,
             touched: initialTouched,
             isValid: false,
-          },
-          'onSubmit'
-        );
+          })
+          .notify(true);
 
         for (const key in inputsRefs) {
           if (inputsRefs[key]?.current?.value) {
@@ -245,7 +239,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
     function setFieldValue(name: string, value: any) {
       try {
         setFieldRefValue(name, value);
-        $store.patch(`values.${name}`, value);
+        $store.patch(`values.${name}`, value).notify(shouldNotify);
       } catch (e) {
         console.error(e);
       }
@@ -265,7 +259,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
           }
         }
 
-        $store.patch('values', nextValues);
+        $store.patch('values', nextValues).notify(shouldNotify);
       } catch (e) {
         console.error(e);
       }
@@ -278,7 +272,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      **/
     function setFieldError(name: string, message: string) {
       try {
-        $store.patch(`errors.${name}`, message);
+        $store.patch(`errors.${name}`, message).notify(shouldNotify);
       } catch (e) {
         console.log(e);
       }
@@ -292,7 +286,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       const nextErrors =
         typeof next === 'function' ? next($store.get().errors) : next;
       try {
-        $store.patch('errors', nextErrors);
+        $store.patch('errors', nextErrors).notify(shouldNotify);
       } catch (e) {
         console.error(e);
       }
@@ -305,7 +299,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      **/
     function setFieldTouched(name: string, value = true) {
       try {
-        $store.patch(`touched.${name}`, value);
+        $store.patch(`touched.${name}`, value).notify(shouldNotify);
       } catch (e) {
         console.error(e);
       }
@@ -319,7 +313,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       const nextTouched =
         typeof next === 'function' ? next($store.get().touched) : next;
       try {
-        $store.patch('touched', nextTouched);
+        $store.patch('touched', nextTouched).notify(shouldNotify);
       } catch (e) {
         console.error(e);
       }
@@ -336,14 +330,18 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      * This function will reset the form as initial errors,
      **/
     function resetErrors() {
-      $store.patch('errors', initialErrors as Errors<T['initialErrors']>);
+      $store
+        .patch('errors', initialErrors as Errors<T['initialErrors']>)
+        .notify(shouldNotify);
     }
 
     /**
      * This function will reset the form as initial touched,
      **/
     function resetTouched() {
-      $store.patch('touched', initialTouched as Touched<T['initialTouched']>);
+      $store
+        .patch('touched', initialTouched as Touched<T['initialTouched']>)
+        .notify(shouldNotify);
     }
 
     return {
