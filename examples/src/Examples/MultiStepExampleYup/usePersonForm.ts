@@ -37,5 +37,5 @@ export const usePersonForm = createForm({
     },
   },
   validationSchema,
-  mode: 'debounce',
+  mode: 'onChange',
 });
