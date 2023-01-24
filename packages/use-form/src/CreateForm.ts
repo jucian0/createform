@@ -15,6 +15,7 @@ import { extractRadioElements, isCheckbox, isRadio } from './FieldsUtils';
 import { validate } from './Validate';
 import { StateChange } from '.';
 import { InvalidArgumentException } from './Exception';
+import { debounce } from './Debounce';
 
 const defaultValues = {
   initialValues: {},
@@ -58,7 +59,10 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
   const inputsRefs = {} as { [k: string]: React.RefObject<any> };
 
   return (hookArgs?: HookArgs<T['initialValues']>) => {
-    const state = React.useSyncExternalStore($store.subscribe, $store.get);
+    const state = React.useSyncExternalStore(
+      (fn) => $store.subscribe(debounce(fn, debouncedTime)),
+      $store.get
+    );
 
     /**
      * This function will handle change events of the form,
