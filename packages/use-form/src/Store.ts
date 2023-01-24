@@ -21,7 +21,7 @@ export function createStore<T extends {}>(initialState: T = Object.assign({})) {
   function set(nextState: T) {
     state = nextState;
     return {
-      notify: (is: boolean) => is && notify(),
+      notify: (is = true) => is && notify(),
     };
   }
 
@@ -33,7 +33,7 @@ export function createStore<T extends {}>(initialState: T = Object.assign({})) {
       throw new Error(`The path '${path}' is not defined`);
     }
     return {
-      notify: (is: boolean) => is && notify(),
+      notify: (is = true) => is && notify(),
     };
   }
 

@@ -31,21 +31,28 @@ describe('Store', () => {
 
   it('Should call subscribers when set is called', async () => {
     const { sut, spy } = makeSut();
-    sut.subscribe(spy, 'onChange');
-    sut.set({ foo: 'bar' });
+    sut.subscribe(spy);
+    sut.set({ foo: 'bar' }).notify();
     await waitFor(() => expect(spy).toHaveBeenCalledWith({ foo: 'bar' }));
+  });
+
+  it('Should not call subscribers when set is called and not call notify', async () => {
+    const { sut, spy } = makeSut();
+    sut.subscribe(spy);
+    sut.set({ foo: 'bar' });
+    await waitFor(() => expect(spy).not.toHaveBeenCalled());
   });
 
   it('Should patch a state when patch is called', () => {
     const { sut } = makeSut();
-    sut.patch('foo', 'bar');
+    sut.patch('foo', 'bar').notify();
     expect(sut.get()).toEqual({ foo: 'bar' });
   });
 
   it('Should call subscribers when patch is called', async () => {
     const { sut, spy } = makeSut();
-    sut.subscribe(spy, 'onChange');
-    sut.patch('foo', 'bar');
+    sut.subscribe(spy);
+    sut.patch('foo', 'bar').notify();
     await waitFor(() => expect(spy).toHaveBeenCalledWith({ foo: 'bar' }));
   });
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import each from 'jest-each';
 import { faker } from '@faker-js/faker';
 import { createForm } from './../src/CreateForm';

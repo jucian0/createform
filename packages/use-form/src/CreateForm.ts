@@ -192,10 +192,10 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
           const touched = setAllFieldsState(true);
           const validationResult = await handleValidate();
           const next: any = { ...state, touched, ...validationResult };
-          $store.set(next).notify(true);
+          $store.set(next).notify();
           submit(next.values, validationResult.isValid);
         } else {
-          $store.set(state).notify(true);
+          $store.set(state).notify();
           submit(state.values, state.isValid);
         }
       };
@@ -222,7 +222,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
             touched: initialTouched,
             isValid: false,
           })
-          .notify(true);
+          .notify();
 
         for (const key in inputsRefs) {
           if (inputsRefs[key]?.current?.value) {
