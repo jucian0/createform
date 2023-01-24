@@ -40,6 +40,7 @@ const useForm = createForm({
       },
     ],
   },
+  mode: 'debounced',
 });
 ```
 
@@ -52,13 +53,13 @@ Use dot notation to create advanced objects or to map object values. Type an ent
 
 ```jsx
 function Form() {
-  const { register } = useForm({ mode: 'debounced' });
+  const { register } = useForm();
 
   return (
     <form>
-      <input ref={register('name')} />
-      <input ref={register('address.street')} />
-      <input ref={register('address.city')} />
+      <input {...register('name')} />
+      <input {...register('address.street')} />
+      <input {...register('address.city')} />
     </form>
   );
 }
@@ -67,4 +68,3 @@ function Form() {
 ## Demo
 
 <Demo url="https://codesandbox.io/embed/useform-debounced-sdokv?fontsize=14&hidenavigation=1&theme=dark" />
-````

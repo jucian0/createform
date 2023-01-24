@@ -59,16 +59,7 @@ Validation is performed whenever the state is changed. By default, `useForm` use
 import { createForm } from '@use-form/use-form';
 import * as yup from 'yup';
 
-const useForm = createForm({
-  initialValues: {
-    name: 'Jesse',
-    email: 'jesse@jesse.com',
-    pets: ['felix'],
-    accept: false,
-  },
-});
-
-const validation = yup.object().shape({
+const validationSchema = yup.object().shape({
   name: yup.string().required('This field is required'),
   email: yup
     .string()
@@ -78,8 +69,19 @@ const validation = yup.object().shape({
   accept: yup.bool().oneOf([true], 'Field must be checked'),
 });
 
+const useForm = createForm({
+  initialValues: {
+    name: 'Jesse',
+    email: 'jesse@jesse.com',
+    pets: ['felix'],
+    accept: false,
+  },
+  mode: 'onChange',
+  validationSchema,
+});
+
 function Form() {
-  const { register, state, handleSubmit } = useForm({ mode: 'onChange' });
+  const { register, state, handleSubmit } = useForm();
 
   const { errors, touched } = state;
 
@@ -90,20 +92,20 @@ function Form() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <fieldset>
-        <input ref={register('name')} />
+        <input {...register('name')} />
         <span>{touched.name && errors.name}</span>
       </fieldset>
       <fieldset>
-        <input ref={register('email')} />
+        <input {...register('email')} />
         <span>{touched.email && errors.email}</span>
       </fieldset>
       <fieldset>
-        <input ref={register('pets')} />
+        <input {...register('pets')} />
         <span>{touched.pets && errors.pets}</span>
       </fieldset>
-      <input ref={register('pets.0')} />
+      <input {...register('pets.0')} />
       <fieldset>
-        <input ref={register('accept')} />
+        <input {...register('accept')} />
         <span>{touched.accept && errors.accept}</span>
       </fieldset>
       <button type="submit">Submit</button>

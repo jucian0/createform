@@ -31,6 +31,7 @@ const useLoginForm = createForm({
     date: null,
   },
   validationSchema,
+  mode: 'onChange',
 });
 
 const options = [
@@ -43,18 +44,17 @@ export function FormExampleYup() {
   const {
     state,
     register,
-    form,
+    $form,
     setFieldValue,
     setFieldsValue,
-    reset,
     resetValues,
     resetTouched,
     resetErrors,
     setFieldsError,
     setFieldsTouched,
     handleSubmit,
+    handleReset,
   } = useLoginForm({
-    mode: 'onChange',
     onChange: (values) => {
       // console.log('onChange', values)
       // return values
@@ -63,10 +63,6 @@ export function FormExampleYup() {
 
   function handleEmail() {
     setFieldValue('email', 'jose@jose.com');
-  }
-
-  function handleReset() {
-    reset();
   }
 
   function handleResetValues() {
@@ -119,37 +115,36 @@ export function FormExampleYup() {
     <div>
       <h1>Form</h1>
       <form
-        onSubmit={handleSubmit((e, isValid) => {
-          // console.log(e, isValid)
-        })}
+        onSubmit={handleSubmit((e, isValid) => console.log(e, isValid))}
+        onReset={handleReset((e) => console.log(e))}
       >
-        <input type="text" ref={register('email')} />
-        <input type="password" autoComplete="on" ref={register('password')} />
-        <input type="checkbox" ref={register('agree')} />
-        <select ref={register('location.state')}>
+        <input type="text" {...register('email')} />
+        <input type="password" autoComplete="on" {...register('password')} />
+        <input type="checkbox" {...register('agree')} />
+        <select {...register('location.state')}>
           <option value="">Select a state</option>
           <option value="SP">SP</option>
           <option value="RJ">RJ</option>
           <option value="MG">MG</option>
         </select>
-        <div ref={register('gender')}>
+        <div {...register('gender')}>
           <input type="radio" name="gender" id="1" value="masculine" />
           Masculine
           <input type="radio" name="gender" id="2" value="female" />
           Female
         </div>
-        <input type="text" ref={register('location.city')} />
-        <input type="text" ref={register('location.zip')} />
-        <input type="range" ref={register('distance')} />
+        <input type="text" {...register('location.city')} />
+        <input type="text" {...register('location.zip')} />
+        <input type="range" {...register('distance')} />
 
         <Wrapper
           component={Select}
-          ref={register('select')}
+          {...register('select')}
           options={options}
           label="Select"
         />
 
-        <Wrapper component={DatePicker} ref={register('date')} />
+        <Wrapper component={DatePicker} {...register('date')} />
 
         <button type="submit">Submit</button>
         <button onClick={handleEmail} type="button">
@@ -158,9 +153,7 @@ export function FormExampleYup() {
         <button onClick={handleAllValues} type="button">
           Set All values
         </button>
-        <button onClick={handleReset} type="button">
-          Reset
-        </button>
+        <button type="reset">Reset</button>
         <button onClick={handleResetValues} type="button">
           Reset Values
         </button>
@@ -184,11 +177,11 @@ function FormComponent2() {
     <div>
       <h1>Form2</h1>
       <form>
-        <input type="text" ref={register('email')} />
-        <input type="password" ref={register('password')} />
-        <input type="text" ref={register('location.city')} />
-        <input type="text" ref={register('location.state')} />
-        <input type="text" ref={register('location.zip')} />
+        <input type="text" {...register('email')} />
+        <input type="password" {...register('password')} />
+        <input type="text" {...register('location.city')} />
+        <input type="text" {...register('location.state')} />
+        <input type="text" {...register('location.zip')} />
         <button type="submit">Submit</button>
       </form>
     </div>

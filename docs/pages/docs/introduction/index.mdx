@@ -75,14 +75,14 @@ With `createForm` you can create a hook form and use it wherever you want,
 <br />
 
 ```jsx
-import { createForm } from "@use-form/core";
+import { createForm } from '@use-form/core';
 
 const useUserForm = createForm({
   initialValues: {
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   },
 });
 ```
@@ -98,10 +98,10 @@ console.log(data)
 return (
 
 <form onSubmit={handleSubmit(onSubmit)}>
-  <input ref={register("name")} />
-  <input ref={register("email")} />
-  <input ref={register("password")} />
-  <input ref={register("confirmPassword")} />
+  <input {...register("name")} />
+  <input {...register("email")} />
+  <input {...register("password")} />
+  <input {...register("confirmPassword")} />
   <button type="submit">Submit</button>
 </form>
 )
