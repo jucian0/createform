@@ -6,7 +6,7 @@ import { PersonForm } from './Examples/MultiStepExample/Form';
 export function App() {
   return (
     <ChakraProvider>
-      <FormExample />
+      <PersonForm />
     </ChakraProvider>
   );
 }

@@ -13,13 +13,14 @@ export type Person = {
 
 export const usePersonForm = createForm({
   initialValues: {
-    firstName: '',
-    lastName: '',
+    firstName: 'Jose',
+    lastName: 'Silva',
     age: null,
     address: {
       street: '',
       city: '',
-      zipCode: '',
+      zipCode: '13255-722',
     },
   },
+  mode: 'debounce',
 });

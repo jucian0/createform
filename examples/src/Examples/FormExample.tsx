@@ -3,19 +3,19 @@ import { Button, Input, Stack } from '@chakra-ui/react';
 
 const useLoginForm = createForm({
   initialValues: {
-    email: 'juciano@juciano.com',
-    password: '1234567',
+    email: '',
+    password: '',
     agree: true,
-    gender: 'masculine',
+    gender: '',
   },
-  mode: 'onChange',
+  mode: 'onSubmit',
 });
 
 export function FormExample() {
   const { state, register, handleReset, handleSubmit, setFieldValue } =
     useLoginForm();
 
-  console.log('state', state.values);
+  console.log('state', state.values, 'changed');
 
   function onSubmit(e: any) {
     console.log(e);

@@ -10,14 +10,15 @@ export function PersonForm() {
     console.log(e);
   }
 
-  function handleReset(_: React.FormEvent) {
-    form.reset();
-  }
+  function handleReset(e: Person) {}
 
   console.log(form.state.values);
 
   return (
-    <form onReset={handleReset} onSubmit={form.handleSubmit(handleSubmit)}>
+    <form
+      onReset={form.handleReset(handleReset)}
+      onSubmit={form.handleSubmit(handleSubmit)}
+    >
       <Wizard>
         <BasicInfoStep />
         <AddressStep />

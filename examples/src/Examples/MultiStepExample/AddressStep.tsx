@@ -10,9 +10,9 @@ export function AddressStep() {
   return (
     <Stack p={10}>
       <Text fontWeight={'bold'}>Address</Text>
-      <Input mt={5} placeholder="Street" ref={register('address.street')} />
-      <Input mt={5} placeholder="City" ref={register('address.city')} />
-      <Input mt={5} placeholder="Zip Code" ref={register('address.zipCode')} />
+      <Input mt={5} placeholder="Street" {...register('address.street')} />
+      <Input mt={5} placeholder="City" {...register('address.city')} />
+      <Input mt={5} placeholder="Zip Code" {...register('address.zipCode')} />
 
       <Stack direction="row" spacing={4} justify="center" mt={5}>
         <Button onClick={previousStep}>Previous</Button>
