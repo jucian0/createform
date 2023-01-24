@@ -7,6 +7,7 @@ import {
   Field,
   HookArgs,
   KeyValue,
+  StateOfField,
   Touched,
 } from './Types';
 import * as Dot from './ObjectUtils';
@@ -91,35 +92,36 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      * This function will handle blur events
      * @param event the event that will be handled
      **/
-    function onBlur(event: React.FocusEvent<HTMLInputElement>) {
+    async function onBlur(event: React.FocusEvent<HTMLInputElement>) {
       const { name } = event.target;
-      $store.patch(`touched.${name}`, true);
+      const state = $store.get();
 
       if (hookArgs?.onBlur) {
         hookArgs.onBlur($store.getPropertyValue('values'));
       }
 
       if (validationSchema) {
-        handleValidate();
+        const validationResult = await handleValidate();
+        const next = Dot.set(
+          { ...state, ...validationResult },
+          `touched.${name}`,
+          true
+        );
+        $store.set(next);
+      } else {
+        $store.patch(`touched.${name}`, true);
       }
     }
 
     async function handleValidate() {
       try {
         await validate($store.getPropertyValue('values'), validationSchema);
-        $store.patch('isValid', true);
-        $store.patch('errors', {});
+        return { errors: {}, isValid: true };
       } catch (errors: any) {
-        $store.patch('isValid', false);
-        $store.patch('errors', errors);
+        return { errors, isValid: false };
       }
     }
 
-    /**
-     * This function will set the value into input ref,
-     * @param name the name of the input
-     * @param value the value of the input
-     **/
     function setFieldRefValue(name: string, value: any) {
       const ref = inputsRefs[name];
       if (ref && ref.current) {
@@ -137,6 +139,17 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
           `Input with name '${name}' is not registered, verify the input name.`
         );
       }
+    }
+
+    function setAllFieldsState(nextFieldState: any) {
+      let next = {};
+
+      for (const key in inputsRefs) {
+        if (inputsRefs[key]) {
+          next = Dot.set(next, key, nextFieldState);
+        }
+      }
+      return next;
     }
 
     function register(name: string) {
@@ -172,12 +185,20 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
        * This function will handle submit event
        * @param event the event that will be handled
        **/
-      return (event: React.FormEvent<HTMLFormElement>) => {
+      return async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const state = $store.get();
-        $store.set(state, 'onSubmit');
-        const { values, isValid } = state;
-        submit(values, isValid);
+
+        if (validationSchema) {
+          const touched = setAllFieldsState(true);
+          const validationResult = await handleValidate();
+          const next: any = { ...state, touched, ...validationResult };
+          $store.set(next, 'onSubmit');
+          submit(next.values, validationResult.isValid);
+        } else {
+          $store.set(state, 'onSubmit');
+          submit(state.values, state.isValid);
+        }
       };
     }
 
