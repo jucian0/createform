@@ -213,6 +213,8 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
             key
           );
         }
+
+        reset(initialValues);
       };
     }
 

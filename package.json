@@ -69,7 +69,8 @@
     "@chakra-ui/react": "latest",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
-    "framer-motion": "latest"
+    "framer-motion": "latest",
+    "@faker-js/faker": "7.4.0"
   },
   "workspaces": [
     "packages/**",
@@ -97,6 +98,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "type": "module"
+  }
 }

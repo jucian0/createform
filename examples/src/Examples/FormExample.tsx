@@ -8,11 +8,12 @@ const useLoginForm = createForm({
     agree: true,
     gender: 'masculine',
   },
-  mode: 'debounce',
+  mode: 'onChange',
 });
 
 export function FormExample() {
-  const { state, register, handleReset, handleSubmit } = useLoginForm();
+  const { state, register, handleReset, handleSubmit, setFieldValue } =
+    useLoginForm();
 
   console.log('state', state.values);
 
@@ -37,6 +38,10 @@ export function FormExample() {
         <Stack direction="row" spacing={4} justify="center" mt={5}>
           <Button type="submit">Submit</Button>
           <Button type="reset">Reset</Button>
+
+          <Button onClick={() => setFieldValue('email', 'antonio@silva.com')}>
+            setFieldValue
+          </Button>
         </Stack>
       </form>
     </Stack>
