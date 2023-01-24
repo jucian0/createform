@@ -10,9 +10,9 @@ export function BasicInfoStep() {
   return (
     <Stack p={10}>
       <Text fontWeight={'bold'}>Basic Info</Text>
-      <Input mt={5} placeholder="First name" ref={register('firstName')} />
-      <Input mt={5} placeholder="Last name" ref={register('lastName')} />
-      <Input mt={5} placeholder="Age" type="number" ref={register('age')} />
+      <Input mt={5} placeholder="First name" {...register('firstName')} />
+      <Input mt={5} placeholder="Last name" {...register('lastName')} />
+      <Input mt={5} placeholder="Age" type="number" {...register('age')} />
 
       <Stack direction="row" spacing={4} justify="center" mt={5}>
         <Button type="reset">Reset</Button>

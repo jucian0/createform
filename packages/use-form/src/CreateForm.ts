@@ -52,13 +52,13 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
     debouncedTime
   );
 
-  return (hookArgs?: HookArgs<T['initialValues']>) => {
-    /**
-     * This is the reference of all native inputs of the form,
-     * in order to have the same reference of all inputs of the form.
-     **/
-    const inputsRefs = React.useRef<KeyValue<React.RefObject<Field>>>({});
+  /**
+   * This is the reference of all native inputs of the form,
+   * in order to have the same reference of all inputs of the form.
+   **/
+  const inputsRefs = {} as { [k: string]: React.RefObject<any> };
 
+  return (hookArgs?: HookArgs<T['initialValues']>) => {
     const state = React.useSyncExternalStore(
       (fn) => $store.subscribe(fn, mode ?? 'onSubmit'),
       $store.get
@@ -121,7 +121,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      * @param value the value of the input
      **/
     function setFieldRefValue(name: string, value: any) {
-      const ref = inputsRefs.current[name];
+      const ref = inputsRefs[name];
       if (ref && ref.current) {
         ref.current.value = value;
         if (isCheckbox(ref.current)) {
@@ -147,7 +147,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       const ref = React.useRef(null);
 
       React.useEffect(() => {
-        (inputsRefs.current as any)[name] = ref;
+        (inputsRefs as any)[name] = ref;
       }, [ref]);
 
       return {
@@ -184,9 +184,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
     /**
      * This function will handle form submit
      **/
-    function handleReset(
-      reset: (values: T['initialValues'], isValid: boolean) => void
-    ) {
+    function handleReset(reset: (values: T['initialValues']) => void) {
       if (typeof reset !== 'function') {
         throw Error('Submit function is required');
       }
@@ -207,11 +205,11 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
           'onSubmit'
         );
 
-        for (const key in inputsRefs.current) {
-          (inputsRefs.current[key].current as any).value = Dot.get(
-            initialValues,
-            key
-          );
+        for (const key in inputsRefs) {
+          if (inputsRefs[key]?.current?.value) {
+            const value = Dot.get(initialValues, key);
+            setFieldRefValue(key, value);
+          }
         }
 
         reset(initialValues);
@@ -237,17 +235,15 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
      * @param values the values of the form
      **/
     function setFieldsValue(next: StateChange<T['initialValues']>) {
-      const nextValues =
-        //@ts-ignore
-        typeof next === 'function' ? next(state.values) : next;
-      const names = Object.keys(inputsRefs.current);
+      //@ts-ignore
+      const nextValues = typeof next === 'function' ? next(state.values) : next;
       try {
-        for (const name of names) {
-          const next = Dot.get(nextValues, name);
-          if (next !== undefined) {
-            setFieldRefValue(name, next);
+        for (const key in inputsRefs) {
+          if (inputsRefs[key]?.current?.value) {
+            setFieldRefValue(key, next);
           }
         }
+
         $store.patch('values', nextValues);
       } catch (e) {
         console.error(e);
@@ -301,7 +297,6 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
     function setFieldsTouched(next: StateChange<Touched<T['initialValues']>>) {
       const nextTouched =
         typeof next === 'function' ? next($store.get().touched) : next;
-      const names = Object.keys(inputsRefs.current);
       try {
         $store.patch('touched', nextTouched);
       } catch (e) {
