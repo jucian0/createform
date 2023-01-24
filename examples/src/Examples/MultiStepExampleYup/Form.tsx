@@ -12,7 +12,7 @@ export function PersonForm() {
 
   function handleReset(e: Person) {}
 
-  console.log(form.state.values);
+  console.log(form.state.errors);
 
   return (
     <form
