@@ -69,7 +69,7 @@ funtion UserForm(){
 
   return (
   <form onSubmit={handleSubmit(onSubmit)}>
-    <Wrapper component={Select} ref={register("names")} />
+    <Wrapper component={Select} {...register("names")} />
       options={[
         { value: "John", label: "John" },
         { value: "Jane", label: "Jane" },

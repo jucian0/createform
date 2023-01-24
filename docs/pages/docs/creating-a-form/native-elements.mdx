@@ -11,7 +11,7 @@ tags: react, form, useform, use-form, debounce, debounced, hook, native-forms, h
 Native HTML elements are elements that are built into the browser, like `<input>`, `<button>`, `<select>`, etc. These elements are different from custom elements, which are elements that are created by developers. Native HTML elements are powerful and easy to use since `useForm` uses a reference to register the fields, native elements are easy to register, trigger and listen to events. All that we need to do is to use the `ref` property to register the element.
 
 ```HTML
-<input ref={register('fieldName')} />
+<input {...register('fieldName')} />
 ```
 
 ### Let's create a full form example
@@ -45,10 +45,10 @@ funtion UserForm(){
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input ref={register("name")} />
-      <input ref={register("email")} />
-      <input ref={register("password")} />
-      <input ref={register("confirmPassword")} />
+      <input {...register("name")} />
+      <input {...register("email")} />
+      <input {...register("password")} />
+      <input {...register("confirmPassword")} />
       <button type="submit">Submit</button>
     </form>
   )

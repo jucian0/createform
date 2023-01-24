@@ -16,6 +16,7 @@
 ### ✨ [Demo](https://codesandbox.io/s/useform-2u2ju)
 
 ### 🫶 [Fork this project ](https://github.com/Jucian0/useform/fork)
+
 # UseForm
 
 > Create hooks to manage your forms.
@@ -133,8 +134,8 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input type="email" ref={register('email')} />
-      <input type="password" ref={register('password')} />
+      <input type="email" {...register('email')} />
+      <input type="password" {...register('password')} />
       <button type="submit">Submit</button>
     </form>
   );

@@ -14,16 +14,16 @@
 ### 🏠 [Homepage](https://useform.org)
 
 ### ✨ [Demo](https://codesandbox.io/s/useform-2u2ju)
+
 # UseForm
 
 > Create hooks to manage your forms.
 
-
 UseForm is an open source project that allows you to create forms easily, different from the others options, this package guides you to create custom hooks to manage your forms, you can use the same form in different components without context API.
 
- - As other packages, you can also use yup validation to validate your form.
- - You can also use different approaches to handle your form, like `onSubmit | onChange | debounce`.
- - Less code than other options.
+- As other packages, you can also use yup validation to validate your form.
+- You can also use different approaches to handle your form, like `onSubmit | onChange | debounce`.
+- Less code than other options.
 
 ## Motivation
 
@@ -32,56 +32,60 @@ Today we have a lot of form packages, and this project doesn't pretend to be the
 ## Instalation
 
 ### NPM
+
 ```bash
 npm i @use-form/use-form
 ```
 
 ### YARN
+
 ```bash
 yarn add @use-form/use-form
 ```
 
 ## First step
+
 The first step is to create your form with the `createForm` function, this function returns a hook that you can use to manage your form, wherever you want to use.
 
-``` javascript
-import {createForm} from '@use-form/use-form'
+```javascript
+import { createForm } from '@use-form/use-form';
 
 export const useLoginForm = createForm({
   initialValues: {
     email: 'jucian0@jucian0.com',
     password: 'yourpassword',
-  }
-})
+  },
+});
 ```
 
 ## Second step
+
 The second step is to create a component to render your form, you can use the `useLoginForm` hook to get the form state and manage it.
 
 ```jsx
-   import { useLoginForm } from './useLoginForm.js'
-   
-   const LoginForm = () => {
-      const { handleSubmit, register } = useLoginForm()
+import { useLoginForm } from './useLoginForm.js';
 
-      function onSubmit(values) {
-        console.log(values)
-      }
-   
-      return (
-         <form onSubmit={handleSubmit(onSubmit)}>
-           <input type="email" ref={register('email')} />
-           <input type="password" ref={register('password')}/>
-           <button type="submit">Submit</button>
-         </form>
-      )
-   }
+const LoginForm = () => {
+  const { handleSubmit, register } = useLoginForm();
+
+  function onSubmit(values) {
+    console.log(values);
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input type="email" {...register('email')} />
+      <input type="password" {...register('password')} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
 ```
-
 
 # It's All.
 
 ## Read the full documentation [here](https://useform.org/docs/).
+
 ### [Post](https://dev.to/jucian0/building-forms-with-useform-1cna)
 
 ## 🤝 Contributing

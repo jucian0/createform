@@ -31,6 +31,7 @@ const useForm = createForm({
       },
     ],
   },
+  mode: 'onChange',
 });
 ```
 
@@ -47,13 +48,13 @@ Use dot notation to create advanced objects or to map object values. Type an ent
 
 ```jsx
 function Form() {
-  const { register } = useForm({ mode: 'onChange' });
+  const { register } = useForm();
 
   return (
     <form>
-      <input ref={register('name')} />
-      <input ref={register('address.street')} />
-      <input ref={register('address.city')} />
+      <input {...register('name')} />
+      <input {...register('address.street')} />
+      <input {...register('address.city')} />
     </form>
   );
 }

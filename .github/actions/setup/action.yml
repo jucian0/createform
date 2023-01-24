@@ -16,9 +16,9 @@ runs:
       with:
         fetch-depth: 0
 
-    - name: Setup git user to "jucian0"
+    - name: Setup git user to "🤖 useform bot"
       shell: bash
-      run: git config user.email "juciano@outlook.comm.br" && git config user.name "jucian0"
+      run: git config user.email "-" && git config user.name "🤖 useform bot"
 
     - name: Use Node.js
       uses: actions/setup-node@v3

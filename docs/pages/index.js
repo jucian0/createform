@@ -13,11 +13,11 @@ const createForm = `const useForm = createForm({
     email: "jesse@jesse.com",
     bio: ""
   }
+  mode: "onChange",
 });`;
 
 const useform = `const Controlled: React.FC = () => {
   const { register } = useForm({
-    mode: "onChange",
     onChange: (e) => console.log(e)
   });
 
@@ -26,7 +26,7 @@ const useform = `const Controlled: React.FC = () => {
       <input
         className="form-control"
         autoComplete="off"
-        ref={register("name")}
+        {...register("name")}
       />
     </form>
   )

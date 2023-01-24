@@ -55,9 +55,9 @@ const useAuthForm = createForm({
 
 const { register, state: { values }} = useAuthForm({mode: 'onChange'});
 
-<Input placeholder="Name" ref={register("name")}/>
-<Input placeholder="E-mail" type="email" ref={register("email")}/>
-<Range ref={register("score")}/>
+<Input placeholder="Name" {...register("name")}/>
+<Input placeholder="E-mail" type="email" {...register("email")}/>
+<Range {...register("score")}/>
 <Button onClick={() => console.log(values)}>Submit</Button>
 ```
 
@@ -73,16 +73,7 @@ When working with real application validations forms are very common because thi
 import { createForm } from '@use-form/use-form';
 import * as yup from 'yup';
 
-export const usePersonForm = createForm({
-  initialValues: {
-    name: 'Jesse',
-    email: 'jesse@jesse.com',
-    pets: ['felix', 'lucky'],
-    accepted: false,
-  },
-});
-
-const validation = yup.object().shape({
+const validationSchema = yup.object().shape({
   name: yup.string().required('This field is required'),
   email: yup
     .string()
@@ -92,20 +83,28 @@ const validation = yup.object().shape({
   accept: yup.bool().oneOf([true], 'Field must be checked'),
 });
 
+export const usePersonForm = createForm({
+  initialValues: {
+    name: 'Jesse',
+    email: 'jesse@jesse.com',
+    pets: ['felix', 'lucky'],
+    accepted: false,
+  },
+  mode: 'onChange',
+  validationSchema,
+});
+
 function ControlledForm() {
-  const { register, state } = usePersonForm({
-    validation,
-    mode: 'onChange',
-  });
+  const { register, state } = usePersonForm();
   return (
     <>
-      <input ref={register('name')} />
+      <input {...register('name')} />
       <span>{touched.name && errors.name}</span>
-      <input type="email" ref={register('email')} />
+      <input type="email" {...register('email')} />
       <span>{touched.email && errors.email}</span>
-      <input ref={register('pets.0')} />
+      <input {...register('pets.0')} />
       <span>{touched.pets?.[0] && errors.pets?.[0]}</span>
-      <input type="checkbox" ref={register('accept')} />
+      <input type="checkbox" {...register('accept')} />
       <span>{touched.accept && errors.accept}</span>
     </>
   );
@@ -123,11 +122,11 @@ function StepForm() {
   const { register, state } = usePersonForm();
   return (
     <>
-      <input ref={register('name')} />
-      <input ref={register('email')} />
-      <input ref={register('pets.0')} />
-      <input ref={register('pets.1')} />
-      <input ref={register('accept')} />
+      <input {...register('name')} />
+      <input {...register('email')} />
+      <input {...register('pets.0')} />
+      <input {...register('pets.1')} />
+      <input {...register('accept')} />
     </>
   );
 }

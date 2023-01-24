@@ -128,33 +128,33 @@ export function FormExampleZod() {
           // console.log(e, isValid)
         })}
       >
-        <input type="text" ref={register('email')} />
-        <input type="password" autoComplete="on" ref={register('password')} />
-        <input type="checkbox" ref={register('agree')} />
-        <select ref={register('location.state')}>
+        <input type="text" {...register('email')} />
+        <input type="password" autoComplete="on" {...register('password')} />
+        <input type="checkbox" {...register('agree')} />
+        <select {...register('location.state')}>
           <option value="">Select a state</option>
           <option value="SP">SP</option>
           <option value="RJ">RJ</option>
           <option value="MG">MG</option>
         </select>
-        <div ref={register('gender')}>
+        <div {...register('gender')}>
           <input type="radio" name="gender" id="1" value="masculine" />
           Masculine
           <input type="radio" name="gender" id="2" value="female" />
           Female
         </div>
-        <input type="text" ref={register('location.city')} />
-        <input type="text" ref={register('location.zip')} />
-        <input type="range" ref={register('distance')} />
+        <input type="text" {...register('location.city')} />
+        <input type="text" {...register('location.zip')} />
+        <input type="range" {...register('distance')} />
 
         <Wrapper
           component={Select}
-          ref={register('select')}
+          {...register('select')}
           options={options}
           label="Select"
         />
 
-        <Wrapper component={DatePicker} ref={register('date')} />
+        <Wrapper component={DatePicker} {...register('date')} />
 
         <button type="submit">Submit</button>
         <button onClick={handleEmail} type="button">
@@ -189,11 +189,11 @@ function FormComponent2() {
     <div>
       <h1>Form2</h1>
       <form>
-        <input type="text" ref={register('email')} />
-        <input type="password" ref={register('password')} />
-        <input type="text" ref={register('location.city')} />
-        <input type="text" ref={register('location.state')} />
-        <input type="text" ref={register('location.zip')} />
+        <input type="text" {...register('email')} />
+        <input type="password" {...register('password')} />
+        <input type="text" {...register('location.city')} />
+        <input type="text" {...register('location.state')} />
+        <input type="text" {...register('location.zip')} />
         <button type="submit">Submit</button>
       </form>
     </div>
