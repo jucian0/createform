@@ -4,7 +4,7 @@ import { Button, Stack } from '@chakra-ui/react';
 import { useWizard } from 'react-use-wizard';
 
 export function BasicInfoStep() {
-  const { previousStep, nextStep } = useWizard();
+  const { nextStep } = useWizard();
   const { register, state } = usePersonForm();
   const { touched, errors } = state;
 
