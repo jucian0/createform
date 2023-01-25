@@ -1,5 +1,5 @@
 import { createForm } from '@use-form/use-form';
-import { Button, Input, Stack } from '@chakra-ui/react';
+import { Button, Checkbox, Input, Stack } from '@chakra-ui/react';
 
 const useLoginForm = createForm({
   initialValues: {
@@ -31,7 +31,7 @@ export function FormExample() {
       <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset(onReset)}>
         <Input mt={5} type="text" {...register('email')} />
         <Input mt={5} type="password" {...register('password')} />
-        <Input mt={5} type="checkbox" {...register('agree')} />
+        <Checkbox mt={5} type="checkbox" {...register('agree')} />
         <Input mt={5} type="text" {...register('location.city')} />
         <Input mt={5} type="text" {...register('location.zip')} />
 
