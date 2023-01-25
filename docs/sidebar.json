@@ -131,6 +131,17 @@
                             "relativePath": "/docs/pages/docs/tutorials/creating-forms.mdx"
                         },
                         {
+                            "path": "/home/barbosa/javascript/useform/docs/pages/docs/tutorials/multi-step-form.md",
+                            "name": "multi-step-form.md",
+                            "meta": {
+                                "title": "Multi-step form",
+                                "description": "In this tutorial I want to show you how easily you can build a multi-step form using useForm.",
+                                "tags": "react, form, useform, use-form, debounce, debounced, hook, create, creating-a-form, html, multi-step, multistep"
+                            },
+                            "url": "/docs/tutorials/multi-step-form",
+                            "relativePath": "/docs/pages/docs/tutorials/multi-step-form.md"
+                        },
+                        {
                             "path": "/home/barbosa/javascript/useform/docs/pages/docs/tutorials/reactjs-building-forms.md",
                             "name": "reactjs-building-forms.md",
                             "meta": {
