@@ -159,8 +159,19 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       const ref = React.useRef(null);
 
       React.useEffect(() => {
-        (inputsRefs as any)[name] = ref;
+        inputsRefs[name] = ref;
+        setFieldRefValue(name, defaultValue);
       }, [ref]);
+
+      if (typeof defaultValue === 'boolean') {
+        return {
+          ref,
+          defaultChecked: defaultValue,
+          onChange,
+          onBlur,
+          name,
+        };
+      }
 
       return {
         ref,

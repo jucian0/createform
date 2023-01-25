@@ -142,6 +142,8 @@ export function FormExampleZod() {
           Masculine
           <input type="radio" name="gender" id="2" value="female" />
           Female
+          <input type="radio" name="gender" id="2" value="other" />
+          Other
         </div>
         <input type="text" {...register('location.city')} />
         <input type="text" {...register('location.zip')} />
