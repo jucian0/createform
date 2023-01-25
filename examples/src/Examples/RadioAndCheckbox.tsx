@@ -34,8 +34,10 @@ export function RadioAndCheckboxExample() {
     <Stack p={30}>
       <h1>Form</h1>
       <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset(onReset)}>
-        <Checkbox {...register('agree')}>Agree</Checkbox>
-
+        <label htmlFor="agree">
+          <input type="checkbox" {...register('agree')} />
+          Agree
+        </label>
         <div {...register('gender')}>
           <input type="radio" name="gender" id="1" value="masc" />
           Masc
@@ -44,20 +46,6 @@ export function RadioAndCheckboxExample() {
           <input type="radio" name="gender" id="2" value="other" />
           Other
         </div>
-
-        {/* <>
-          <div {...register('gender')}>
-            <Radio value="masc" name="gender" id="1">
-              Masc
-            </Radio>
-            <Radio value="fem" name="gender" id="2">
-              Fem
-            </Radio>
-            <Radio value="other" name="gender" id="3">
-              Other
-            </Radio>
-          </div>
-        </> */}
 
         <Stack direction="row" spacing={4} justify="center" mt={5}>
           <Button type="submit">Submit</Button>

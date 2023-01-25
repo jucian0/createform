@@ -8,7 +8,7 @@ import { RadioAndCheckboxExample } from './Examples/RadioAndCheckbox';
 export function App() {
   return (
     <ChakraProvider>
-      <RadioAndCheckboxExample />
+      <PersonForm />
     </ChakraProvider>
   );
 }
