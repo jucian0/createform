@@ -6,18 +6,13 @@ import {
   EventChange,
   Field,
   HookArgs,
-  KeyValue,
-  StateOfField,
   Touched,
 } from './Types';
 import * as Dot from './ObjectUtils';
 import { extractRadioElements, isCheckbox, isRadio } from './FieldsUtils';
 import { validate } from './Validate';
 import { StateChange } from '.';
-import {
-  InvalidArgumentException,
-  InvalidOperationException,
-} from './Exception';
+import { InvalidArgumentException } from './Exception';
 import { debounce } from './Debounce';
 
 const defaultValues = {
@@ -134,7 +129,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
         }
         ref.current.value = value;
       } else {
-        throw Error(
+        throw new InvalidArgumentException(
           `Input with name '${name}' is not registered, verify the input name.`
         );
       }

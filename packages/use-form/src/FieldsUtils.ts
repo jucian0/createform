@@ -1,4 +1,4 @@
-import { Field, PrimitiveValue } from './Types';
+import { Field } from './Types';
 
 export function isCheckbox(field: Field): boolean {
   return field.type === 'checkbox';
