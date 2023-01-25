@@ -14,7 +14,10 @@ import * as Dot from './ObjectUtils';
 import { extractRadioElements, isCheckbox, isRadio } from './FieldsUtils';
 import { validate } from './Validate';
 import { StateChange } from '.';
-import { InvalidArgumentException } from './Exception';
+import {
+  InvalidArgumentException,
+  InvalidOperationException,
+} from './Exception';
 import { debounce } from './Debounce';
 
 const defaultValues = {
@@ -124,19 +127,23 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
     function setFieldRefValue(name: string, value: any) {
       const ref = inputsRefs[name];
       if (ref && ref.current) {
-        ref.current.value = value;
         if (isCheckbox(ref.current)) {
           ref.current.checked = value;
         } else if (isRadio(ref.current)) {
-          const radios = extractRadioElements(ref.current);
-          for (const radio of radios) {
-            radio.checked = radio.value === value;
-          }
+          setRadioRefValue(ref, value);
         }
+        ref.current.value = value;
       } else {
         throw Error(
           `Input with name '${name}' is not registered, verify the input name.`
         );
+      }
+    }
+
+    function setRadioRefValue(ref: any, value: string) {
+      const radios = extractRadioElements(ref.current);
+      for (const radio of radios) {
+        radio.checked = radio.value === value;
       }
     }
 
@@ -159,23 +166,14 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       const ref = React.useRef(null);
 
       React.useEffect(() => {
-        inputsRefs[name] = ref;
-        setFieldRefValue(name, defaultValue);
+        if (ref.current) {
+          inputsRefs[name] = ref;
+          setFieldRefValue(name, defaultValue);
+        }
       }, [ref]);
-
-      if (typeof defaultValue === 'boolean') {
-        return {
-          ref,
-          defaultChecked: defaultValue,
-          onChange,
-          onBlur,
-          name,
-        };
-      }
 
       return {
         ref,
-        defaultValue,
         onChange,
         onBlur,
         name,
@@ -289,7 +287,7 @@ export function createForm<T extends CreateFormArgs<T['initialValues']>>(
       try {
         $store.patch(`errors.${name}`, message).notify(shouldNotify);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
 
