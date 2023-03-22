@@ -90,7 +90,7 @@ object type. The same process is realized with errors objects and touched object
 ## What to expect with Createform
 
 - **Performer forms** - Createform provides a way to complete a form and submit it without any rerender, by default Createform creates uncontrolled forms.
-- **Easy to write** - Createform has an easy way to write forms with less code. register function return necessary input's properties and it is all we need to manage all events in a native HTML `input`. Writhe forms without form tag.
+- **Easy to write** - Createform has an easy way to write forms with less code. register function return necessary input's properties and it is all we need to manage all events in a native HTML `input`. Write forms without form tag.
 - **Easy validation** - By default Createform uses yup validation, we can write complex validation without effort.
 
 ## Installation
