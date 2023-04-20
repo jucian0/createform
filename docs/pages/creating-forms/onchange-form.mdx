@@ -5,9 +5,7 @@ tags: react, form, useform, use-form, hook, controlled-form, controlled
 ---
 
 import Callout from "../../components/Callout";
-
 import { FormDemo } from "../../components/OnChangeDemo";
-
 import { Tab, Tabs } from "../../components/Tabs";
 
 # OnChange mode
@@ -22,17 +20,17 @@ import { createForm } from "@createform/react";
 import { z } from "zod";
 
 const useForm = createForm({
-initialValues: {
-email: "",
-password: "",
-terms: false,
-},
-mode: "onChange",
-validationSchema: z.object({
-email: z.string().email(),
-password: z.string().min(8),
-terms: z.boolean(),
-}),
+  initialValues: {
+    email: "",
+    password: "",
+    terms: false,
+  },
+  mode: "onChange",
+  validationSchema: z.object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    terms: z.boolean(),
+  }),
 });
 
 function FormDemo() {
@@ -92,6 +90,8 @@ function FormDemo() {
           </a>
         </label>
       </div>
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
     </form>
   )
 }
