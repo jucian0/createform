@@ -119,16 +119,6 @@ export type RegisterArgs<T> =
 
 export type FieldName<T extends CreateFormArgs<T>> = Values<T>;
 
-export type Paths<ObjectType> = {
-  [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
-    ?
-        | `${Key}`
-        | `${Key}.${Paths<ObjectType[Key]> extends infer U extends string
-            ? U
-            : never}`
-    : `${Key}`;
-}[keyof ObjectType & (string | number)];
-
 export type Form<T> = (hookArgs?: HookArgs<T>) => {
   $form: Store<any>;
   state: State<T>;
@@ -149,3 +139,28 @@ export type Form<T> = (hookArgs?: HookArgs<T>) => {
   resetTouched: () => void;
   resetValues: () => void;
 };
+
+/**
+ * Get the value path, and turn it into a type.
+ */
+type IsTuple<T extends ReadonlyArray<any>> = number extends T["length"]
+  ? false
+  : true;
+
+type TupleKey<T extends ReadonlyArray<any>> = Exclude<keyof T, keyof any[]>;
+
+type ArrayKey = number;
+
+type PathImpl<K extends string | number, V> = V extends PrimitiveValue
+  ? `${K}`
+  : `${K}` | `${K}.${Paths<V>}`;
+
+export type Paths<T> = T extends ReadonlyArray<infer V>
+  ? IsTuple<T> extends true
+    ? {
+        [K in TupleKey<T>]-?: PathImpl<K & string, T[K]>;
+      }[TupleKey<T>]
+    : PathImpl<ArrayKey, V>
+  : {
+      [K in keyof T]-?: PathImpl<K & string, T[K]>;
+    }[keyof T];
