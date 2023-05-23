@@ -21,14 +21,7 @@ const data = {
 };
 
 export function FormDataWay() {
-  const {
-    register,
-    errors,
-    getErrors,
-    setFieldValue,
-    setFieldsValue,
-    getValues,
-  } = useForm({
+  const { register, errors, getErrors, setFieldValue, getValues } = useForm({
     initialValues: data,
     onSubmit,
     validationSchema,
