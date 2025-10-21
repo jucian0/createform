@@ -41,14 +41,15 @@ export default function Page(props: Route.ComponentProps) {
   return (
     <DocsLayout
       nav={{
-        title: "CreateForm",
+        title: <img src="/images/logo.svg" alt="Createform" className="w-20 h-auto" />,
+
       }}
       tree={tree as PageTree.Root}
     >
-      <title>{page.data.title}</title>
+      <title>{"Createform - " + page.data.title}</title>
       <meta name="description" content={page.data.description} />
       <DocsPage toc={toc}>
-        <DocsTitle>{page.data.title}</DocsTitle>
+        <DocsTitle>{"Createform - " + page.data.title}</DocsTitle>
         <DocsDescription>{page.data.description}</DocsDescription>
         <DocsBody>
           <Mdx components={getMDXComponents()} />

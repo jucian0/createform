@@ -1,0 +1,17 @@
+{
+  "root": true,
+  "pages": [
+    "index",
+    "quick-start",
+    "best-practices",
+    "migration",
+    "api-reference",
+    "createform",
+    "useform",
+    "tutorials",
+    "examples",
+    "troubleshooting",
+    "about"
+  ],
+  "defaultOpened": true
+}

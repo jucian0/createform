@@ -128,10 +128,9 @@ Common issues and their solutions when working with CreateForm.
      validationSchema: expensiveValidation,
    });
 
-   // ⚡ Faster: debounced mode
+   // ⚡ Faster: debounce mode
    const useForm = createForm({
-     mode: 'debounced',
-     debounceMs: 300,
+     mode: 'debounce', // Built-in 500ms debounce
      validationSchema: expensiveValidation,
    });
    ```
