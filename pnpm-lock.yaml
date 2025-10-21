@@ -74,12 +74,18 @@ importers:
       react:
         specifier: 19.2.0
         version: 19.2.0
+      react-datepicker:
+        specifier: 8.8.0
+        version: 8.8.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
       react-router:
         specifier: 7.6.3
         version: 7.6.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-select:
+        specifier: 5.10.2
+        version: 5.10.2(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       shiki:
         specifier: 3.8.0
         version: 3.8.0
@@ -1705,6 +1711,12 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
+
+  '@floating-ui/react@0.27.16':
+    resolution: {integrity: sha512-9O8N4SeG2z++TSM8QA/KTeKFBVCNEz/AGS7gWPJf6KFRzmRWixFRnCnkPHRDwSVZW6QPDO6uT0P2SpWNKCc9/g==}
+    peerDependencies:
+      react: '>=17.0.0'
+      react-dom: '>=17.0.0'
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
@@ -6380,6 +6392,12 @@ packages:
       react: ^16.9.0 || ^17 || ^18
       react-dom: ^16.9.0 || ^17 || ^18
 
+  react-datepicker@8.8.0:
+    resolution: {integrity: sha512-rIJLhww1B5cQY7GYEfSEXvldlGp+GIVU5oE7lxqeK4fmdv5F9bVndplDmblMCvfSMazXmeJ6OHBvRs/PkEhwUQ==}
+    peerDependencies:
+      react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
+
   react-diff-viewer-continued@4.0.6:
     resolution: {integrity: sha512-QtJuaAlAu9w7vLrEvjkUD4XFY/uvA4k4kfRI0SP0xQXLjOXw2QuE/Cg6VSE6qdJCwIWw8FZl5p7NJjW4yVuEUA==}
     engines: {node: '>= 16'}
@@ -6492,6 +6510,12 @@ packages:
     peerDependenciesMeta:
       react-dom:
         optional: true
+
+  react-select@5.10.2:
+    resolution: {integrity: sha512-Z33nHdEFWq9tfnfVXaiM12rbJmk+QjFEztWLtmXqQhz6Al4UZZ9xc0wiatmGtUOCCnHN0WizL3tCMYRENX4rVQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-select@5.7.2:
     resolution: {integrity: sha512-cTlJkQ8YjV6T/js8wW0owTzht0hHGABh29vjLscY4HfZGkv7hc3FFTmRp9NzY/Ib1uQ36GieAKEjxpHdpCFpcA==}
@@ -7053,6 +7077,9 @@ packages:
 
   synchronous-promise@2.0.17:
     resolution: {integrity: sha512-AsS729u2RHUfEra9xJrE39peJcc2stq2+poBXX8bcM08Y6g9j/i/PUzwNQqkaJde7Ntg1TO7bSREbR5sdosQ+g==}
+
+  tabbable@6.2.0:
+    resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
 
   table@6.9.0:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==}
@@ -9032,6 +9059,22 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@emotion/react@11.10.6(@types/react@19.2.2)(react@19.2.0)':
+    dependencies:
+      '@babel/runtime': 7.28.4
+      '@emotion/babel-plugin': 11.13.5
+      '@emotion/cache': 11.14.0
+      '@emotion/serialize': 1.3.3
+      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@19.2.0)
+      '@emotion/utils': 1.4.2
+      '@emotion/weak-memoize': 0.3.1
+      hoist-non-react-statics: 3.3.2
+      react: 19.2.0
+    optionalDependencies:
+      '@types/react': 19.2.2
+    transitivePeerDependencies:
+      - supports-color
+
   '@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0)':
     dependencies:
       '@babel/runtime': 7.28.4
@@ -9352,6 +9395,14 @@ snapshots:
       '@floating-ui/dom': 1.7.4
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
+
+  '@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@floating-ui/react-dom': 2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@floating-ui/utils': 0.2.10
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      tabbable: 6.2.0
 
   '@floating-ui/utils@0.2.10': {}
 
@@ -10716,6 +10767,10 @@ snapshots:
   '@types/react-transition-group@4.4.12(@types/react@18.0.31)':
     dependencies:
       '@types/react': 18.0.31
+
+  '@types/react-transition-group@4.4.12(@types/react@19.2.2)':
+    dependencies:
+      '@types/react': 19.2.2
 
   '@types/react@18.0.31':
     dependencies:
@@ -15253,6 +15308,14 @@ snapshots:
       react-onclickoutside: 6.13.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-popper: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
+  react-datepicker@8.8.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    dependencies:
+      '@floating-ui/react': 0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      clsx: 2.1.1
+      date-fns: 4.1.0
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+
   react-diff-viewer-continued@4.0.6(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@emotion/css': 11.13.5
@@ -15406,6 +15469,23 @@ snapshots:
     optionalDependencies:
       react-dom: 19.2.0(react@19.2.0)
 
+  react-select@5.10.2(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    dependencies:
+      '@babel/runtime': 7.28.4
+      '@emotion/cache': 11.14.0
+      '@emotion/react': 11.10.6(@types/react@19.2.2)(react@19.2.0)
+      '@floating-ui/dom': 1.7.4
+      '@types/react-transition-group': 4.4.12(@types/react@19.2.2)
+      memoize-one: 6.0.0
+      prop-types: 15.8.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-transition-group: 4.4.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      use-isomorphic-layout-effect: 1.2.1(@types/react@19.2.2)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+
   react-select@5.7.2(@types/react@18.0.31)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.28.4
@@ -15467,6 +15547,15 @@ snapshots:
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+
+  react-transition-group@4.4.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    dependencies:
+      '@babel/runtime': 7.28.4
+      dom-helpers: 5.2.1
+      loose-envify: 1.4.0
+      prop-types: 15.8.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
 
   react-use-wizard@2.2.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
@@ -16141,6 +16230,8 @@ snapshots:
 
   synchronous-promise@2.0.17: {}
 
+  tabbable@6.2.0: {}
+
   table@6.9.0:
     dependencies:
       ajv: 8.17.1
@@ -16621,6 +16712,12 @@ snapshots:
       react: 18.2.0
     optionalDependencies:
       '@types/react': 18.0.31
+
+  use-isomorphic-layout-effect@1.2.1(@types/react@19.2.2)(react@19.2.0):
+    dependencies:
+      react: 19.2.0
+    optionalDependencies:
+      '@types/react': 19.2.2
 
   use-sidecar@1.1.3(@types/react@18.0.31)(react@18.2.0):
     dependencies:
