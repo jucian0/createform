@@ -4,9 +4,9 @@ description: Your first step to creating forms.
 tags: react, form, useform, createform, use-form, hook
 ---
 
-Hey there!
+Welcome to CreateForm! 🚀
 
-We are glad to see you here, in this first page you will find some steps for creating forms quickly.
+Let's get you building powerful React forms in just a few minutes. This guide will walk you through the essentials to get your first form up and running.
 
 ## Description
 
@@ -76,16 +76,196 @@ object type. The same process is realized with errors objects and touched object
 
 ## Installation
 
-```bash copy
-npm install --save @createform/react
-```
+Install CreateForm using your preferred package manager:
 
+<Tabs items={["npm", "yarn", "pnpm", "bun"]}>
+<Tab>
+```bash copy
+npm install @createform/react
+```
+</Tab>
+<Tab>
 ```bash copy
 yarn add @createform/react
 ```
+</Tab>
+<Tab>
+```bash copy
+pnpm add @createform/react
+```
+</Tab>
+<Tab>
+```bash copy
+bun add @createform/react
+```
+</Tab>
+</Tabs>
 
-## Usage
+## Your First Form
 
-With Createform you can create a hook form and use it wherever you want,
+CreateForm offers two approaches. Let's start with the simplest one:
+
+### Option 1: useForm() - The Simple Way
+
+Perfect for straightforward forms with minimal setup:
+
+```tsx copy
+import { useForm } from "@createform/react";
+
+function LoginForm() {
+  const { register } = useForm({
+    initialValues: { email: "", password: "" },
+    onSubmit: (data) => {
+      console.log("Form submitted:", data);
+      // Handle your form submission here
+    },
+  });
+
+  return (
+    <form {...register()}>
+      <div>
+        <label htmlFor="email">Email</label>
+        <input 
+          id="email"
+          name="email" 
+          type="email" 
+          placeholder="your@email.com" 
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="password">Password</label>
+        <input 
+          id="password"
+          name="password" 
+          type="password" 
+          placeholder="••••••••" 
+        />
+      </div>
+      
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+```
+
+### Option 2: createForm() - The Powerful Way
+
+For complex forms that you want to reuse across components:
+
+```tsx copy
+import { createForm } from "@createform/react";
+
+// 1. Create your custom form hook
+const useLoginForm = createForm({
+  initialValues: { 
+    email: "", 
+    password: "" 
+  },
+});
+
+// 2. Use it in your component
+function LoginForm() {
+  const { register, handleSubmit } = useLoginForm();
+
+  function onSubmit(data) {
+    console.log("Form submitted:", data);
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input 
+        type="email" 
+        placeholder="Email"
+        {...register("email")} 
+      />
+      <input 
+        type="password" 
+        placeholder="Password"
+        {...register("password")} 
+      />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+```
+
+## Adding Validation
+
+Let's add some validation to make your forms robust:
+
+```tsx copy
+import { createForm } from "@createform/react";
+import { z } from "zod"; // You can also use Yup
+
+// Define your validation schema
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+const useLoginForm = createForm({
+  initialValues: { email: "", password: "" },
+  validationSchema: loginSchema,
+  mode: "onChange", // Validate as user types
+});
+
+function LoginForm() {
+  const { register, handleSubmit, state } = useLoginForm();
+  const { errors, touched } = state;
+
+  return (
+    <form onSubmit={handleSubmit(console.log)}>
+      <div>
+        <input 
+          type="email" 
+          placeholder="Email"
+          {...register("email")} 
+        />
+        {touched.email && errors.email && (
+          <span style={{ color: 'red' }}>{errors.email}</span>
+        )}
+      </div>
+      
+      <div>
+        <input 
+          type="password" 
+          placeholder="Password"
+          {...register("password")} 
+        />
+        {touched.password && errors.password && (
+          <span style={{ color: 'red' }}>{errors.password}</span>
+        )}
+      </div>
+      
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+```
+
+## What's Next?
+
+🎉 **Congratulations!** You've just created your first CreateForm form. Here are some next steps:
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+
+### 📚 **Learn More**
+- [API Reference](/docs/api-reference/create-form) - Complete API documentation
+- [Best Practices](/docs/best-practices) - Tips for production-ready forms
+- [Validation Guide](/docs/createform/validation/form-validation) - Advanced validation patterns
+
+### 🔧 **Explore Features**
+- [Form Modes](/docs/createform/creating-forms/onchange-form) - onChange, onSubmit, debounced
+- [Nested Objects](/docs/createform/how-it-works) - Handle complex data structures
+- [Custom Components](/docs/createform/using-your-form/custom-components) - Integrate third-party inputs
+
+</div>
+
+## Need Help?
+
+- 💬 [GitHub Discussions](https://github.com/jucian0/createform/discussions) - Community support
+- 🐛 [Issue Tracker](https://github.com/jucian0/createform/issues) - Bug reports
+- 📦 [Examples](https://github.com/jucian0/createform/tree/main/examples) - Real-world examples
 
 

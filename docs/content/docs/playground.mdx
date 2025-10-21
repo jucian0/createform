@@ -1,0 +1,1887 @@
+---
+title: Interactive Playground  
+description: Try CreateForm in your browser with live examples and code editing
+tags: react, form, playground, interactive, live-coding
+---
+
+# Interactive Playground
+
+Experiment with CreateForm directly in your browser! Edit the code and see results instantly.
+
+<Callout type="info">
+**Live Environment**: All examples below are fully interactive. Modify the code on the left to see changes in real-time on the right.
+</Callout>
+
+## 🎯 **Basic Form Playground**
+
+Try the fundamentals of CreateForm:
+
+<Tabs items={["Live Demo", "Edit Code", "Learn More"]}>
+<Tab>
+
+```tsx live
+import { createForm } from "@createform/react";
+
+const useContactForm = createForm({
+  initialValues: {
+    name: "",
+    email: "",
+    message: "",
+  },
+  mode: "onChange",
+});
+
+export default function ContactForm() {
+  const { register, handleSubmit, state } = useContactForm();
+  const { errors, touched, isValid } = state;
+
+  const onSubmit = (data) => {
+    alert(`Form submitted! Name: ${data.name}, Email: ${data.email}`);
+  };
+
+  return (
+    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Name:</label>
+          <input 
+            {...register("name")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: '1px solid #ccc',
+              borderRadius: '4px'
+            }}
+            placeholder="Enter your name"
+          />
+          {touched.name && errors.name && (
+            <div style={{ color: 'red', fontSize: '14px' }}>
+              {errors.name}
+            </div>
+          )}
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Email:</label>
+          <input 
+            type="email"
+            {...register("email")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: '1px solid #ccc',
+              borderRadius: '4px'
+            }}
+            placeholder="Enter your email"
+          />
+          {touched.email && errors.email && (
+            <div style={{ color: 'red', fontSize: '14px' }}>
+              {errors.email}
+            </div>
+          )}
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Message:</label>
+          <textarea 
+            {...register("message")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              minHeight: '100px'
+            }}
+            placeholder="Enter your message"
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          disabled={!isValid}
+          style={{
+            backgroundColor: isValid ? '#2EC4B6' : '#ccc',
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: isValid ? 'pointer' : 'not-allowed'
+          }}
+        >
+          Submit Form
+        </button>
+      </form>
+    </div>
+  );
+}
+```
+
+</Tab>
+<Tab>
+
+**Try modifying this code:**
+
+1. **Add validation** by including a `validationSchema`
+2. **Change validation mode** from `"onChange"` to `"onBlur"`  
+3. **Add new fields** like phone number or website
+4. **Customize the styling** to match your design
+
+**Ideas to experiment with:**
+- Add required field validation
+- Include email format validation  
+- Add character limits for the message
+- Change the submit button behavior
+
+</Tab>
+<Tab>
+
+**What you're seeing:**
+
+- **`createForm`**: Creates a form hook with initial values
+- **`register`**: Connects form fields to the form state
+- **`handleSubmit`**: Handles form submission with validation
+- **`state`**: Contains current form state (errors, touched, isValid)
+
+**Key concepts:**
+- Forms start with `initialValues` 
+- The `mode` controls when validation runs
+- Field registration is automatic with `register()`
+- Form state updates in real-time
+
+</Tab>
+</Tabs>
+
+---
+
+## 🔍 **Validation Playground**
+
+Experiment with different validation approaches:
+
+<Tabs items={["Zod Validation", "Yup Validation", "Custom Validation"]}>
+<Tab>
+
+```tsx live
+import { createForm } from "@createform/react";
+import { z } from "zod";
+
+// Zod schema definition
+const userSchema = z.object({
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .max(20, "Username must not exceed 20 characters")
+    .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
+  
+  email: z
+    .string()
+    .email("Please enter a valid email address"),
+  
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/(?=.*[a-z])/, "Password must contain at least one lowercase letter")
+    .regex(/(?=.*[A-Z])/, "Password must contain at least one uppercase letter")
+    .regex(/(?=.*\d)/, "Password must contain at least one number"),
+  
+  confirmPassword: z.string(),
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
+});
+
+const useUserForm = createForm({
+  initialValues: {
+    username: "",
+    email: "",  
+    password: "",
+    confirmPassword: "",
+  },
+  validationSchema: userSchema,
+  mode: "onChange",
+});
+
+export default function UserRegistrationForm() {
+  const { register, handleSubmit, state } = useUserForm();
+  const { errors, touched, isValid } = state;
+
+  const onSubmit = (data) => {
+    console.log("User registered:", data);
+    alert("Registration successful!");
+  };
+
+  return (
+    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Username Field */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Username:</label>
+          <input 
+            {...register("username")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.username && errors.username ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Enter username"
+          />
+          {touched.username && errors.username && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.username}
+            </div>
+          )}
+        </div>
+
+        {/* Email Field */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Email:</label>
+          <input 
+            type="email"
+            {...register("email")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.email && errors.email ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Enter email"
+          />
+          {touched.email && errors.email && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.email}
+            </div>
+          )}
+        </div>
+
+        {/* Password Field */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Password:</label>
+          <input 
+            type="password"
+            {...register("password")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.password && errors.password ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Enter password"
+          />
+          {touched.password && errors.password && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.password}
+            </div>
+          )}
+        </div>
+
+        {/* Confirm Password Field */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Confirm Password:</label>
+          <input 
+            type="password"
+            {...register("confirmPassword")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.confirmPassword && errors.confirmPassword ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Confirm password"
+          />
+          {touched.confirmPassword && errors.confirmPassword && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.confirmPassword}
+            </div>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <button 
+          type="submit" 
+          disabled={!isValid}
+          style={{
+            backgroundColor: isValid ? '#2EC4B6' : '#ccc',
+            color: 'white',
+            padding: '12px 24px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: isValid ? 'pointer' : 'not-allowed',
+            width: '100%'
+          }}
+        >
+          Register User
+        </button>
+
+        {/* Validation Status */}
+        <div style={{ marginTop: '1rem', fontSize: '14px' }}>
+          Form Status: {isValid ? '✅ Valid' : '❌ Invalid'}
+        </div>
+      </form>
+    </div>
+  );
+}
+```
+
+</Tab>
+<Tab>
+
+```tsx live
+import { createForm } from "@createform/react";
+import * as Yup from "yup";
+
+// Yup schema definition
+const profileSchema = Yup.object().shape({
+  firstName: Yup
+    .string()
+    .required("First name is required")
+    .min(2, "First name must be at least 2 characters"),
+  
+  lastName: Yup
+    .string()
+    .required("Last name is required")
+    .min(2, "Last name must be at least 2 characters"),
+  
+  age: Yup
+    .number()
+    .typeError("Age must be a number")
+    .required("Age is required")
+    .min(13, "You must be at least 13 years old")
+    .max(120, "Please enter a valid age"),
+  
+  website: Yup
+    .string()
+    .url("Please enter a valid URL")
+    .nullable(),
+    
+  bio: Yup
+    .string()
+    .max(500, "Bio cannot exceed 500 characters")
+    .nullable(),
+});
+
+const useProfileForm = createForm({
+  initialValues: {
+    firstName: "",
+    lastName: "",
+    age: "",
+    website: "",
+    bio: "",
+  },
+  validationSchema: profileSchema,
+  mode: "onBlur",
+});
+
+export default function ProfileForm() {
+  const { register, handleSubmit, state } = useProfileForm();
+  const { errors, touched, values } = state;
+
+  const onSubmit = (data) => {
+    console.log("Profile updated:", data);
+    alert("Profile updated successfully!");
+  };
+
+  const bioCharacterCount = values.bio?.length || 0;
+
+  return (
+    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Name Fields */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div>
+            <label>First Name:</label>
+            <input 
+              {...register("firstName")}
+              style={{ 
+                width: '100%', 
+                padding: '8px', 
+                border: `1px solid ${touched.firstName && errors.firstName ? 'red' : '#ccc'}`,
+                borderRadius: '4px'
+              }}
+              placeholder="First name"
+            />
+            {touched.firstName && errors.firstName && (
+              <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+                {errors.firstName}
+              </div>
+            )}
+          </div>
+          
+          <div>
+            <label>Last Name:</label>
+            <input 
+              {...register("lastName")}
+              style={{ 
+                width: '100%', 
+                padding: '8px', 
+                border: `1px solid ${touched.lastName && errors.lastName ? 'red' : '#ccc'}`,
+                borderRadius: '4px'
+              }}
+              placeholder="Last name"
+            />
+            {touched.lastName && errors.lastName && (
+              <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+                {errors.lastName}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Age Field */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Age:</label>
+          <input 
+            type="number"
+            {...register("age")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.age && errors.age ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Enter your age"
+          />
+          {touched.age && errors.age && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.age}
+            </div>
+          )}
+        </div>
+
+        {/* Website Field */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Website (Optional):</label>
+          <input 
+            type="url"
+            {...register("website")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.website && errors.website ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="https://your-website.com"
+          />
+          {touched.website && errors.website && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.website}
+            </div>
+          )}
+        </div>
+
+        {/* Bio Field */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Bio (Optional):</label>
+          <textarea 
+            {...register("bio")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.bio && errors.bio ? 'red' : '#ccc'}`,
+              borderRadius: '4px',
+              minHeight: '100px',
+              resize: 'vertical'
+            }}
+            placeholder="Tell us about yourself..."
+          />
+          <div style={{ 
+            fontSize: '12px', 
+            color: bioCharacterCount > 500 ? 'red' : '#666',
+            textAlign: 'right',
+            marginTop: '4px'
+          }}>
+            {bioCharacterCount}/500 characters
+          </div>
+          {touched.bio && errors.bio && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.bio}
+            </div>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <button 
+          type="submit"
+          style={{
+            backgroundColor: '#2EC4B6',
+            color: 'white',
+            padding: '12px 24px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            width: '100%'
+          }}
+        >
+          Update Profile
+        </button>
+      </form>
+    </div>
+  );
+}
+```
+
+</Tab>
+<Tab>
+
+```tsx live
+import { createForm } from "@createform/react";
+
+// Custom validation functions
+const customValidations = {
+  required: (value, message = "This field is required") => {
+    if (!value || value.toString().trim() === "") {
+      return message;
+    }
+    return null;
+  },
+  
+  minLength: (min) => (value, message) => {
+    if (value && value.length < min) {
+      return message || `Must be at least ${min} characters`;
+    }
+    return null;
+  },
+  
+  isValidEmail: (value, message = "Please enter a valid email") => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (value && !emailRegex.test(value)) {
+      return message;
+    }
+    return null;
+  },
+  
+  matchesField: (fieldToMatch) => (value, message, formValues) => {
+    if (value && value !== formValues[fieldToMatch]) {
+      return message || `This field must match ${fieldToMatch}`;
+    }
+    return null;
+  },
+  
+  isStrongPassword: (value, message = "Password is not strong enough") => {
+    if (!value) return null;
+    
+    const hasUpper = /[A-Z]/.test(value);
+    const hasLower = /[a-z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecial = /[!@#$%^&*]/.test(value);
+    const isLongEnough = value.length >= 8;
+    
+    if (!hasUpper || !hasLower || !hasNumber || !hasSpecial || !isLongEnough) {
+      return message;
+    }
+    
+    return null;
+  }
+};
+
+// Custom validation schema
+const customValidationSchema = (values) => {
+  const errors = {};
+  
+  // Username validation
+  const usernameError = 
+    customValidations.required(values.username, "Username is required") ||
+    customValidations.minLength(3)(values.username, "Username must be at least 3 characters");
+  if (usernameError) errors.username = usernameError;
+  
+  // Email validation
+  const emailError = 
+    customValidations.required(values.email, "Email is required") ||
+    customValidations.isValidEmail(values.email);
+  if (emailError) errors.email = emailError;
+  
+  // Password validation
+  const passwordError = 
+    customValidations.required(values.password, "Password is required") ||
+    customValidations.isStrongPassword(values.password);
+  if (passwordError) errors.password = passwordError;
+  
+  // Confirm password validation
+  const confirmPasswordError = 
+    customValidations.required(values.confirmPassword, "Please confirm your password") ||
+    customValidations.matchesField("password")(values.confirmPassword, "Passwords don't match", values);
+  if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
+  
+  return errors;
+};
+
+const useCustomForm = createForm({
+  initialValues: {
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  },
+  validationSchema: customValidationSchema,
+  mode: "onChange",
+});
+
+export default function CustomValidationForm() {
+  const { register, handleSubmit, state } = useCustomForm();
+  const { errors, touched, values, isValid } = state;
+
+  // Password strength indicator
+  const getPasswordStrength = (password) => {
+    if (!password) return { strength: 0, label: "No password" };
+    
+    let score = 0;
+    const checks = [
+      /[a-z]/.test(password), // lowercase
+      /[A-Z]/.test(password), // uppercase  
+      /\d/.test(password),    // number
+      /[!@#$%^&*]/.test(password), // special
+      password.length >= 8,   // length
+    ];
+    
+    score = checks.filter(Boolean).length;
+    
+    const labels = ["Very Weak", "Weak", "Fair", "Good", "Strong"];
+    const colors = ["#ff4444", "#ff8800", "#ffbb00", "#88cc00", "#44cc44"];
+    
+    return { 
+      strength: score, 
+      label: labels[score - 1] || "No password",
+      color: colors[score - 1] || "#ccc"
+    };
+  };
+
+  const passwordStrength = getPasswordStrength(values.password);
+
+  const onSubmit = (data) => {
+    console.log("Custom validation form submitted:", data);
+    alert("Registration successful!");
+  };
+
+  return (
+    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Username */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Username:</label>
+          <input 
+            {...register("username")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.username && errors.username ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Enter username"
+          />
+          {touched.username && errors.username && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.username}
+            </div>
+          )}
+        </div>
+
+        {/* Email */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Email:</label>
+          <input 
+            type="email"
+            {...register("email")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.email && errors.email ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Enter email"
+          />
+          {touched.email && errors.email && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.email}
+            </div>
+          )}
+        </div>
+
+        {/* Password */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Password:</label>
+          <input 
+            type="password"
+            {...register("password")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.password && errors.password ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Enter password"
+          />
+          
+          {/* Password strength indicator */}
+          {values.password && (
+            <div style={{ marginTop: '8px' }}>
+              <div style={{ 
+                height: '4px', 
+                backgroundColor: '#eee', 
+                borderRadius: '2px',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  width: `${(passwordStrength.strength / 5) * 100}%`,
+                  height: '100%',
+                  backgroundColor: passwordStrength.color,
+                  transition: 'all 0.3s ease'
+                }} />
+              </div>
+              <div style={{ 
+                fontSize: '12px', 
+                color: passwordStrength.color,
+                marginTop: '4px'
+              }}>
+                Password strength: {passwordStrength.label}
+              </div>
+            </div>
+          )}
+          
+          {touched.password && errors.password && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.password}
+            </div>
+          )}
+        </div>
+
+        {/* Confirm Password */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Confirm Password:</label>
+          <input 
+            type="password"
+            {...register("confirmPassword")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: `1px solid ${touched.confirmPassword && errors.confirmPassword ? 'red' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
+            placeholder="Confirm password"
+          />
+          {touched.confirmPassword && errors.confirmPassword && (
+            <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+              {errors.confirmPassword}
+            </div>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <button 
+          type="submit" 
+          disabled={!isValid}
+          style={{
+            backgroundColor: isValid ? '#2EC4B6' : '#ccc',
+            color: 'white',
+            padding: '12px 24px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: isValid ? 'pointer' : 'not-allowed',
+            width: '100%'
+          }}
+        >
+          Register
+        </button>
+
+        {/* Form Status */}
+        <div style={{ 
+          marginTop: '1rem', 
+          fontSize: '14px',
+          padding: '8px',
+          borderRadius: '4px',
+          backgroundColor: isValid ? '#e8f5e8' : '#ffeaea',
+          color: isValid ? '#2e7d2e' : '#cc0000'
+        }}>
+          Form Status: {isValid ? '✅ All fields valid' : '❌ Please fix errors above'}
+        </div>
+      </form>
+    </div>
+  );
+}
+```
+
+</Tab>
+</Tabs>
+
+---
+
+## 🔄 **Dynamic Forms Playground**
+
+Build forms that change based on user input:
+
+<Tabs items={["Conditional Fields", "Dynamic Arrays", "Multi-Step"]}>
+<Tab>
+
+```tsx live
+import { createForm } from "@createform/react";
+import { useState } from "react";
+
+const useDynamicForm = createForm({
+  initialValues: {
+    userType: "",
+    // Student fields
+    studentId: "",
+    school: "",
+    graduationYear: "",
+    // Professional fields
+    company: "",
+    jobTitle: "",
+    experience: "",
+    // General fields
+    name: "",
+    email: "",
+    subscribe: false,
+  },
+  mode: "onChange",
+});
+
+export default function ConditionalFieldsForm() {
+  const { register, handleSubmit, state, setFieldValue } = useDynamicForm();
+  const { values, errors, touched } = state;
+
+  const handleUserTypeChange = (type) => {
+    setFieldValue("userType", type);
+    
+    // Clear other fields when switching user type
+    if (type === "student") {
+      setFieldValue("company", "");
+      setFieldValue("jobTitle", "");
+      setFieldValue("experience", "");
+    } else if (type === "professional") {
+      setFieldValue("studentId", "");
+      setFieldValue("school", "");
+      setFieldValue("graduationYear", "");
+    }
+  };
+
+  const onSubmit = (data) => {
+    console.log("Dynamic form submitted:", data);
+    alert(`Registration successful as ${data.userType}!`);
+  };
+
+  return (
+    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* User Type Selection */}
+        <div style={{ marginBottom: '2rem' }}>
+          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+            I am a:
+          </label>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input 
+                type="radio"
+                name="userType"
+                value="student"
+                checked={values.userType === "student"}
+                onChange={(e) => handleUserTypeChange(e.target.value)}
+              />
+              Student
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input 
+                type="radio"
+                name="userType"
+                value="professional"
+                checked={values.userType === "professional"}
+                onChange={(e) => handleUserTypeChange(e.target.value)}
+              />
+              Professional
+            </label>
+          </div>
+        </div>
+
+        {/* Common Fields */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Full Name:</label>
+          <input 
+            {...register("name")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: '1px solid #ccc',
+              borderRadius: '4px'
+            }}
+            placeholder="Enter your full name"
+          />
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Email:</label>
+          <input 
+            type="email"
+            {...register("email")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: '1px solid #ccc',
+              borderRadius: '4px'
+            }}
+            placeholder="Enter your email"
+          />
+        </div>
+
+        {/* Student-specific fields */}
+        {values.userType === "student" && (
+          <div style={{ 
+            backgroundColor: '#f0f8ff', 
+            padding: '1rem', 
+            borderRadius: '8px',
+            marginBottom: '1rem'
+          }}>
+            <h3 style={{ margin: '0 0 1rem 0', color: '#2EC4B6' }}>
+              Student Information
+            </h3>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Student ID:</label>
+              <input 
+                {...register("studentId")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+                placeholder="Enter your student ID"
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label>School/University:</label>
+              <input 
+                {...register("school")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+                placeholder="Enter your school name"
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Expected Graduation Year:</label>
+              <select 
+                {...register("graduationYear")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+              >
+                <option value="">Select year</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Professional-specific fields */}
+        {values.userType === "professional" && (
+          <div style={{ 
+            backgroundColor: '#f8fff0', 
+            padding: '1rem', 
+            borderRadius: '8px',
+            marginBottom: '1rem'
+          }}>
+            <h3 style={{ margin: '0 0 1rem 0', color: '#2EC4B6' }}>
+              Professional Information
+            </h3>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Company:</label>
+              <input 
+                {...register("company")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+                placeholder="Enter your company name"
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Job Title:</label>
+              <input 
+                {...register("jobTitle")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+                placeholder="Enter your job title"
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Years of Experience:</label>
+              <select 
+                {...register("experience")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+              >
+                <option value="">Select experience</option>
+                <option value="0-1">0-1 years</option>
+                <option value="2-5">2-5 years</option>
+                <option value="6-10">6-10 years</option>
+                <option value="10+">10+ years</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Conditional newsletter signup */}
+        {values.userType && (
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input 
+                type="checkbox"
+                {...register("subscribe")}
+              />
+              Subscribe to our {values.userType === "student" ? "student" : "professional"} newsletter
+            </label>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button 
+          type="submit"
+          disabled={!values.userType || !values.name || !values.email}
+          style={{
+            backgroundColor: (values.userType && values.name && values.email) ? '#2EC4B6' : '#ccc',
+            color: 'white',
+            padding: '12px 24px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: (values.userType && values.name && values.email) ? 'pointer' : 'not-allowed',
+            width: '100%'
+          }}
+        >
+          {values.userType ? `Register as ${values.userType}` : 'Select user type to continue'}
+        </button>
+
+        {/* Form Summary */}
+        {values.userType && (
+          <div style={{ 
+            marginTop: '1rem', 
+            padding: '1rem',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '4px',
+            fontSize: '14px'
+          }}>
+            <strong>Registration Summary:</strong>
+            <br />
+            Type: {values.userType}
+            <br />
+            Name: {values.name || 'Not entered'}
+            <br />
+            Email: {values.email || 'Not entered'}
+            <br />
+            Newsletter: {values.subscribe ? 'Yes' : 'No'}
+          </div>
+        )}
+      </form>
+    </div>
+  );
+}
+```
+
+</Tab>
+<Tab>
+
+```tsx live
+import { createForm } from "@createform/react";
+
+const useSkillsForm = createForm({
+  initialValues: {
+    name: "",
+    skills: [{ name: "", level: "beginner" }],
+    projects: [{ title: "", description: "", technologies: "" }],
+  },
+  mode: "onChange",
+});
+
+export default function DynamicArraysForm() {
+  const { register, handleSubmit, state, setFieldValue } = useSkillsForm();
+  const { values } = state;
+
+  const addSkill = () => {
+    const newSkills = [...values.skills, { name: "", level: "beginner" }];
+    setFieldValue("skills", newSkills);
+  };
+
+  const removeSkill = (index) => {
+    const newSkills = values.skills.filter((_, i) => i !== index);
+    setFieldValue("skills", newSkills);
+  };
+
+  const addProject = () => {
+    const newProjects = [...values.projects, { title: "", description: "", technologies: "" }];
+    setFieldValue("projects", newProjects);
+  };
+
+  const removeProject = (index) => {
+    const newProjects = values.projects.filter((_, i) => i !== index);
+    setFieldValue("projects", newProjects);
+  };
+
+  const onSubmit = (data) => {
+    console.log("Portfolio submitted:", data);
+    alert("Portfolio saved successfully!");
+  };
+
+  return (
+    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Name */}
+        <div style={{ marginBottom: '2rem' }}>
+          <label>Full Name:</label>
+          <input 
+            {...register("name")}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              border: '1px solid #ccc',
+              borderRadius: '4px'
+            }}
+            placeholder="Enter your full name"
+          />
+        </div>
+
+        {/* Skills Section */}
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '1rem' 
+          }}>
+            <h3 style={{ margin: 0 }}>Skills</h3>
+            <button 
+              type="button"
+              onClick={addSkill}
+              style={{
+                backgroundColor: '#2EC4B6',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              + Add Skill
+            </button>
+          </div>
+
+          {values.skills.map((skill, index) => (
+            <div 
+              key={index}
+              style={{ 
+                display: 'grid',
+                gridTemplateColumns: '1fr auto auto',
+                gap: '8px',
+                alignItems: 'center',
+                marginBottom: '8px',
+                padding: '12px',
+                border: '1px solid #e0e0e0',
+                borderRadius: '4px',
+                backgroundColor: '#fafafa'
+              }}
+            >
+              <input 
+                {...register(`skills.${index}.name`)}
+                placeholder="e.g., JavaScript, React, Python"
+                style={{ 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+              />
+              
+              <select 
+                {...register(`skills.${index}.level`)}
+                style={{ 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  minWidth: '120px'
+                }}
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+                <option value="expert">Expert</option>
+              </select>
+
+              <button 
+                type="button"
+                onClick={() => removeSkill(index)}
+                disabled={values.skills.length === 1}
+                style={{
+                  backgroundColor: values.skills.length === 1 ? '#ccc' : '#ff4444',
+                  color: 'white',
+                  border: 'none',
+                  padding: '8px 12px',
+                  borderRadius: '4px',
+                  cursor: values.skills.length === 1 ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Projects Section */}
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '1rem' 
+          }}>
+            <h3 style={{ margin: 0 }}>Projects</h3>
+            <button 
+              type="button"
+              onClick={addProject}
+              style={{
+                backgroundColor: '#2EC4B6',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              + Add Project
+            </button>
+          </div>
+
+          {values.projects.map((project, index) => (
+            <div 
+              key={index}
+              style={{ 
+                marginBottom: '16px',
+                padding: '16px',
+                border: '1px solid #e0e0e0',
+                borderRadius: '8px',
+                backgroundColor: '#fafafa'
+              }}
+            >
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px'
+              }}>
+                <h4 style={{ margin: 0 }}>Project {index + 1}</h4>
+                <button 
+                  type="button"
+                  onClick={() => removeProject(index)}
+                  disabled={values.projects.length === 1}
+                  style={{
+                    backgroundColor: values.projects.length === 1 ? '#ccc' : '#ff4444',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 12px',
+                    borderRadius: '4px',
+                    cursor: values.projects.length === 1 ? 'not-allowed' : 'pointer',
+                    fontSize: '12px'
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+
+              <div style={{ marginBottom: '8px' }}>
+                <input 
+                  {...register(`projects.${index}.title`)}
+                  placeholder="Project title"
+                  style={{ 
+                    width: '100%',
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '8px' }}>
+                <textarea 
+                  {...register(`projects.${index}.description`)}
+                  placeholder="Project description"
+                  rows={3}
+                  style={{ 
+                    width: '100%',
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    resize: 'vertical'
+                  }}
+                />
+              </div>
+
+              <div>
+                <input 
+                  {...register(`projects.${index}.technologies`)}
+                  placeholder="Technologies used (e.g., React, Node.js, MongoDB)"
+                  style={{ 
+                    width: '100%',
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Summary */}
+        <div style={{ 
+          backgroundColor: '#f0f8ff',
+          padding: '16px',
+          borderRadius: '8px',
+          marginBottom: '1rem'
+        }}>
+          <strong>Portfolio Summary:</strong>
+          <br />
+          Skills: {values.skills.length} skill(s) added
+          <br />
+          Projects: {values.projects.length} project(s) added
+          <br />
+          Name: {values.name || 'Not entered'}
+        </div>
+
+        {/* Submit Button */}
+        <button 
+          type="submit"
+          style={{
+            backgroundColor: '#2EC4B6',
+            color: 'white',
+            padding: '12px 24px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            width: '100%'
+          }}
+        >
+          Save Portfolio
+        </button>
+      </form>
+    </div>
+  );
+}
+```
+
+</Tab>
+<Tab>
+
+```tsx live
+import { createForm } from "@createform/react";
+import { useState } from "react";
+
+const useMultiStepForm = createForm({
+  initialValues: {
+    // Step 1: Personal Info
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    
+    // Step 2: Address
+    street: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "US",
+    
+    // Step 3: Preferences
+    interests: [],
+    newsletter: false,
+    notifications: true,
+    
+    // Step 4: Review
+    terms: false,
+  },
+  mode: "onChange",
+});
+
+export default function MultiStepForm() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const { register, handleSubmit, state, setFieldValue } = useMultiStepForm();
+  const { values, errors, touched } = state;
+
+  const totalSteps = 4;
+  const progress = (currentStep / totalSteps) * 100;
+
+  // Step validation
+  const isStepValid = (step) => {
+    switch (step) {
+      case 1:
+        return values.firstName && values.lastName && values.email && values.phone;
+      case 2:
+        return values.street && values.city && values.state && values.zipCode;
+      case 3:
+        return true; // No required fields
+      case 4:
+        return values.terms;
+      default:
+        return false;
+    }
+  };
+
+  const nextStep = () => {
+    if (isStepValid(currentStep) && currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleInterestChange = (interest, checked) => {
+    const current = values.interests || [];
+    const updated = checked 
+      ? [...current, interest]
+      : current.filter(i => i !== interest);
+    setFieldValue("interests", updated);
+  };
+
+  const onSubmit = (data) => {
+    console.log("Multi-step form completed:", data);
+    alert("Registration completed successfully!");
+    setCurrentStep(1); // Reset form
+  };
+
+  const stepTitles = [
+    "Personal Information",
+    "Address Details", 
+    "Preferences",
+    "Review & Submit"
+  ];
+
+  return (
+    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+      {/* Progress Bar */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{
+          height: '8px',
+          backgroundColor: '#e0e0e0',
+          borderRadius: '4px',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            height: '100%',
+            backgroundColor: '#2EC4B6',
+            width: `${progress}%`,
+            transition: 'width 0.3s ease'
+          }} />
+        </div>
+        <div style={{ 
+          textAlign: 'center',
+          marginTop: '8px',
+          fontSize: '14px',
+          color: '#666'
+        }}>
+          Step {currentStep} of {totalSteps}: {stepTitles[currentStep - 1]}
+        </div>
+      </div>
+
+      {/* Step Indicators */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center',
+        gap: '1rem',
+        marginBottom: '2rem'
+      }}>
+        {Array.from({ length: totalSteps }, (_, i) => i + 1).map(step => (
+          <div 
+            key={step}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: step <= currentStep ? '#2EC4B6' : '#e0e0e0',
+              color: step <= currentStep ? 'white' : '#999',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '14px',
+              fontWeight: 'bold'
+            }}
+          >
+            {step < currentStep ? '✓' : step}
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Step 1: Personal Information */}
+        {currentStep === 1 && (
+          <div>
+            <h2>Personal Information</h2>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label>First Name *</label>
+                <input 
+                  {...register("firstName")}
+                  style={{ 
+                    width: '100%', 
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                  placeholder="First name"
+                />
+              </div>
+              <div>
+                <label>Last Name *</label>
+                <input 
+                  {...register("lastName")}
+                  style={{ 
+                    width: '100%', 
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                  placeholder="Last name"
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Email *</label>
+              <input 
+                type="email"
+                {...register("email")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+                placeholder="your@email.com"
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Phone Number *</label>
+              <input 
+                type="tel"
+                {...register("phone")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+                placeholder="(555) 123-4567"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Address Details */}
+        {currentStep === 2 && (
+          <div>
+            <h2>Address Details</h2>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <label>Street Address *</label>
+              <input 
+                {...register("street")}
+                style={{ 
+                  width: '100%', 
+                  padding: '8px', 
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+                placeholder="123 Main Street"
+              />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label>City *</label>
+                <input 
+                  {...register("city")}
+                  style={{ 
+                    width: '100%', 
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                  placeholder="City"
+                />
+              </div>
+              <div>
+                <label>State *</label>
+                <input 
+                  {...register("state")}
+                  style={{ 
+                    width: '100%', 
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                  placeholder="State"
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <label>ZIP Code *</label>
+                <input 
+                  {...register("zipCode")}
+                  style={{ 
+                    width: '100%', 
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                  placeholder="12345"
+                />
+              </div>
+              <div>
+                <label>Country</label>
+                <select 
+                  {...register("country")}
+                  style={{ 
+                    width: '100%', 
+                    padding: '8px', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px'
+                  }}
+                >
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                  <option value="UK">United Kingdom</option>
+                  <option value="AU">Australia</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Preferences */}
+        {currentStep === 3 && (
+          <div>
+            <h2>Preferences</h2>
+            
+            <div style={{ marginBottom: '2rem' }}>
+              <label style={{ display: 'block', marginBottom: '8px' }}>
+                Interests (select all that apply):
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                {['Technology', 'Sports', 'Music', 'Travel', 'Food', 'Art'].map(interest => (
+                  <label key={interest} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input 
+                      type="checkbox"
+                      checked={(values.interests || []).includes(interest)}
+                      onChange={(e) => handleInterestChange(interest, e.target.checked)}
+                    />
+                    {interest}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input 
+                  type="checkbox"
+                  {...register("newsletter")}
+                />
+                Subscribe to our newsletter
+              </label>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input 
+                  type="checkbox"
+                  {...register("notifications")}
+                />
+                Enable email notifications
+              </label>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Review & Submit */}
+        {currentStep === 4 && (
+          <div>
+            <h2>Review & Submit</h2>
+            
+            <div style={{ 
+              backgroundColor: '#f9f9f9',
+              padding: '1rem',
+              borderRadius: '8px',
+              marginBottom: '1rem'
+            }}>
+              <h3>Review Your Information</h3>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Personal Information:</strong>
+                <br />
+                Name: {values.firstName} {values.lastName}
+                <br />
+                Email: {values.email}
+                <br />
+                Phone: {values.phone}
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Address:</strong>
+                <br />
+                {values.street}
+                <br />
+                {values.city}, {values.state} {values.zipCode}
+                <br />
+                {values.country}
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Preferences:</strong>
+                <br />
+                Interests: {(values.interests || []).join(', ') || 'None selected'}
+                <br />
+                Newsletter: {values.newsletter ? 'Yes' : 'No'}
+                <br />
+                Notifications: {values.notifications ? 'Yes' : 'No'}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <input 
+                  type="checkbox"
+                  {...register("terms")}
+                  style={{ marginTop: '4px' }}
+                />
+                <span>
+                  I agree to the terms of service and privacy policy *
+                </span>
+              </label>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Buttons */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between',
+          marginTop: '2rem'
+        }}>
+          <button 
+            type="button"
+            onClick={prevStep}
+            disabled={currentStep === 1}
+            style={{
+              backgroundColor: currentStep === 1 ? '#ccc' : '#6c757d',
+              color: 'white',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '4px',
+              cursor: currentStep === 1 ? 'not-allowed' : 'pointer'
+            }}
+          >
+            Previous
+          </button>
+
+          {currentStep < totalSteps ? (
+            <button 
+              type="button"
+              onClick={nextStep}
+              disabled={!isStepValid(currentStep)}
+              style={{
+                backgroundColor: isStepValid(currentStep) ? '#2EC4B6' : '#ccc',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '4px',
+                cursor: isStepValid(currentStep) ? 'pointer' : 'not-allowed'
+              }}
+            >
+              Next
+            </button>
+          ) : (
+            <button 
+              type="submit"
+              disabled={!isStepValid(currentStep)}
+              style={{
+                backgroundColor: isStepValid(currentStep) ? '#2EC4B6' : '#ccc',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '4px',
+                cursor: isStepValid(currentStep) ? 'pointer' : 'not-allowed'
+              }}
+            >
+              Submit
+            </button>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+}
+```
+
+</Tab>
+</Tabs>
+
+---
+
+## 🎮 **Challenge Yourself**
+
+Ready to test your CreateForm skills? Try these challenges:
+
+### 🥇 **Beginner Challenge**
+Create a simple contact form with name, email, and message validation.
+
+### 🥈 **Intermediate Challenge**  
+Build a job application form with file upload simulation and conditional fields.
+
+### 🥉 **Advanced Challenge**
+Create a multi-step survey with progress saving, conditional logic, and dynamic questions.
+
+<Callout type="tip">
+**Pro Tip**: Use the browser's developer tools to inspect form state changes and see how CreateForm manages your data in real-time!
+</Callout>
+
+---
+
+## 💡 **What You've Learned**
+
+Through these interactive examples, you've explored:
+
+- **Basic form creation** with `createForm()`
+- **Multiple validation approaches** (Zod, Yup, Custom)
+- **Dynamic field generation** and conditional logic
+- **Multi-step forms** with progress tracking
+- **Array manipulation** for dynamic lists
+- **Real-time validation** and user feedback
+- **Form state management** best practices
+
+Ready to build something amazing? Take these patterns and create your own unique forms!
