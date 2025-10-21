@@ -1,7 +1,7 @@
-import { Person, usePersonForm } from "./usePersonForm";
+import { Person, usePersonForm } from "./use-person-form";
 import { Wizard } from "react-use-wizard";
-import { BasicInfoStep } from "./BasicInfoStep";
-import { AddressStep } from "./AddressStep";
+import { BasicInfoStep } from "./basic-info-step";
+import { AddressStep } from "./address-step";
 import React from "react";
 
 export function MultiFormWithYup() {
@@ -11,7 +11,7 @@ export function MultiFormWithYup() {
     console.log(e);
   }
 
-  function handleReset(e: Person) {}
+  function handleReset(e: Person) { }
 
   console.log(form.state.errors);
 

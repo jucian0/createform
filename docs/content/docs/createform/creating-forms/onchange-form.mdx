@@ -1,0 +1,157 @@
+---
+title: OnChange mode
+description: When using controlled forms, the input value is set to state values and then updated via React events. React form controlled is the most popular aproach in reactjs.
+tags: react, form, useform, use-form, hook, controlled-form, controlled
+---
+
+import Callout from "../../../components/Callout";
+import { FormDemo } from "../../../components/OnChangeDemo";
+import { Tab, Tabs } from "../../../components/Tabs";
+
+# OnChange mode
+
+<Tabs items={["Preview", "Code"]}>
+  <Tab>
+    <FormDemo />
+  </Tab>
+  <Tab>
+```jsx
+import { createForm } from "@createform/react";
+import { z } from "zod";
+
+const useForm = createForm({
+  initialValues: {
+    email: "",
+    password: "",
+    terms: false,
+  },
+  mode: "onChange",
+  validationSchema: z.object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    terms: z.boolean(),
+  }),
+});
+
+function FormDemo() {
+  const { register, state } = useForm();
+  const {errors, touched} = state;
+
+  function handleSubmit(data){console.log(data)}
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="border dark:border-gray-800 p-5 rounded"
+    >
+      <div className="mb-6">
+        <label>Your email</label>
+        <input
+          id="email"
+          {...register({
+            name: "email",
+            type: "email",
+            placeholder: "createform@demo.com",
+            required: true,
+          })}
+        />
+      </div>
+      <div className="mb-6">
+        <label>Your password</label>
+        <input
+          {...register({
+            name: "password",
+            type: "password",
+            placeholder: "*********",
+            required: true,
+          })}
+        />
+        <span className="text-red-600">{touched.email && errors.email}</span>
+      </div>
+      <div className="flex items-start mb-6">
+        <div className="flex items-center h-5">
+          <input
+            {...register({
+              name: "terms",
+              type: "checkbox",
+              placeholder: "*********",
+              required: true,
+            })}
+          />
+          <span className="text-red-600">
+            {touched.password && errors.password}
+          </span>
+        </div>
+        <label>
+          I agree with the{" "}
+          <a href="#" className="text-brand hover:underline dark:text-brand">
+            terms and conditions
+          </a>
+        </label>
+      </div>
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
+    </form>
+  )
+}
+```
+  </Tab>
+</Tabs>
+
+## Description
+
+There are two types of form input in React. We have the uncontrolled input and the controlled input.
+When using controlled forms, the input value is set to state values and then updated via React events.
+Defining a form input value via state is considered a controlled component. For controlled inputs, you will need a corresponding state and then a function to update that state with changes.
+
+Controlled inputs are the most popular in the react ecosystem, are easier to write and understanding. But when you think about performance controlled inputs are less powerful than uncontrolled inputs.Every time that component state is updated the component is rendered again and this affects the performance result.
+
+## Usage
+
+Createform provides a `register` function, this function returns all properties to manager a field.
+
+```jsx copy
+import { createForm } from "@createform/react";
+
+const useForm = createForm({
+  initialValues: {
+    name: "Anna",
+    address: [
+      {
+        street: "123 Main St",
+        city: "Anytown",
+      },
+    ],
+  },
+  mode: "onChange",
+});
+````
+
+```javascript
+const test = "";
+```
+
+Use dot notation to create advanced objects or to map object values. Type an entry name and type or an entry property object.
+
+<Callout type="info">
+
+- Dot notation is used to access nested objects. For example, if you have an object with a nested object, you can access the nested object using dot notation; `info.name`.
+- Use dot notation to access nested arrays. For example, if you
+- have an object with a nested array, you can access the nested array using dot notation; `info.array[2]`.
+
+</Callout>
+
+```jsx copy
+function Form() {
+  const { register } = useForm();
+
+  return (
+    <form>
+      <input {...register("name")} />
+      <input {...register("address.street")} />
+      <input {...register("address.city")} />
+    </form>
+  );
+}
+```

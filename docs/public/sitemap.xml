@@ -1,4 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<sitemap><loc>https://useform.org/sitemap-0.xml</loc></sitemap>
-</sitemapindex>
+<urlset>
+  <url>
+    <loc>http://turboversion.juciano.com</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/configiration/confogiration</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/configuration/recipes</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/gettings-started/getting-started</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/getting-started/introduction</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/references/cli-reference</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/references/glossary</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/release-modes/async</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/release-notes/sync</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/support/about</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/support/faq</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/versioning-strategies/branch-based</loc>
+  </url>
+  <url>
+    <loc>http://turboversion.juciano.com/docs/versioning-strategies/commit-based</loc>
+  </url>
+</urlset>
