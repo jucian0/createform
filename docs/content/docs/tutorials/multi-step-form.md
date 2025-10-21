@@ -4,10 +4,6 @@ description: In this tutorial I want to show you how easily you can build a mult
 tags: react, form, useform, createform, use-form, debounce, debounced, hook, create, creating-a-form, html, multi-step, multistep
 ---
 
-![multi-ste-form, react, useForm, create-form](https://res.cloudinary.com/practicaldev/image/fetch/s--27IJ_JTj--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cpeo18octaiy3cixn5u7.png)
-
-# Multi-step form using Createform library
-
 Hi folks, in this tutorial I want to show you how easily you can build a multi-step form using [Createform](https://github.com/jucian0/createform) library, and `react-use-wizard`. These forms are super useful when you want to save complicated forms or forms with many fields, so let's do that.
 
 ## Introduction
@@ -196,8 +192,7 @@ This is the final file structure of the example:
 
 ## Demo
 
-<!-- <Demo url="https://codesandbox.io/s/multi-step-form-react-j8g4fn" /> -->
-
+You can check a working example of this code on this [Codesandbox link](https://codesandbox.io/s/multi-step-form-react-j8g4fn).
 ## Conclusion
 
 Building a multi-step form can be easy if you use the right tools to build it. In this tutorial, I showed you how [Createform](https://github.com/jucian0/createform) can do that easily. Using [Createform](https://github.com/jucian0/createform) you can continue on, and create more complex forms, whether they are multi-step or not.

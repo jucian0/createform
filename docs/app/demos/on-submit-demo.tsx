@@ -7,7 +7,7 @@ const useForm = createForm({
     password: "",
     terms: false,
   },
-  mode: "debounce",
+  mode: "onSubmit",
   validationSchema: z.object({
     email: z.string().email(),
     password: z.string().min(8),
@@ -15,9 +15,9 @@ const useForm = createForm({
   }),
 });
 
-export function FormDemo() {
+export function OnSubmitFormDemo() {
   const { register, handleSubmit, state, handleReset } = useForm();
-  const { errors, touched } = state;
+  const { errors } = state;
 
   return (
     <form
@@ -25,7 +25,7 @@ export function FormDemo() {
       onSubmit={handleSubmit((e) => {
         console.log(e, state);
       })}
-      onReset={handleReset(() => {})}
+      onReset={handleReset(() => { })}
       className="border dark:border-gray-800 p-5 rounded"
     >
       <div className="mb-6">
@@ -45,7 +45,7 @@ export function FormDemo() {
             required: true,
           })}
         />
-        <span className="text-red-600">{touched.email && errors.email}</span>
+        <span className="text-red-600">{errors.email}</span>
       </div>
       <div className="mb-6">
         <label
@@ -64,9 +64,7 @@ export function FormDemo() {
             required: true,
           })}
         />
-        <span className="text-red-600">
-          {touched.password && errors.password}
-        </span>
+        <span className="text-red-600">{errors.password}</span>
       </div>
 
       <div className="flex items-start mb-6">

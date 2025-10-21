@@ -1,15 +1,13 @@
 import { createForm } from "@createform/react";
-import { z } from "zod";
 
 const useForm = createForm({
   initialValues: {
     email: "",
-    password: "",
   },
   mode: "onChange",
 });
 
-export function FormDemo() {
+export function NativeFormDemo() {
   const { register, handleSubmit, state, handleReset } = useForm();
   const { errors, touched } = state;
 
@@ -19,7 +17,7 @@ export function FormDemo() {
       onSubmit={handleSubmit((e) => {
         console.log(e, state);
       })}
-      onReset={handleReset(() => {})}
+      onReset={handleReset(() => { })}
       className="border dark:border-gray-800 p-5 rounded"
     >
       <div className="mb-6">
@@ -37,32 +35,9 @@ export function FormDemo() {
             type: "email",
             placeholder: "createform@demo.com",
             required: true,
-            validate:z.string().email()
           })}
         />
         <span className="text-red-600">{touched.email && errors.email}</span>
-      </div>
-      <div className="mb-6">
-        <label
-          htmlFor="password"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Your password
-        </label>
-        <input
-          id="password"
-          className="shadow-sm bg-transparent border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:transparent dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-          {...register({
-            name: "password",
-            type: "password",
-            placeholder: "*********",
-            required: true,
-            validate:z.string().min(8)
-          })}
-        />
-        <span className="text-red-600">
-          {touched.password && errors.password}
-        </span>
       </div>
       <button
         type="submit"

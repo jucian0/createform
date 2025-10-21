@@ -11,7 +11,7 @@ const useForm = createForm({
   mode: "onChange",
 });
 
-export function FormDemo() {
+export function CustomFormDemo() {
   const { handleReset, handleSubmit, state, setFieldValue } = useForm();
   const { values } = state;
 
@@ -21,7 +21,7 @@ export function FormDemo() {
       onSubmit={handleSubmit((e) => {
         console.log(e, state);
       })}
-      onReset={handleReset(() => {})}
+      onReset={handleReset(() => { })}
       className="border dark:border-gray-800 p-5 rounded"
     >
       <div className="mb-6">

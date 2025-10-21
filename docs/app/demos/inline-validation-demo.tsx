@@ -5,19 +5,13 @@ const useForm = createForm({
   initialValues: {
     email: "",
     password: "",
-    terms: false,
   },
-  mode: "onSubmit",
-  validationSchema: z.object({
-    email: z.string().email(),
-    password: z.string().min(8),
-    terms: z.boolean(),
-  }),
+  mode: "onChange",
 });
 
-export function FormDemo() {
+export function InlineFormDemo() {
   const { register, handleSubmit, state, handleReset } = useForm();
-  const { errors } = state;
+  const { errors, touched } = state;
 
   return (
     <form
@@ -25,7 +19,7 @@ export function FormDemo() {
       onSubmit={handleSubmit((e) => {
         console.log(e, state);
       })}
-      onReset={handleReset(() => {})}
+      onReset={handleReset(() => { })}
       className="border dark:border-gray-800 p-5 rounded"
     >
       <div className="mb-6">
@@ -43,9 +37,10 @@ export function FormDemo() {
             type: "email",
             placeholder: "createform@demo.com",
             required: true,
+            validate: z.string().email()
           })}
         />
-        <span className="text-red-600">{errors.email}</span>
+        <span className="text-red-600">{touched.email && errors.email}</span>
       </div>
       <div className="mb-6">
         <label
@@ -62,33 +57,12 @@ export function FormDemo() {
             type: "password",
             placeholder: "*********",
             required: true,
+            validate: z.string().min(8)
           })}
         />
-        <span className="text-red-600">{errors.password}</span>
-      </div>
-
-      <div className="flex items-start mb-6">
-        <div className="flex items-center h-5">
-          <input
-            id="terms"
-            className="w-4 h-4 border border-gray-300 rounded bg-transparent focus:ring-3 focus:ring-blue-300 dark:transparent dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-            {...register({
-              name: "terms",
-              type: "checkbox",
-              placeholder: "*********",
-              required: true,
-            })}
-          />
-        </div>
-        <label
-          htmlFor="terms"
-          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-        >
-          I agree with the{" "}
-          <a href="#" className="text-brand hover:underline dark:text-brand">
-            terms and conditions
-          </a>
-        </label>
+        <span className="text-red-600">
+          {touched.password && errors.password}
+        </span>
       </div>
       <button
         type="submit"

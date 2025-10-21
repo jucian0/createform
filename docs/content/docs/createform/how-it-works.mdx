@@ -1,12 +1,8 @@
 ---
-title: Concepts
+title: How it works
 description: How Createform works, and why we decided to do it this way.
 tags: react, form, useform, createform, use-form, debounce, debounced, hook
 ---
-
-import Callout from "../../components/Callout";
-
-# Concepts
 
 When you are working on a project, you might want to use a form in different places, or maybe you have a form with a couple of steps in different components, how could you handle this?
 
@@ -33,7 +29,7 @@ In other words, the `createForm` function creates a form and returns a function 
 
 For that reason, we can use the same form in different components without providers or React Context API.
 
-![createform-flow](/imgs/createform-flow.png)
+![createform-flow](/images/createform-flow.png)
 
 ## Initial State
 
@@ -48,7 +44,7 @@ The validation process can be done in three ways:
 - The thrid way is the **inline validation**, this approach allow you to pass a validation schema in the register function.
 
 <Callout type="info">
-  More about inline validations [here](/docs/validation/inline-validation)
+  More about inline validations [here](/docs/createform/validation/inline-validation)
 </Callout>
 
 ## Native elements vs Custom elements
