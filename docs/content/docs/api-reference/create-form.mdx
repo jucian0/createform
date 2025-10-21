@@ -1,69 +1,254 @@
 ---
 title: createForm
-description: This guide describes all resources of createForm function.
+description: Complete API reference for the createForm function - the core of CreateForm library
 tags: react, form, useform, createform, use-form, debounce, debounced, hook, yup, validation, form-error, error
 ---
 
+# createForm API Reference
 
+The `createForm` function is the heart of CreateForm library. Despite having a minimal API surface, it provides everything you need to build powerful, type-safe forms in React.
 
-# createForm
+<Callout type="info">
+**Philosophy**: CreateForm embraces simplicity without sacrificing functionality. Learn once, use everywhere.
+</Callout>
 
-Createform does not have a huge API, in fact it's a tiny API, witch means you don't have a lot of things to learn, but that does not means that `createForm`, is not powerful, this library provides you all resources you need to deal with forms in React applications.
+## Function Signature
 
-This function is the main resource of `createForm` library, it return hook function, as others React hooks, this function should be executed inside a component.
+```typescript
+function createForm<T extends Record<string, any>>(
+  config: CreateFormConfig<T>
+): () => CreateFormReturn<T>
+```
 
-## createForm params
+Returns a custom React hook that manages your form state and provides all necessary form utilities.
 
-### initialValues
+---
 
-The initial values of the `createForm` function depend on the initial values of the form fields that you want to manage with the hook. For example, if you want to manage a form with three fields - name, email, and password - the initial values of the `createForm` hook would look something like this:
+## Configuration Options
 
-```js copy
-const yourHookForm = createForm({
+### `initialValues` (required)
+
+Define the initial state of your form fields. This object shapes your entire form structure.
+
+<Tabs items={["Basic Usage", "Nested Objects", "Arrays", "TypeScript"]}>
+<Tab>
+
+```typescript copy
+const useContactForm = createForm({
   initialValues: {
     name: "",
     email: "",
-    password: "",
+    message: "",
+    newsletter: false,
   },
 });
 ```
 
-Now, form state will contain the initial values for each of the form fields that you are managing with the `createForm` function. You can then use the function to update the form state whenever the user enters new values into the form fields.
+</Tab>
+<Tab>
 
-<Callout type="info">
+```typescript copy
+const useAddressForm = createForm({
+  initialValues: {
+    user: {
+      firstName: "",
+      lastName: "",
+    },
+    address: {
+      street: "",
+      city: "",
+      country: "US",
+    },
+    preferences: {
+      notifications: true,
+      theme: "light",
+    },
+  },
+});
+```
 
-It's important to note that the initial values of the `createForm` function are not required - you can initialize the hook without specifying any initial values. But, we recommend to add initialValues.
+</Tab>
+<Tab>
 
+```typescript copy
+const useSkillsForm = createForm({
+  initialValues: {
+    skills: [
+      { name: "", level: "beginner" }
+    ],
+    projects: [],
+    tags: ["react", "typescript"],
+  },
+});
+```
+
+</Tab>
+<Tab>
+
+```typescript copy
+interface UserForm {
+  name: string;
+  email: string;
+  age: number;
+  preferences: {
+    newsletter: boolean;
+    theme: "light" | "dark";
+  };
+}
+
+const useUserForm = createForm<UserForm>({
+  initialValues: {
+    name: "",
+    email: "",
+    age: 0,
+    preferences: {
+      newsletter: false,
+      theme: "light",
+    },
+  },
+});
+```
+
+</Tab>
+</Tabs>
+
+<Callout type="tip">
+**Best Practice**: Always provide `initialValues` to establish your form's schema and enable TypeScript inference.
 </Callout>
 
-### initialErrors
+---
 
-This property represents a errors object that has all properties of a form values.
+### `validationSchema` (optional)
 
-```jsx copy
-import { createForm } from "@createform/react";
+Provide schema-based validation using Zod, Yup, or custom validation functions.
 
-const yourHookForm = createForm({
+<Tabs items={["Zod Schema", "Yup Schema", "Custom Function"]}>
+<Tab>
+
+```typescript copy
+import { z } from "zod";
+
+const userSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+  email: z.string().email("Invalid email format"),
+  age: z.number().min(18, "Must be 18 or older"),
+});
+
+const useUserForm = createForm({
+  initialValues: { name: "", email: "", age: 0 },
+  validationSchema: userSchema,
+});
+```
+
+</Tab>
+<Tab>
+
+```typescript copy
+import * as Yup from "yup";
+
+const userSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid email"),
+  age: Yup.number().min(18, "Must be 18+"),
+});
+
+const useUserForm = createForm({
+  initialValues: { name: "", email: "", age: 0 },
+  validationSchema: userSchema,
+});
+```
+
+</Tab>
+<Tab>
+
+```typescript copy
+const validateUser = (values) => {
+  const errors = {};
+  
+  if (!values.name) {
+    errors.name = "Name is required";
+  }
+  
+  if (!values.email?.includes("@")) {
+    errors.email = "Invalid email format";
+  }
+  
+  return errors;
+};
+
+const useUserForm = createForm({
+  initialValues: { name: "", email: "" },
+  validationSchema: validateUser,
+});
+```
+
+</Tab>
+</Tabs>
+
+---
+
+### `mode` (optional)
+
+Control when validation occurs. Default: `"onChange"`.
+
+```typescript copy
+type ValidationMode = "onChange" | "onBlur" | "onSubmit";
+
+const useForm = createForm({
+  initialValues: { email: "" },
+  mode: "onBlur", // Validate when field loses focus
+});
+```
+
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| `onChange` | Validate on every input change | Real-time feedback |
+| `onBlur` | Validate when field loses focus | Less intrusive validation |
+| `onSubmit` | Validate only on form submission | Performance-critical forms |
+
+---
+
+### `debounce` (optional)
+
+Debounce validation to improve performance with expensive validation logic.
+
+```typescript copy
+const useSearchForm = createForm({
+  initialValues: { query: "" },
+  validationSchema: expensiveValidationSchema,
+  mode: "onChange",
+  debounce: 300, // Wait 300ms after user stops typing
+});
+```
+
+---
+
+### `initialErrors` (optional)
+
+Pre-populate the form with error messages (useful for server-side validation).
+
+```typescript copy
+const useForm = createForm({
+  initialValues: { name: "", email: "" },
   initialErrors: {
-    name: "Invalid name!",
-    email: "Invalid format!",
-    accept: "This field is required!",
+    name: "Name is required",
+    email: "Email format is invalid",
   },
 });
 ```
 
-### initialTouched
+---
 
-This property represents a touched object that has all properties of a form values.
+### `initialTouched` (optional)
 
-```jsx copy
-import { createForm } from "@createform/react";
+Pre-set which fields have been interacted with by the user.
 
-const yourHookForm = createForm({
+```typescript copy
+const useForm = createForm({
+  initialValues: { name: "", email: "" },
   initialTouched: {
-    name: false,
-    email: false,
-    accept: false,
+    name: true,  // Show validation errors immediately
+    email: false, // Don't show errors until user interacts
   },
 });
 ```

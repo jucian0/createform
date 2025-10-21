@@ -1,0 +1,156 @@
+---
+title: Migration Guide
+description: Migrate from other form libraries to CreateForm easily
+tags: react, form, migration, react-hook-form, formik
+---
+
+# Migration Guide
+
+This guide helps you migrate from popular form libraries to CreateForm.
+
+## From React Hook Form
+
+### Basic Form Migration
+
+**React Hook Form**
+```tsx
+import { useForm } from 'react-hook-form';
+
+function MyForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  
+  return (
+    <form onSubmit={handleSubmit(console.log)}>
+      <input {...register("email", { required: true })} />
+      {errors.email && <span>This field is required</span>}
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+**CreateForm**
+```tsx
+import { createForm } from '@createform/react';
+
+const useMyForm = createForm({
+  initialValues: { email: "" },
+  validationSchema: yup.object({
+    email: yup.string().required("This field is required")
+  })
+});
+
+function MyForm() {
+  const { register, handleSubmit, state } = useMyForm();
+  
+  return (
+    <form onSubmit={handleSubmit(console.log)}>
+      <input {...register("email")} />
+      {state.errors.email && <span>{state.errors.email}</span>}
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+### Key Differences
+
+| Feature | React Hook Form | CreateForm |
+|---------|----------------|------------|
+| Form sharing | React Context | Custom hooks |
+| Validation | Built-in + external | Yup/Zod + custom |
+| Performance | Uncontrolled | Uncontrolled + modes |
+| Bundle size | ~25kb | ~8kb |
+
+## From Formik
+
+### Basic Form Migration
+
+**Formik**
+```tsx
+import { Formik, Form, Field } from 'formik';
+
+function MyForm() {
+  return (
+    <Formik
+      initialValues={{ email: '' }}
+      onSubmit={console.log}
+    >
+      <Form>
+        <Field name="email" type="email" />
+        <button type="submit">Submit</button>
+      </Form>
+    </Formik>
+  );
+}
+```
+
+**CreateForm**
+```tsx
+import { useForm } from '@createform/react';
+
+function MyForm() {
+  const { register } = useForm({
+    initialValues: { email: '' },
+    onSubmit: console.log
+  });
+  
+  return (
+    <form {...register()}>
+      <input name="email" type="email" />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+## Migration Checklist
+
+- [ ] Install `@createform/react`
+- [ ] Replace form library imports
+- [ ] Update validation schema (if using Yup/Zod, minimal changes needed)
+- [ ] Replace form registration patterns
+- [ ] Update error handling
+- [ ] Test form functionality
+- [ ] Remove old form library dependencies
+
+## Common Patterns
+
+### Nested Objects
+```tsx
+// Before (React Hook Form)
+<input {...register("user.profile.name")} />
+
+// After (CreateForm)
+<input {...register("user.profile.name")} />
+// Same syntax! 🎉
+```
+
+### Dynamic Fields
+```tsx
+// Before (Formik FieldArray)
+<FieldArray name="users" />
+
+// After (CreateForm)
+{users.map((user, index) => (
+  <input key={index} {...register(`users.${index}.name`)} />
+))}
+```
+
+### Custom Validation
+```tsx
+// Before (React Hook Form)
+<input {...register("email", {
+  validate: value => value.includes('@') || "Invalid email"
+})} />
+
+// After (CreateForm)
+<input {...register({
+  name: "email",
+  validate: value => value.includes('@') || "Invalid email"
+})} />
+```
+
+## Need Help?
+
+If you encounter issues during migration, check our [troubleshooting guide](/docs/troubleshooting) or [open an issue](https://github.com/jucian0/createform/issues) on GitHub.

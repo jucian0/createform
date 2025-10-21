@@ -1,44 +1,210 @@
-<urlset>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Pages -->
   <url>
-    <loc>http://turboversion.juciano.com</loc>
+    <loc>https://createform.juciano.com</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url>
+  
+  <!-- Documentation Home -->
   <url>
-    <loc>http://turboversion.juciano.com/docs</loc>
+    <loc>https://createform.juciano.com/docs</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
+  
+  <!-- Getting Started -->
   <url>
-    <loc>http://turboversion.juciano.com/docs/configiration/confogiration</loc>
+    <loc>https://createform.juciano.com/docs/quick-start</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
+  
+  <!-- Essential Guides -->
   <url>
-    <loc>http://turboversion.juciano.com/docs/configuration/recipes</loc>
+    <loc>https://createform.juciano.com/docs/migration</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
+  
   <url>
-    <loc>http://turboversion.juciano.com/docs/gettings-started/getting-started</loc>
+    <loc>https://createform.juciano.com/docs/best-practices</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
+  
   <url>
-    <loc>http://turboversion.juciano.com/docs/getting-started/introduction</loc>
+    <loc>https://createform.juciano.com/docs/troubleshooting</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
+  
+  <!-- Interactive Content -->
   <url>
-    <loc>http://turboversion.juciano.com/docs/references/cli-reference</loc>
+    <loc>https://createform.juciano.com/docs/playground</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
+  
   <url>
-    <loc>http://turboversion.juciano.com/docs/references/glossary</loc>
+    <loc>https://createform.juciano.com/docs/examples</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
+  
+  <!-- API Reference -->
   <url>
-    <loc>http://turboversion.juciano.com/docs/release-modes/async</loc>
+    <loc>https://createform.juciano.com/docs/api-reference/create-form</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
+  
   <url>
-    <loc>http://turboversion.juciano.com/docs/release-notes/sync</loc>
+    <loc>https://createform.juciano.com/docs/api-reference/use-form</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
+  
+  <!-- CreateForm Approach -->
   <url>
-    <loc>http://turboversion.juciano.com/docs/support/about</loc>
+    <loc>https://createform.juciano.com/docs/createform/how-it-works</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
+  
   <url>
-    <loc>http://turboversion.juciano.com/docs/support/faq</loc>
+    <loc>https://createform.juciano.com/docs/createform/async-data</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
+  
   <url>
-    <loc>http://turboversion.juciano.com/docs/versioning-strategies/branch-based</loc>
+    <loc>https://createform.juciano.com/docs/createform/form-submission</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
+  
+  <!-- Creating Forms -->
   <url>
-    <loc>http://turboversion.juciano.com/docs/versioning-strategies/commit-based</loc>
+    <loc>https://createform.juciano.com/docs/createform/creating-forms/onchange-form</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/creating-forms/onsubmit-form</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/creating-forms/debounced-form</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Using Forms -->
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/using-your-form/native-elements</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/using-your-form/custom-components</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Testing -->
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/testing/testing-forms</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/testing/unit-testing</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Validation -->
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/validation/yup-validation</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/validation/zod-validation</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/createform/validation/inline-validation</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- UseForm Approach -->
+  <url>
+    <loc>https://createform.juciano.com/docs/useform/creating-a-form</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/useform/validation</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Tutorials -->
+  <url>
+    <loc>https://createform.juciano.com/docs/tutorials/creating-forms</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/tutorials/multi-step-form</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://createform.juciano.com/docs/tutorials/reactjs-building-forms</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

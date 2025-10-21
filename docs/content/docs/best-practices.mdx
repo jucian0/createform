@@ -1,0 +1,390 @@
+---
+title: Best Practices
+description: Learn the best practices for using CreateForm effectively
+tags: react, form, best-practices, performance, patterns
+---
+
+# Best Practices
+
+Learn how to use CreateForm effectively with these proven patterns and practices.
+
+## 🏗️ **Form Architecture**
+
+### Choose the Right Approach
+
+**Use `createForm()` when:**
+- You need to share form state across multiple components
+- You have complex form logic that benefits from reusability
+- You want to separate form logic from UI components
+
+**Use `useForm()` when:**
+- You have simple, contained forms
+- You prefer native HTML form handling
+- You want minimal setup with standard form elements
+
+### Example: When to Use Each
+
+```tsx
+// ✅ Good: createForm() for complex, reusable forms
+const useUserRegistrationForm = createForm({
+  initialValues: {
+    personal: { name: '', email: '' },
+    preferences: { newsletter: false },
+    address: { street: '', city: '', country: '' }
+  },
+  validationSchema: complexValidationSchema,
+  mode: 'onChange'
+});
+
+// ✅ Good: useForm() for simple forms
+function NewsletterForm() {
+  const { register } = useForm({
+    initialValues: { email: '' },
+    onSubmit: subscribeToNewsletter
+  });
+
+  return (
+    <form {...register()}>
+      <input name="email" type="email" placeholder="Your email" />
+      <button type="submit">Subscribe</button>
+    </form>
+  );
+}
+```
+
+## ⚡ **Performance Optimization**
+
+### Form Modes
+
+Choose the right mode for your use case:
+
+```tsx
+// 🔥 Best performance: onSubmit (default)
+const useForm = createForm({
+  mode: 'onSubmit', // Only validates on submit
+  // ... other options
+});
+
+// ⚖️ Balanced: onChange for better UX
+const useForm = createForm({
+  mode: 'onChange', // Validates as user types
+  // ... other options
+});
+
+// 🐌 Use sparingly: debounced
+const useForm = createForm({
+  mode: 'debounced', // Validates after user stops typing
+  debounceMs: 300,
+  // ... other options
+});
+```
+
+### Minimize Re-renders
+
+```tsx
+// ❌ Bad: Creates new object every render
+function MyForm() {
+  const { register } = useForm({
+    initialValues: { name: '', email: '' }, // New object each render!
+  });
+}
+
+// ✅ Good: Define outside component or use useMemo
+const initialValues = { name: '', email: '' };
+
+function MyForm() {
+  const { register } = useForm({ initialValues });
+}
+
+// ✅ Also good: Using createForm (recommended)
+const useMyForm = createForm({
+  initialValues: { name: '', email: '' }
+});
+
+function MyForm() {
+  const { register } = useMyForm();
+}
+```
+
+## 🛡️ **Validation Patterns**
+
+### Schema Validation (Recommended)
+
+```tsx
+import { z } from 'zod';
+
+// ✅ Good: Comprehensive schema
+const userSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain uppercase letter'),
+  confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
+});
+
+const useForm = createForm({
+  validationSchema: userSchema,
+  // ...
+});
+```
+
+### Inline Validation for Edge Cases
+
+```tsx
+// ✅ Good: Use inline validation for dynamic rules
+<input 
+  {...register({
+    name: "username",
+    validate: async (value) => {
+      const isAvailable = await checkUsernameAvailability(value);
+      return isAvailable || "Username is taken";
+    }
+  })} 
+/>
+```
+
+## 🎯 **Error Handling**
+
+### Display Errors Effectively
+
+```tsx
+function FormField({ name, label, type = "text", ...props }) {
+  const { register, state } = useMyForm();
+  const error = state.errors[name];
+  const touched = state.touched[name];
+
+  return (
+    <div className="form-field">
+      <label htmlFor={name}>{label}</label>
+      <input
+        id={name}
+        type={type}
+        {...register(name)}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${name}-error` : undefined}
+        {...props}
+      />
+      {touched && error && (
+        <span 
+          id={`${name}-error`} 
+          className="error-message"
+          role="alert"
+        >
+          {error}
+        </span>
+      )}
+    </div>
+  );
+}
+```
+
+### Centralized Error Handling
+
+```tsx
+// ✅ Good: Handle submission errors gracefully
+const useLoginForm = createForm({
+  initialValues: { email: '', password: '' },
+  onSubmit: async (values) => {
+    try {
+      await api.login(values);
+      router.push('/dashboard');
+    } catch (error) {
+      if (error.status === 401) {
+        setFieldsError({ 
+          password: 'Invalid credentials' 
+        });
+      } else {
+        // Handle other errors
+        showNotification('Login failed. Please try again.');
+      }
+    }
+  }
+});
+```
+
+## 🧪 **Testing Strategies**
+
+### Test Form Logic
+
+```tsx
+import { renderHook, act } from '@testing-library/react';
+import { createForm } from '@createform/react';
+
+describe('LoginForm', () => {
+  it('validates email format', async () => {
+    const useForm = createForm({
+      initialValues: { email: '', password: '' },
+      validationSchema: loginSchema
+    });
+
+    const { result } = renderHook(() => useForm());
+
+    act(() => {
+      result.current.setFieldValue('email', 'invalid-email');
+    });
+
+    // Assert validation error
+    expect(result.current.state.errors.email).toBeDefined();
+  });
+});
+```
+
+### Test Form Integration
+
+```tsx
+import { render, fireEvent, waitFor } from '@testing-library/react';
+
+test('submits form with valid data', async () => {
+  const onSubmit = jest.fn();
+  const { getByLabelText, getByRole } = render(
+    <LoginForm onSubmit={onSubmit} />
+  );
+
+  fireEvent.change(getByLabelText(/email/i), {
+    target: { value: 'test@example.com' }
+  });
+  
+  fireEvent.click(getByRole('button', { name: /submit/i }));
+
+  await waitFor(() => {
+    expect(onSubmit).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: ''
+    });
+  });
+});
+```
+
+## 🎨 **UI Integration Patterns**
+
+### Custom Components
+
+```tsx
+// ✅ Good: Wrapper for third-party components
+function CustomSelect({ name, options, ...props }) {
+  const { setFieldValue, setFieldTouched, state } = useMyForm();
+
+  return (
+    <Select
+      value={state.values[name]}
+      onChange={(value) => setFieldValue(name, value)}
+      onBlur={() => setFieldTouched(name, true)}
+      {...props}
+    >
+      {options.map(option => (
+        <Option key={option.value} value={option.value}>
+          {option.label}
+        </Option>
+      ))}
+    </Select>
+  );
+}
+```
+
+### Conditional Fields
+
+```tsx
+function RegistrationForm() {
+  const { register, state } = useRegistrationForm();
+  const isCompany = state.values.accountType === 'company';
+
+  return (
+    <form>
+      <select {...register('accountType')}>
+        <option value="individual">Individual</option>
+        <option value="company">Company</option>
+      </select>
+
+      {isCompany && (
+        <>
+          <input {...register('companyName')} placeholder="Company Name" />
+          <input {...register('taxId')} placeholder="Tax ID" />
+        </>
+      )}
+    </form>
+  );
+}
+```
+
+## 📝 **Code Organization**
+
+### Separate Form Logic
+
+```tsx
+// ✅ Good: Separate file for form logic
+// forms/useRegistrationForm.js
+export const useRegistrationForm = createForm({
+  initialValues: registrationDefaults,
+  validationSchema: registrationSchema,
+  mode: 'onChange'
+});
+
+// components/RegistrationForm.jsx
+import { useRegistrationForm } from '../forms/useRegistrationForm';
+
+export function RegistrationForm() {
+  const { register, handleSubmit } = useRegistrationForm();
+  // Component logic only
+}
+```
+
+### Reusable Validation Schemas
+
+```tsx
+// schemas/user.js
+export const emailSchema = z.string().email();
+export const passwordSchema = z.string().min(8);
+
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema
+});
+
+export const registrationSchema = loginSchema.extend({
+  confirmPassword: z.string()
+}).refine(/* password match logic */);
+```
+
+## 🚨 **Common Pitfalls to Avoid**
+
+### ❌ Don't: Create forms inside render
+```tsx
+// ❌ Bad
+function MyComponent() {
+  const form = createForm({ /* config */ }); // Creates new form every render!
+}
+```
+
+### ❌ Don't: Ignore accessibility
+```tsx
+// ❌ Bad
+<input {...register('email')} />
+{errors.email && <span>{errors.email}</span>}
+
+// ✅ Good
+<input 
+  {...register('email')} 
+  aria-describedby="email-error"
+  aria-invalid={!!errors.email}
+/>
+{errors.email && (
+  <span id="email-error" role="alert">{errors.email}</span>
+)}
+```
+
+### ❌ Don't: Mutate form state directly
+```tsx
+// ❌ Bad
+state.values.email = 'new@email.com';
+
+// ✅ Good
+setFieldValue('email', 'new@email.com');
+```
+
+---
+
+Following these best practices will help you build robust, performant, and maintainable forms with CreateForm. For more specific use cases, check out our [examples repository](https://github.com/jucian0/createform/tree/main/examples).

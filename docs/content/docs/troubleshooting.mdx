@@ -1,0 +1,347 @@
+---
+title: Troubleshooting
+description: Common issues and solutions when using CreateForm
+tags: react, form, troubleshooting, debugging, issues
+---
+
+# Troubleshooting Guide
+
+Common issues and their solutions when working with CreateForm.
+
+## 🔍 **Common Issues**
+
+### Form State Not Updating
+
+**Problem**: Form values don't update when typing
+
+**Possible Causes & Solutions**:
+
+1. **Wrong mode configuration**
+   ```tsx
+   // ❌ Problem: onSubmit mode won't update during typing
+   const useForm = createForm({
+     mode: 'onSubmit', // Only updates on submit
+   });
+
+   // ✅ Solution: Use onChange mode for real-time updates
+   const useForm = createForm({
+     mode: 'onChange', // Updates as user types
+   });
+   ```
+
+2. **Missing register function**
+   ```tsx
+   // ❌ Problem: Input not registered
+   <input name="email" />
+
+   // ✅ Solution: Use register function
+   <input {...register('email')} />
+   ```
+
+3. **Custom component not forwarding ref**
+   ```tsx
+   // ❌ Problem: Custom component doesn't forward ref
+   const CustomInput = (props) => <input {...props} />;
+
+   // ✅ Solution: Use forwardRef
+   const CustomInput = forwardRef((props, ref) => 
+     <input ref={ref} {...props} />
+   );
+   ```
+
+### Validation Not Working
+
+**Problem**: Validation schema doesn't trigger errors
+
+**Solutions**:
+
+1. **Check schema syntax**
+   ```tsx
+   // ❌ Problem: Wrong Zod syntax
+   const schema = z.object({
+     email: z.string().email, // Missing ()
+   });
+
+   // ✅ Solution: Correct syntax
+   const schema = z.object({
+     email: z.string().email(), // Add ()
+   });
+   ```
+
+2. **Ensure validation mode is correct**
+   ```tsx
+   // ❌ Problem: Validation only runs on submit
+   const useForm = createForm({
+     mode: 'onSubmit',
+     validationSchema: schema,
+   });
+
+   // ✅ Solution: Use onChange for immediate validation
+   const useForm = createForm({
+     mode: 'onChange',
+     validationSchema: schema,
+   });
+   ```
+
+### TypeScript Errors
+
+**Problem**: Type errors with form values
+
+**Solutions**:
+
+1. **Define form interface**
+   ```tsx
+   // ✅ Define your form interface
+   interface LoginForm {
+     email: string;
+     password: string;
+   }
+
+   const useLoginForm = createForm<LoginForm>({
+     initialValues: {
+       email: '',
+       password: '',
+     },
+   });
+   ```
+
+2. **Type validation schema**
+   ```tsx
+   // ✅ Type your Zod schema
+   const loginSchema: z.ZodType<LoginForm> = z.object({
+     email: z.string().email(),
+     password: z.string().min(6),
+   });
+   ```
+
+### Performance Issues
+
+**Problem**: Form causes too many re-renders
+
+**Solutions**:
+
+1. **Use appropriate mode**
+   ```tsx
+   // 🐌 Slow: onChange mode with complex validation
+   const useForm = createForm({
+     mode: 'onChange',
+     validationSchema: expensiveValidation,
+   });
+
+   // ⚡ Faster: debounced mode
+   const useForm = createForm({
+     mode: 'debounced',
+     debounceMs: 300,
+     validationSchema: expensiveValidation,
+   });
+   ```
+
+2. **Optimize validation**
+   ```tsx
+   // ❌ Expensive: API call on every keystroke
+   const schema = z.object({
+     username: z.string().refine(async (val) => {
+       return await checkAvailability(val); // API call!
+     }),
+   });
+
+   // ✅ Better: Use inline validation with debounce
+   <input 
+     {...register({
+       name: 'username',
+       validate: debounce(checkAvailability, 500)
+     })}
+   />
+   ```
+
+## 🐛 **Debugging Tips**
+
+### Inspect Form State
+
+```tsx
+function DebugForm() {
+  const form = useMyForm();
+
+  // Add this temporarily to inspect state
+  console.log('Form State:', {
+    values: form.state.values,
+    errors: form.state.errors,
+    touched: form.state.touched,
+    isValid: form.isValid,
+  });
+
+  return <YourFormComponent />;
+}
+```
+
+### Check Form Configuration
+
+```tsx
+// Add this to verify your form setup
+const useForm = createForm({
+  initialValues: { email: '', password: '' },
+  validationSchema: schema,
+  mode: 'onChange',
+  // Add debug flag (if available in your version)
+  debug: process.env.NODE_ENV === 'development',
+});
+```
+
+### Validate Schema Independently
+
+```tsx
+// Test your schema separately
+const testData = { email: 'test@example.com', password: '123' };
+
+try {
+  const result = schema.parse(testData);
+  console.log('Schema validation passed:', result);
+} catch (error) {
+  console.log('Schema validation failed:', error.errors);
+}
+```
+
+## 🔧 **Integration Issues**
+
+### Next.js SSR Issues
+
+**Problem**: Hydration mismatch with form state
+
+**Solution**: Initialize form state properly
+
+```tsx
+// ✅ Ensure consistent initial state
+const useForm = createForm({
+  initialValues: {
+    // Use consistent defaults
+    email: '',
+    rememberMe: false,
+  },
+});
+
+// ✅ Or use effect to load from localStorage
+useEffect(() => {
+  const saved = localStorage.getItem('formData');
+  if (saved) {
+    setFieldsValue(JSON.parse(saved));
+  }
+}, []);
+```
+
+### React Strict Mode
+
+**Problem**: Form behaves differently in development
+
+**Solution**: Ensure your form logic is pure
+
+```tsx
+// ❌ Problem: Side effects in render
+function MyForm() {
+  const form = useMyForm();
+  
+  // This runs twice in strict mode!
+  api.trackFormView();
+  
+  return <form>...</form>;
+}
+
+// ✅ Solution: Use useEffect
+function MyForm() {
+  const form = useMyForm();
+  
+  useEffect(() => {
+    api.trackFormView();
+  }, []);
+  
+  return <form>...</form>;
+}
+```
+
+### Third-Party Component Integration
+
+**Problem**: Custom components don't work with CreateForm
+
+**Solution**: Create wrapper components
+
+```tsx
+// ✅ Wrapper for React Select
+function FormSelect({ name, options, ...props }) {
+  const { setFieldValue, setFieldTouched, state } = useMyForm();
+  
+  return (
+    <ReactSelect
+      value={options.find(opt => opt.value === state.values[name])}
+      onChange={(option) => setFieldValue(name, option?.value)}
+      onBlur={() => setFieldTouched(name, true)}
+      options={options}
+      {...props}
+    />
+  );
+}
+```
+
+## 📊 **Error Messages**
+
+### Common Error Messages and Fixes
+
+| Error Message | Likely Cause | Solution |
+|---------------|--------------|----------|
+| `Cannot read property 'register' of undefined` | Form hook not called correctly | Check if you're calling the hook inside a component |
+| `Field not found` | Field name mismatch | Verify field names match between register and initial values |
+| `Schema validation failed` | Invalid schema or data | Check schema definition and test data format |
+| `Maximum update depth exceeded` | Infinite re-render loop | Check for side effects in render function |
+
+### Validation Error Patterns
+
+```tsx
+// ✅ Handle validation errors gracefully
+function FormField({ name, label }) {
+  const { register, state } = useMyForm();
+  const error = state.errors[name];
+  const touched = state.touched[name];
+  
+  // Only show error if field has been touched
+  const shouldShowError = touched && error;
+  
+  return (
+    <div>
+      <label>{label}</label>
+      <input {...register(name)} />
+      {shouldShowError && (
+        <span className="error">
+          {typeof error === 'string' ? error : 'Invalid input'}
+        </span>
+      )}
+    </div>
+  );
+}
+```
+
+## 🆘 **Getting Help**
+
+### Before Opening an Issue
+
+1. **Check the documentation** - Many issues are covered in our guides
+2. **Search existing issues** - Your problem might already be solved
+3. **Create a minimal reproduction** - Use CodeSandbox or similar
+
+### Creating a Good Bug Report
+
+Include:
+- CreateForm version
+- React version
+- Browser/Node.js version
+- Minimal code example
+- Expected vs actual behavior
+- Error messages/console logs
+
+### Useful Resources
+
+- 📚 [Documentation](/docs)
+- 💬 [GitHub Discussions](https://github.com/jucian0/createform/discussions)
+- 🐛 [Issue Tracker](https://github.com/jucian0/createform/issues)
+- 📦 [Examples Repository](https://github.com/jucian0/createform/tree/main/examples)
+
+---
+
+Still having issues? Don't hesitate to [open an issue](https://github.com/jucian0/createform/issues/new) or start a [discussion](https://github.com/jucian0/createform/discussions). We're here to help! 🚀

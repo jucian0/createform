@@ -4,4 +4,94 @@ description: Createform is an open source project that allows you to create form
 tags: react, form, useform, createform, use-form, hook
 ---
 
+# Welcome to CreateForm
 
+CreateForm is a powerful and flexible form library for ReactJS applications that simplifies form creation with minimal code and maximum performance.
+
+## Why Choose CreateForm?
+
+
+### 🚀 **High Performance**
+- **One render to submit**: Complete forms without unnecessary re-renders
+- **Uncontrolled by default**: Superior performance compared to controlled forms
+- **Minimal bundle size**: Lightweight footprint for your applications
+
+### 🔧 **Two Powerful Approaches**
+- **`createForm()`**: Create reusable custom hooks for complex form logic
+- **`useForm()`**: Native HTML form handling with minimal setup
+
+### 🛠 **Developer Experience**
+- **Less code**: Minimal boilerplate compared to other form libraries
+- **TypeScript support**: Full type safety out of the box
+- **Framework agnostic**: Works with any React setup
+
+
+## Quick Examples
+
+### Using createForm()
+```tsx
+import { createForm } from "@createform/react";
+
+const useLoginForm = createForm({
+  initialValues: { email: "", password: "" },
+  validationSchema: yup.object({
+    email: yup.string().email().required(),
+    password: yup.string().min(6).required(),
+  }),
+});
+
+function LoginForm() {
+  const { register, handleSubmit } = useLoginForm();
+  
+  return (
+    <form onSubmit={handleSubmit(console.log)}>
+      <input {...register("email")} />
+      <input {...register("password")} />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+```
+
+### Using useForm()
+```tsx
+import { useForm } from "@createform/react";
+
+function SimpleForm() {
+  const { register } = useForm({
+    initialValues: { name: "", email: "" },
+    onSubmit: (data) => console.log(data),
+  });
+
+  return (
+    <form {...register()}>
+      <input name="name" placeholder="Name" />
+      <input name="email" placeholder="Email" />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+## Key Features
+
+- ✅ **Nested object support** with dot notation
+- ✅ **Validation** with Yup, Zod, or custom validators
+- ✅ **Multiple modes**: onChange, onSubmit, debounced
+- ✅ **Form state sharing** without React Context
+- ✅ **Async data loading** and form initialization
+- ✅ **Custom components** integration
+- ✅ **Comprehensive testing utilities**
+
+## Getting Started
+
+Ready to build better forms? Start with our [Quick Start Guide](/docs/quick-start) or explore the [API Reference](/docs/api-reference/create-form) for detailed documentation.
+
+<div className="flex gap-4 mt-6">
+  <a href="/docs/quick-start" className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition-colors">
+    Get Started →
+  </a>
+  <a href="/docs/api-reference/create-form" className="border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+    API Reference
+  </a>
+</div>

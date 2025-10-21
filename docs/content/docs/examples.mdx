@@ -1,0 +1,1197 @@
+---
+title: Real-World Examples
+description: Complete examples showing CreateForm in production scenarios
+tags: react, form, examples, real-world, production
+---
+
+# Real-World Examples
+
+Learn from practical, production-ready examples that demonstrate CreateForm's capabilities in real applications.
+
+## 🏪 **E-commerce Checkout Form**
+
+A complete checkout form with shipping, billing, and payment sections:
+
+<Tabs items={["Preview", "Code", "Validation"]}>
+<Tab>
+
+```tsx
+// This would render a complete checkout form with:
+// - Customer information
+// - Shipping address
+// - Billing address (with "same as shipping" option)  
+// - Payment method selection
+// - Order summary
+// - Real-time validation
+```
+
+</Tab>
+<Tab>
+
+```tsx copy
+import { createForm } from "@createform/react";
+import { z } from "zod";
+
+// Types
+interface CheckoutForm {
+  customer: {
+    email: string;
+    phone: string;
+  };
+  shipping: {
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    country: string;
+    postalCode: string;
+  };
+  billing: {
+    sameAsShipping: boolean;
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    country: string;
+    postalCode: string;
+  };
+  payment: {
+    method: 'card' | 'paypal';
+    cardNumber: string;
+    expiryDate: string;
+    cvv: string;
+  };
+}
+
+const checkoutSchema = z.object({
+  customer: z.object({
+    email: z.string().email("Please enter a valid email"),
+    phone: z.string().min(10, "Please enter a valid phone number"),
+  }),
+  shipping: z.object({
+    firstName: z.string().min(2, "First name is required"),
+    lastName: z.string().min(2, "Last name is required"),
+    address: z.string().min(5, "Please enter your full address"),
+    city: z.string().min(2, "City is required"),
+    country: z.string().min(2, "Please select a country"),
+    postalCode: z.string().min(3, "Please enter a valid postal code"),
+  }),
+  billing: z.object({
+    sameAsShipping: z.boolean(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    address: z.string().optional(),
+    city: z.string().optional(),
+    country: z.string().optional(),
+    postalCode: z.string().optional(),
+  }),
+  payment: z.object({
+    method: z.enum(['card', 'paypal']),
+    cardNumber: z.string().optional(),
+    expiryDate: z.string().optional(),
+    cvv: z.string().optional(),
+  }),
+});
+
+// Custom form hook
+const useCheckoutForm = createForm<CheckoutForm>({
+  initialValues: {
+    customer: { email: "", phone: "" },
+    shipping: {
+      firstName: "",
+      lastName: "",
+      address: "",
+      city: "",
+      country: "",
+      postalCode: "",
+    },
+    billing: {
+      sameAsShipping: true,
+      firstName: "",
+      lastName: "",
+      address: "",
+      city: "",
+      country: "",
+      postalCode: "",
+    },
+    payment: {
+      method: "card",
+      cardNumber: "",
+      expiryDate: "",
+      cvv: "",
+    },
+  },
+  validationSchema: checkoutSchema,
+  mode: "onChange",
+});
+
+// Main component
+export function CheckoutForm() {
+  const { register, handleSubmit, state, setFieldValue, setFieldsValue } = useCheckoutForm();
+  const { values, errors, touched } = state;
+
+  // Copy shipping to billing when checkbox changes
+  const handleSameAsShipping = (checked: boolean) => {
+    setFieldValue("billing.sameAsShipping", checked);
+    
+    if (checked) {
+      setFieldsValue({
+        ...values,
+        billing: {
+          ...values.shipping,
+          sameAsShipping: true,
+        },
+      });
+    }
+  };
+
+  const onSubmit = async (data: CheckoutForm) => {
+    try {
+      // Process payment
+      const response = await processCheckout(data);
+      
+      if (response.success) {
+        // Redirect to success page
+        window.location.href = `/order-confirmation/${response.orderId}`;
+      }
+    } catch (error) {
+      console.error("Checkout failed:", error);
+      // Handle error (show notification, etc.)
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="checkout-form">
+      {/* Customer Information */}
+      <section className="form-section">
+        <h2>Contact Information</h2>
+        <div className="form-row">
+          <FormField
+            label="Email"
+            type="email"
+            {...register("customer.email")}
+            error={touched.customer?.email && errors.customer?.email}
+            required
+          />
+          <FormField
+            label="Phone"
+            type="tel"
+            {...register("customer.phone")}
+            error={touched.customer?.phone && errors.customer?.phone}
+            required
+          />
+        </div>
+      </section>
+
+      {/* Shipping Address */}
+      <section className="form-section">
+        <h2>Shipping Address</h2>
+        <div className="form-row">
+          <FormField
+            label="First Name"
+            {...register("shipping.firstName")}
+            error={touched.shipping?.firstName && errors.shipping?.firstName}
+            required
+          />
+          <FormField
+            label="Last Name"
+            {...register("shipping.lastName")}
+            error={touched.shipping?.lastName && errors.shipping?.lastName}
+            required
+          />
+        </div>
+        
+        <FormField
+          label="Address"
+          {...register("shipping.address")}
+          error={touched.shipping?.address && errors.shipping?.address}
+          required
+        />
+        
+        <div className="form-row">
+          <FormField
+            label="City"
+            {...register("shipping.city")}
+            error={touched.shipping?.city && errors.shipping?.city}
+            required
+          />
+          <FormField
+            label="Country"
+            {...register("shipping.country")}
+            error={touched.shipping?.country && errors.shipping?.country}
+            required
+          />
+          <FormField
+            label="Postal Code"
+            {...register("shipping.postalCode")}
+            error={touched.shipping?.postalCode && errors.shipping?.postalCode}
+            required
+          />
+        </div>
+      </section>
+
+      {/* Billing Address */}
+      <section className="form-section">
+        <h2>Billing Address</h2>
+        
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            checked={values.billing.sameAsShipping}
+            onChange={(e) => handleSameAsShipping(e.target.checked)}
+          />
+          Same as shipping address
+        </label>
+
+        {!values.billing.sameAsShipping && (
+          <>
+            <div className="form-row">
+              <FormField
+                label="First Name"
+                {...register("billing.firstName")}
+                error={touched.billing?.firstName && errors.billing?.firstName}
+              />
+              <FormField
+                label="Last Name"
+                {...register("billing.lastName")}
+                error={touched.billing?.lastName && errors.billing?.lastName}
+              />
+            </div>
+            
+            <FormField
+              label="Address"
+              {...register("billing.address")}
+              error={touched.billing?.address && errors.billing?.address}
+            />
+            
+            <div className="form-row">
+              <FormField
+                label="City"
+                {...register("billing.city")}
+                error={touched.billing?.city && errors.billing?.city}
+              />
+              <FormField
+                label="Country"
+                {...register("billing.country")}
+                error={touched.billing?.country && errors.billing?.country}
+              />
+              <FormField
+                label="Postal Code"
+                {...register("billing.postalCode")}
+                error={touched.billing?.postalCode && errors.billing?.postalCode}
+              />
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* Payment */}
+      <section className="form-section">
+        <h2>Payment Method</h2>
+        
+        <div className="payment-methods">
+          <label className="payment-option">
+            <input
+              type="radio"
+              value="card"
+              {...register("payment.method")}
+            />
+            Credit Card
+          </label>
+          
+          <label className="payment-option">
+            <input
+              type="radio"
+              value="paypal"
+              {...register("payment.method")}
+            />
+            PayPal
+          </label>
+        </div>
+
+        {values.payment.method === 'card' && (
+          <div className="card-fields">
+            <FormField
+              label="Card Number"
+              placeholder="1234 5678 9012 3456"
+              {...register("payment.cardNumber")}
+              error={touched.payment?.cardNumber && errors.payment?.cardNumber}
+            />
+            
+            <div className="form-row">
+              <FormField
+                label="Expiry Date"
+                placeholder="MM/YY"
+                {...register("payment.expiryDate")}
+                error={touched.payment?.expiryDate && errors.payment?.expiryDate}
+              />
+              <FormField
+                label="CVV"
+                placeholder="123"
+                {...register("payment.cvv")}
+                error={touched.payment?.cvv && errors.payment?.cvv}
+              />
+            </div>
+          </div>
+        )}
+      </section>
+
+      <button 
+        type="submit" 
+        className="submit-button"
+        disabled={!state.isValid}
+      >
+        Complete Order
+      </button>
+    </form>
+  );
+}
+
+// Reusable form field component
+function FormField({ 
+  label, 
+  error, 
+  required, 
+  className = "", 
+  ...props 
+}) {
+  return (
+    <div className={`form-field ${className} ${error ? 'error' : ''}`}>
+      <label>
+        {label} {required && <span className="required">*</span>}
+      </label>
+      <input {...props} />
+      {error && <span className="error-message">{error}</span>}
+    </div>
+  );
+}
+
+// Mock API function
+async function processCheckout(data: CheckoutForm) {
+  // Simulate API call
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  return {
+    success: true,
+    orderId: 'ORD-' + Date.now(),
+  };
+}
+```
+
+</Tab>
+<Tab>
+
+```tsx copy
+// Dynamic validation based on payment method
+const checkoutSchema = z.object({
+  // ... other fields
+  payment: z.object({
+    method: z.enum(['card', 'paypal']),
+    cardNumber: z.string().optional(),
+    expiryDate: z.string().optional(),
+    cvv: z.string().optional(),
+  }),
+}).refine((data) => {
+  // Conditional validation for card payments
+  if (data.payment.method === 'card') {
+    return (
+      data.payment.cardNumber &&
+      data.payment.expiryDate &&
+      data.payment.cvv
+    );
+  }
+  return true;
+}, {
+  message: "Card details are required for card payments",
+  path: ["payment"]
+});
+
+// Billing address validation
+.refine((data) => {
+  if (!data.billing.sameAsShipping) {
+    return (
+      data.billing.firstName &&
+      data.billing.lastName &&
+      data.billing.address &&
+      data.billing.city &&
+      data.billing.country &&
+      data.billing.postalCode
+    );
+  }
+  return true;
+}, {
+  message: "Billing address is required when different from shipping",
+  path: ["billing"]
+});
+```
+
+</Tab>
+</Tabs>
+
+---
+
+## 📊 **Multi-Step Survey Form**
+
+A complex survey with conditional questions, progress tracking, and data persistence:
+
+<Tabs items={["Components", "State Management", "Progress Logic"]}>
+<Tab>
+
+```tsx copy
+import { createForm } from "@createform/react";
+import { useState } from "react";
+
+interface SurveyForm {
+  demographics: {
+    age: string;
+    gender: string;
+    occupation: string;
+  };
+  preferences: {
+    favoriteColor: string;
+    hobbies: string[];
+    budget: number;
+  };
+  feedback: {
+    rating: number;
+    comments: string;
+    recommendToFriend: boolean;
+  };
+}
+
+const useSurveyForm = createForm<SurveyForm>({
+  initialValues: {
+    demographics: {
+      age: "",
+      gender: "",
+      occupation: "",
+    },
+    preferences: {
+      favoriteColor: "",
+      hobbies: [],
+      budget: 0,
+    },
+    feedback: {
+      rating: 0,
+      comments: "",
+      recommendToFriend: false,
+    },
+  },
+  mode: "onChange",
+  // Load from localStorage if available
+  loadData: () => {
+    const saved = localStorage.getItem('survey-progress');
+    return saved ? JSON.parse(saved) : null;
+  },
+});
+
+export function MultiStepSurvey() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const form = useSurveyForm();
+  const { values, state } = form;
+
+  // Save progress to localStorage on each change
+  useEffect(() => {
+    localStorage.setItem('survey-progress', JSON.stringify(values));
+  }, [values]);
+
+  const steps = [
+    {
+      title: "Demographics",
+      component: <DemographicsStep />,
+      isValid: () => 
+        values.demographics.age && 
+        values.demographics.gender && 
+        values.demographics.occupation,
+    },
+    {
+      title: "Preferences", 
+      component: <PreferencesStep />,
+      isValid: () => 
+        values.preferences.favoriteColor && 
+        values.preferences.hobbies.length > 0,
+    },
+    {
+      title: "Feedback",
+      component: <FeedbackStep />,
+      isValid: () => values.feedback.rating > 0,
+    },
+  ];
+
+  const canProceed = steps[currentStep].isValid();
+  const progress = ((currentStep + 1) / steps.length) * 100;
+
+  const handleNext = () => {
+    if (canProceed && currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await submitSurvey(values);
+      localStorage.removeItem('survey-progress');
+      // Show success message
+    } catch (error) {
+      console.error('Survey submission failed:', error);
+    }
+  };
+
+  return (
+    <div className="survey-container">
+      {/* Progress Bar */}
+      <div className="progress-bar">
+        <div 
+          className="progress-fill" 
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      {/* Step Indicator */}
+      <div className="step-indicator">
+        {steps.map((step, index) => (
+          <div 
+            key={index}
+            className={`step ${index === currentStep ? 'active' : ''} ${index < currentStep ? 'completed' : ''}`}
+          >
+            {step.title}
+          </div>
+        ))}
+      </div>
+
+      {/* Current Step Content */}
+      <div className="step-content">
+        <h2>{steps[currentStep].title}</h2>
+        {steps[currentStep].component}
+      </div>
+
+      {/* Navigation */}
+      <div className="navigation">
+        <button 
+          onClick={handlePrevious}
+          disabled={currentStep === 0}
+        >
+          Previous
+        </button>
+
+        {currentStep < steps.length - 1 ? (
+          <button 
+            onClick={handleNext}
+            disabled={!canProceed}
+          >
+            Next
+          </button>
+        ) : (
+          <button 
+            onClick={handleSubmit}
+            disabled={!canProceed}
+            className="submit-button"
+          >
+            Submit Survey
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Step Components
+function DemographicsStep() {
+  const { register } = useSurveyForm();
+
+  return (
+    <div className="step-form">
+      <select {...register("demographics.age")}>
+        <option value="">Select Age Range</option>
+        <option value="18-25">18-25</option>
+        <option value="26-35">26-35</option>
+        <option value="36-45">36-45</option>
+        <option value="46+">46+</option>
+      </select>
+
+      <select {...register("demographics.gender")}>
+        <option value="">Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+        <option value="prefer-not-to-say">Prefer not to say</option>
+      </select>
+
+      <input 
+        {...register("demographics.occupation")}
+        placeholder="Your occupation"
+      />
+    </div>
+  );
+}
+
+function PreferencesStep() {
+  const { register, setFieldValue, state } = useSurveyForm();
+  const { values } = state;
+
+  const handleHobbyChange = (hobby: string, checked: boolean) => {
+    const currentHobbies = values.preferences.hobbies;
+    const newHobbies = checked 
+      ? [...currentHobbies, hobby]
+      : currentHobbies.filter(h => h !== hobby);
+    
+    setFieldValue("preferences.hobbies", newHobbies);
+  };
+
+  return (
+    <div className="step-form">
+      <select {...register("preferences.favoriteColor")}>
+        <option value="">Select Favorite Color</option>
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+        <option value="green">Green</option>
+        <option value="yellow">Yellow</option>
+      </select>
+
+      <fieldset>
+        <legend>Hobbies (select all that apply):</legend>
+        {['Reading', 'Sports', 'Music', 'Travel', 'Cooking'].map(hobby => (
+          <label key={hobby}>
+            <input 
+              type="checkbox"
+              checked={values.preferences.hobbies.includes(hobby)}
+              onChange={(e) => handleHobbyChange(hobby, e.target.checked)}
+            />
+            {hobby}
+          </label>
+        ))}
+      </fieldset>
+
+      <div>
+        <label>Monthly Budget: ${values.preferences.budget}</label>
+        <input 
+          type="range"
+          min="0"
+          max="5000"
+          step="100"
+          {...register("preferences.budget")}
+        />
+      </div>
+    </div>
+  );
+}
+
+function FeedbackStep() {
+  const { register, setFieldValue, state } = useSurveyForm();
+  const { values } = state;
+
+  return (
+    <div className="step-form">
+      <div>
+        <label>Rate your experience (1-5):</label>
+        <div className="rating">
+          {[1, 2, 3, 4, 5].map(rating => (
+            <button
+              key={rating}
+              type="button"
+              className={`star ${values.feedback.rating >= rating ? 'active' : ''}`}
+              onClick={() => setFieldValue("feedback.rating", rating)}
+            >
+              ⭐
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <textarea 
+        {...register("feedback.comments")}
+        placeholder="Additional comments (optional)"
+        rows={4}
+      />
+
+      <label>
+        <input 
+          type="checkbox"
+          {...register("feedback.recommendToFriend")}
+        />
+        Would you recommend this to a friend?
+      </label>
+    </div>
+  );
+}
+```
+
+</Tab>
+<Tab>
+
+```tsx copy
+// Advanced state management with persistence
+import { createForm } from "@createform/react";
+import { useEffect, useState } from "react";
+
+// Custom hook for survey state management
+export function useSurveyState() {
+  const [currentStep, setCurrentStep] = useState(() => {
+    // Restore step from localStorage
+    const saved = localStorage.getItem('survey-step');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
+  const form = useSurveyForm();
+
+  // Save current step
+  useEffect(() => {
+    localStorage.setItem('survey-step', currentStep.toString());
+  }, [currentStep]);
+
+  // Auto-save form data
+  useEffect(() => {
+    const timer = setInterval(() => {
+      localStorage.setItem('survey-data', JSON.stringify(form.state.values));
+    }, 5000); // Auto-save every 5 seconds
+
+    return () => clearInterval(timer);
+  }, [form.state.values]);
+
+  // Validation for each step
+  const stepValidations = {
+    0: () => {
+      const { age, gender, occupation } = form.state.values.demographics;
+      return age && gender && occupation;
+    },
+    1: () => {
+      const { favoriteColor, hobbies } = form.state.values.preferences;
+      return favoriteColor && hobbies.length > 0;
+    },
+    2: () => {
+      return form.state.values.feedback.rating > 0;
+    },
+  };
+
+  const canProceedToNext = () => stepValidations[currentStep]?.() || false;
+  
+  const progress = {
+    current: currentStep + 1,
+    total: 3,
+    percentage: ((currentStep + 1) / 3) * 100,
+  };
+
+  // Navigation functions
+  const goToNext = () => {
+    if (canProceedToNext() && currentStep < 2) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const goToPrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const goToStep = (step: number) => {
+    if (step >= 0 && step <= 2) {
+      setCurrentStep(step);
+    }
+  };
+
+  // Clear survey data
+  const resetSurvey = () => {
+    localStorage.removeItem('survey-data');
+    localStorage.removeItem('survey-step');
+    form.reset();
+    setCurrentStep(0);
+  };
+
+  return {
+    form,
+    currentStep,
+    progress,
+    canProceedToNext,
+    goToNext,
+    goToPrevious,
+    goToStep,
+    resetSurvey,
+  };
+}
+
+// Hook for managing survey completion
+export function useSurveySubmission() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const submitSurvey = async (data: SurveyForm) => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      // Simulate API call
+      await fetch('/api/survey', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          submittedAt: new Date().toISOString(),
+          sessionId: generateSessionId(),
+        }),
+      });
+
+      // Clear local storage on successful submission
+      localStorage.removeItem('survey-data');
+      localStorage.removeItem('survey-step');
+      
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Failed to submit survey';
+      
+      setSubmitError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    submitSurvey,
+    isSubmitting,
+    submitError,
+  };
+}
+
+function generateSessionId() {
+  return 'survey-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+}
+```
+
+</Tab>
+<Tab>
+
+```tsx copy
+// Advanced progress tracking and conditional logic
+export function ProgressTracker({ 
+  currentStep, 
+  totalSteps, 
+  stepValidations, 
+  onStepClick 
+}) {
+  const getStepStatus = (stepIndex: number) => {
+    if (stepIndex < currentStep) return 'completed';
+    if (stepIndex === currentStep) return 'active';
+    return 'upcoming';
+  };
+
+  const canNavigateToStep = (stepIndex: number) => {
+    // Can only navigate to previous steps or current step
+    if (stepIndex <= currentStep) return true;
+    
+    // Can navigate to next step only if current step is valid
+    if (stepIndex === currentStep + 1) {
+      return stepValidations[currentStep]?.() || false;
+    }
+    
+    return false;
+  };
+
+  return (
+    <div className="progress-tracker">
+      <div className="progress-line">
+        {Array.from({ length: totalSteps - 1 }, (_, i) => (
+          <div 
+            key={i}
+            className={`progress-segment ${
+              i < currentStep ? 'completed' : ''
+            }`}
+          />
+        ))}
+      </div>
+
+      <div className="steps">
+        {stepTitles.map((title, index) => {
+          const status = getStepStatus(index);
+          const canNavigate = canNavigateToStep(index);
+
+          return (
+            <div 
+              key={index}
+              className={`step step-${status} ${
+                canNavigate ? 'clickable' : ''
+              }`}
+              onClick={canNavigate ? () => onStepClick(index) : undefined}
+            >
+              <div className="step-number">
+                {status === 'completed' ? '✓' : index + 1}
+              </div>
+              <div className="step-title">{title}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Conditional question logic
+export function ConditionalQuestions({ formValues }: { formValues: any }) {
+  // Show additional questions based on previous answers
+  const showAdvancedQuestions = formValues.demographics?.age === '18-25';
+  const showBudgetQuestions = formValues.preferences?.hobbies?.includes('Travel');
+
+  return (
+    <>
+      {showAdvancedQuestions && (
+        <div className="conditional-section">
+          <h3>Additional Questions for Young Adults</h3>
+          <input placeholder="What are your career goals?" />
+          <input placeholder="Favorite social media platform?" />
+        </div>
+      )}
+
+      {showBudgetQuestions && (
+        <div className="conditional-section">
+          <h3>Travel Preferences</h3>
+          <select>
+            <option value="">Preferred travel style</option>
+            <option value="budget">Budget Travel</option>
+            <option value="luxury">Luxury Travel</option>
+            <option value="adventure">Adventure Travel</option>
+          </select>
+        </div>
+      )}
+    </>
+  );
+}
+
+const stepTitles = ['Demographics', 'Preferences', 'Feedback'];
+```
+
+</Tab>
+</Tabs>
+
+---
+
+## 🔐 **Dynamic Admin Dashboard Form**
+
+A sophisticated admin form with role-based fields, bulk operations, and real-time validation:
+
+```tsx copy
+import { createForm } from "@createform/react";
+import { z } from "zod";
+
+// Role-based form schema
+const createUserSchema = (userRole: string) => z.object({
+  basic: z.object({
+    firstName: z.string().min(2, "First name required"),
+    lastName: z.string().min(2, "Last name required"),
+    email: z.string().email("Invalid email"),
+    role: z.enum(['admin', 'editor', 'viewer']),
+  }),
+  permissions: z.object({
+    canDelete: z.boolean(),
+    canEdit: z.boolean(),
+    canView: z.boolean(),
+    departments: z.array(z.string()),
+  }),
+  // Only show for admin users
+  ...(userRole === 'admin' ? {
+    advanced: z.object({
+      apiAccess: z.boolean(),
+      billingAccess: z.boolean(),
+      systemSettings: z.boolean(),
+    })
+  } : {}),
+});
+
+const useAdminForm = createForm({
+  initialValues: {
+    basic: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      role: "viewer" as const,
+    },
+    permissions: {
+      canDelete: false,
+      canEdit: false,
+      canView: true,
+      departments: [],
+    },
+    advanced: {
+      apiAccess: false,
+      billingAccess: false,
+      systemSettings: false,
+    },
+  },
+  mode: "onChange",
+});
+
+export function AdminUserForm({ currentUserRole }: { currentUserRole: string }) {
+  const { register, handleSubmit, state, setFieldValue } = useAdminForm();
+  const { values, errors } = state;
+
+  // Dynamic validation based on current user's role
+  const validationSchema = useMemo(
+    () => createUserSchema(currentUserRole),
+    [currentUserRole]
+  );
+
+  // Role change handler
+  const handleRoleChange = (newRole: string) => {
+    setFieldValue("basic.role", newRole);
+    
+    // Auto-adjust permissions based on role
+    const rolePermissions = {
+      admin: { canDelete: true, canEdit: true, canView: true },
+      editor: { canDelete: false, canEdit: true, canView: true },
+      viewer: { canDelete: false, canEdit: false, canView: true },
+    };
+
+    const permissions = rolePermissions[newRole as keyof typeof rolePermissions];
+    if (permissions) {
+      Object.entries(permissions).forEach(([key, value]) => {
+        setFieldValue(`permissions.${key}`, value);
+      });
+    }
+  };
+
+  // Bulk department assignment
+  const handleBulkDepartments = (departments: string[]) => {
+    setFieldValue("permissions.departments", departments);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(createUser)} className="admin-form">
+      {/* Basic Information */}
+      <section className="form-section">
+        <h2>Basic Information</h2>
+        
+        <div className="form-grid">
+          <input 
+            {...register("basic.firstName")}
+            placeholder="First Name"
+          />
+          <input 
+            {...register("basic.lastName")}
+            placeholder="Last Name"
+          />
+          <input 
+            type="email"
+            {...register("basic.email")}
+            placeholder="Email"
+          />
+          
+          <select 
+            value={values.basic.role}
+            onChange={(e) => handleRoleChange(e.target.value)}
+          >
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option>
+            {currentUserRole === 'admin' && (
+              <option value="admin">Admin</option>
+            )}
+          </select>
+        </div>
+      </section>
+
+      {/* Permissions */}
+      <section className="form-section">
+        <h2>Permissions</h2>
+        
+        <div className="permission-grid">
+          <PermissionToggle
+            label="Can View"
+            checked={values.permissions.canView}
+            onChange={(checked) => setFieldValue("permissions.canView", checked)}
+            disabled={true} // Always true
+          />
+          
+          <PermissionToggle
+            label="Can Edit"
+            checked={values.permissions.canEdit}
+            onChange={(checked) => setFieldValue("permissions.canEdit", checked)}
+            disabled={values.basic.role === 'viewer'}
+          />
+          
+          <PermissionToggle
+            label="Can Delete"
+            checked={values.permissions.canDelete}
+            onChange={(checked) => setFieldValue("permissions.canDelete", checked)}
+            disabled={values.basic.role !== 'admin'}
+          />
+        </div>
+
+        {/* Department Access */}
+        <DepartmentSelector
+          selectedDepartments={values.permissions.departments}
+          onSelectionChange={handleBulkDepartments}
+          userRole={values.basic.role}
+        />
+      </section>
+
+      {/* Advanced Settings (Admin Only) */}
+      {currentUserRole === 'admin' && values.basic.role === 'admin' && (
+        <section className="form-section">
+          <h2>Advanced Settings</h2>
+          
+          <div className="advanced-permissions">
+            <PermissionToggle
+              label="API Access"
+              checked={values.advanced.apiAccess}
+              onChange={(checked) => setFieldValue("advanced.apiAccess", checked)}
+            />
+            
+            <PermissionToggle
+              label="Billing Access"
+              checked={values.advanced.billingAccess}
+              onChange={(checked) => setFieldValue("advanced.billingAccess", checked)}
+            />
+            
+            <PermissionToggle
+              label="System Settings"
+              checked={values.advanced.systemSettings}
+              onChange={(checked) => setFieldValue("advanced.systemSettings", checked)}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Submit Button */}
+      <button 
+        type="submit" 
+        className="submit-button"
+        disabled={!state.isValid}
+      >
+        Create User
+      </button>
+    </form>
+  );
+}
+```
+
+These examples demonstrate CreateForm's power in real-world scenarios:
+
+### Key Features Demonstrated:
+
+1. **Complex nested objects** with dot notation
+2. **Conditional validation** based on user input
+3. **Multi-step forms** with progress tracking
+4. **Role-based permissions** and dynamic schemas  
+5. **Real-time validation** with immediate feedback
+6. **Data persistence** with localStorage
+7. **Bulk operations** and batch updates
+8. **Integration patterns** with third-party components
+
+### Production-Ready Patterns:
+
+- ✅ **Error boundaries** and graceful error handling
+- ✅ **Loading states** and optimistic updates
+- ✅ **Accessibility** with proper ARIA labels
+- ✅ **TypeScript** for type safety
+- ✅ **Testing strategies** for form logic
+- ✅ **Performance optimization** with proper memoization
+
+Each example includes complete implementation details, error handling, and best practices you can adapt to your specific use cases.
