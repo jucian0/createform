@@ -21,21 +21,23 @@ const useForm = createForm({
   },
   mode: "onChange",
   validationSchema: z.object({
-    email: z.string().email(),
-    password: z.string().min(8),
-    terms: z.boolean(),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    terms: z.boolean().refine(val => val === true, "You must agree to the terms"),
   }),
 });
 
 function FormDemo() {
-  const { register, state } = useForm();
+  const { register, handleSubmit, state } = useForm();
   const {errors, touched} = state;
 
-  function handleSubmit(data){console.log(data)}
+  function onSubmit(data) {
+    console.log(data);
+  }
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate
       className="border dark:border-gray-800 p-5 rounded"
     >
@@ -61,7 +63,7 @@ function FormDemo() {
             required: true,
           })}
         />
-        <span className="text-red-600">{touched.email && errors.email}</span>
+        <span className="text-red-600">{touched.password && errors.password}</span>
       </div>
       <div className="flex items-start mb-6">
         <div className="flex items-center h-5">
@@ -69,13 +71,9 @@ function FormDemo() {
             {...register({
               name: "terms",
               type: "checkbox",
-              placeholder: "*********",
               required: true,
             })}
           />
-          <span className="text-red-600">
-            {touched.password && errors.password}
-          </span>
         </div>
         <label>
           I agree with the{" "}
@@ -83,6 +81,9 @@ function FormDemo() {
             terms and conditions
           </a>
         </label>
+        <span className="text-red-600">
+          {touched.terms && errors.terms}
+        </span>
       </div>
       <button type="submit">Submit</button>
       <button type="reset">Reset</button>

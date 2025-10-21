@@ -12,9 +12,9 @@ CreateForm is a powerful and flexible form library for ReactJS applications that
 
 
 ### 🚀 **High Performance**
-- **One render to submit**: Complete forms without unnecessary re-renders
+- **Minimal re-renders**: Optimized with external store and debouncing
 - **Uncontrolled by default**: Superior performance compared to controlled forms
-- **Minimal bundle size**: Lightweight footprint for your applications
+- **Tiny bundle**: Only 3.3kB minified + gzipped (10.6kB minified)
 
 ### 🔧 **Two Powerful Approaches**
 - **`createForm()`**: Create reusable custom hooks for complex form logic
@@ -23,7 +23,7 @@ CreateForm is a powerful and flexible form library for ReactJS applications that
 ### 🛠 **Developer Experience**
 - **Less code**: Minimal boilerplate compared to other form libraries
 - **TypeScript support**: Full type safety out of the box
-- **Framework agnostic**: Works with any React setup
+- **React focused**: Optimized specifically for React applications
 
 
 ## Quick Examples
@@ -43,8 +43,12 @@ const useLoginForm = createForm({
 function LoginForm() {
   const { register, handleSubmit } = useLoginForm();
   
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+  
   return (
-    <form onSubmit={handleSubmit(console.log)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <input {...register("email")} />
       <input {...register("password")} />
       <button type="submit">Login</button>
@@ -77,8 +81,8 @@ function SimpleForm() {
 
 - ✅ **Nested object support** with dot notation
 - ✅ **Validation** with Yup, Zod, or custom validators
-- ✅ **Multiple modes**: onChange, onSubmit, debounced
-- ✅ **Form state sharing** without React Context
+- ✅ **Multiple modes**: onChange, onBlur, onSubmit, debounce
+- ✅ **External store management** with useSyncExternalStore
 - ✅ **Async data loading** and form initialization
 - ✅ **Custom components** integration
 - ✅ **Comprehensive testing utilities**
@@ -91,7 +95,7 @@ Ready to build better forms? Start with our [Quick Start Guide](/docs/quick-star
   <a href="/docs/quick-start" className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition-colors">
     Get Started →
   </a>
-  <a href="/docs/api-reference/create-form" className="border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+  <a href="/docs/api-reference/create-form" className="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
     API Reference
   </a>
 </div>

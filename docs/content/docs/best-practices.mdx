@@ -52,11 +52,27 @@ function NewsletterForm() {
 }
 ```
 
-## ⚡ **Performance Optimization**
+## 🚀 **Performance Optimization**
 
-### Form Modes
+### Bundle Size Benefits
 
-Choose the right mode for your use case:
+CreateForm is designed for minimal impact:
+
+- **3.3kB gzipped** (10.6kB minified) - Much smaller than alternatives
+- **Tree-shakeable** - Only import what you need
+- **Zero dependencies** - No external dependencies beyond React
+
+```tsx
+// ✅ Import only what you need
+import { createForm } from "@createform/react";
+
+// ❌ Don't import the entire library if using bundlers without tree-shaking
+import * as CreateForm from "@createform/react";
+```
+
+### Validation Modes
+
+Choose the right validation mode for your use case:
 
 ```tsx
 // 🔥 Best performance: onSubmit (default)
@@ -71,10 +87,9 @@ const useForm = createForm({
   // ... other options
 });
 
-// 🐌 Use sparingly: debounced
+// 🐌 Use sparingly: debounce
 const useForm = createForm({
-  mode: 'debounced', // Validates after user stops typing
-  debounceMs: 300,
+  mode: 'debounce', // Validates after user stops typing (500ms delay)
   // ... other options
 });
 ```

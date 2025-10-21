@@ -19,8 +19,7 @@ export default function Home() {
       nav={{
         title: (
           <span className="flex items-center">
-            <img src="/favicon.svg" alt="Turbo Logo" className="w-6 h-6 mr-2" />{" "}
-            CreateForm
+            <img src="/images/logo.svg" alt="Createform" className="w-24 h-auto" />
           </span>
         ),
       }}

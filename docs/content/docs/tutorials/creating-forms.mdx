@@ -27,7 +27,7 @@ The most important thing is that there are three ways to use it:
 
 - You can build a controlled form : It is called `onChange` mode. This is not the most performative way to build a form, but in this way the user can have a better experience. It can be so frustrating when you fill in a form and just after you submit it, you realize that some field values are wrong. When you use a controlled form,it shows the user if some of the values are wrong which the user can fix before submitting.
 
-- You can use the debounce approach: It is called `debounced` mode. In my opinion, this is the better option because you can have the best of both worlds(Jean-Luc Picard). This is why in my opinion it is a better option:
+- You can use the debounce approach: It is called `debounce` mode. In my opinion, this is the better option because you can have the best of both worlds. This is why in my opinion it is a better option:
 
 "The debounce() function forces a function to wait a certain amount of time before running again. The function is built to limit the number of times a function is called."
 
@@ -57,9 +57,9 @@ const { register, state: { values }} = useAuthForm({mode: 'onChange'});
 <Button onClick={() => console.log(values)}>Submit</Button>
 ```
 
-Createform can have many properties and some of these properties are: `isDebounced` and `isControlled`.
+CreateForm provides different validation modes through the `mode` property: `"onChange"`, `"onBlur"`, `"onSubmit"`, and `"debounce"`.
 
-By default, Createform uses the uncontrolled approach.
+By default, CreateForm uses the uncontrolled approach with onChange validation.
 
 ### Adding validation with yup
 
