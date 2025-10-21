@@ -1,5 +1,0 @@
-{
-  "extends": "@createform/tsconfig/next.json",
-  "include": ["."],
-  "exclude": ["dist", "build", "node_modules"]
-}

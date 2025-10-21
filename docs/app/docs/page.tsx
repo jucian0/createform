@@ -7,7 +7,7 @@ import {
   DocsTitle,
 } from "fumadocs-ui/page";
 import { source } from "@/source";
-import defaultMdxComponents from "fumadocs-ui/mdx";
+import { getMDXComponents } from "./mdx-components";
 import { executeMdxSync } from "@fumadocs/mdx-remote/client";
 import type { PageTree } from "fumadocs-core/server";
 import { createCompiler } from "@fumadocs/mdx-remote";
@@ -51,7 +51,7 @@ export default function Page(props: Route.ComponentProps) {
         <DocsTitle>{page.data.title}</DocsTitle>
         <DocsDescription>{page.data.description}</DocsDescription>
         <DocsBody>
-          <Mdx components={defaultMdxComponents} />
+          <Mdx components={getMDXComponents()} />
         </DocsBody>
       </DocsPage>
     </DocsLayout>

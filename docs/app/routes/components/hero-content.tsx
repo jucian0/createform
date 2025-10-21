@@ -32,17 +32,18 @@ export default function HeroContent() {
                 <Link
                   href="/docs"
                   className="relative py-2.5 px-8 mr-3 mb-2 text-md font-medium rounded-lg group
-                    bg-violet-600 hover:bg-violet-700 text-white
-                    dark:bg-violet-700/90 dark:hover:bg-violet-600/90
+                    bg-teal-500 hover:bg-teal-600 text-white
+                    dark:bg-teal-600/90 dark:hover:bg-teal-500/90
                     transition-all duration-200 ease-out
-                    shadow-lg hover:shadow-violet-500/20 dark:hover:shadow-violet-400/10
-                    border border-violet-700/30 dark:border-violet-500/30
-                    focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2
-                    dark:focus:ring-violet-500 dark:focus:ring-offset-violet-900/50"
+                    shadow-lg hover:shadow-teal-500/20 dark:hover:shadow-teal-400/10
+                    border border-teal-600/30 dark:border-teal-400/30
+                    focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2
+                    dark:focus:ring-teal-400 dark:focus:ring-offset-teal-900/50"
+                  style={{ backgroundColor: '#2EC4B6' }}
                 >
                   <span className="relative z-10">Docs</span>
                   <span
-                    className="absolute inset-0 rounded-lg bg-violet-500/10 dark:bg-white/5
+                    className="absolute inset-0 rounded-lg bg-teal-400/10 dark:bg-white/5
                     opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   />
                 </Link>
@@ -50,13 +51,13 @@ export default function HeroContent() {
                 <a
                   href="https://github.com/jucian0/CreateForm"
                   className="relative py-2.5 px-8 mr-3 mb-2 text-md font-medium rounded-lg group
-                    bg-white/80 hover:bg-white text-violet-800
-                    dark:bg-violet-900/30 dark:hover:bg-violet-900/40 dark:text-violet-100
+                    bg-white/80 hover:bg-white text-teal-700
+                    dark:bg-teal-900/30 dark:hover:bg-teal-900/40 dark:text-teal-100
                     transition-all duration-200 ease-out
-                    shadow-lg hover:shadow-violet-200/30 dark:hover:shadow-violet-500/10
-                    border border-violet-200/60 dark:border-violet-700/40
-                    focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-offset-2
-                    dark:focus:ring-violet-500 dark:focus:ring-offset-violet-900/50"
+                    shadow-lg hover:shadow-teal-200/30 dark:hover:shadow-teal-500/10
+                    border border-teal-200/60 dark:border-teal-600/40
+                    focus:outline-none focus:ring-2 focus:ring-teal-300 focus:ring-offset-2
+                    dark:focus:ring-teal-400 dark:focus:ring-offset-teal-900/50"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -67,7 +68,7 @@ export default function HeroContent() {
                     </span>
                   </span>
                   <span
-                    className="absolute inset-0 rounded-lg bg-violet-200/20 dark:bg-white/5
+                    className="absolute inset-0 rounded-lg bg-teal-200/20 dark:bg-white/5
                     opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   />
                 </a>

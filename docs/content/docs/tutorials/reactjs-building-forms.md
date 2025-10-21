@@ -4,8 +4,6 @@ description: Hello friends, today I will talk to you about forms in React.
 tags: react, form, webdev, javascript
 ---
 
-# ReactJs: Building forms
-
 Do you really need a form library to build forms in React?
 
 Hello friends, today I will talk to you about forms in React, and tell you how my first experience building form in React was.
@@ -47,8 +45,6 @@ yarn add yup
 ```
 
 The create-react-app creates some files that we will not use for this tutorial, for this reason, I will remove them, so the files structures are:
-
-![files structure](https://res.cloudinary.com/practicaldev/image/fetch/s--rDtSgnqF--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://cdn-images-1.medium.com/max/2000/1%2AP8fTwj1DIETEFG6BlOf5iA.png)
 
 ### index.css
 
@@ -299,8 +295,6 @@ export default UserForm;
 - Added a function named validate, this function should receive the form values and pass this value to object validation written in the last step. If the form state has a valid value, we set an empty object in the errors state, but if it has any error, we need to know if is an error of validation (ValidationError instance), before setting them in the errors state.
 - To update the errors every time that form is changed, we pass form state as a dependency in the useEffect hook.
 - Added object error with the specific property in every field. If you run the application again you will see the form working well with validation.
-
-![form](https://res.cloudinary.com/practicaldev/image/fetch/s--jdctQqlV--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://cdn-images-1.medium.com/max/2000/1%2ATGVW5G3z762WRaeqteXEZw.png)
 
 ## Improving our solution.
 

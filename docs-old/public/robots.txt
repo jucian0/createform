@@ -1,9 +1,0 @@
-# *
-User-agent: *
-Allow: /
-
-# Host
-Host: https://useform.org
-
-# Sitemaps
-Sitemap: https://useform.org/sitemap.xml

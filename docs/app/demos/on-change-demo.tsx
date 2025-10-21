@@ -15,7 +15,7 @@ const useForm = createForm({
   }),
 });
 
-export function FormDemo() {
+export function OnChangeFormDemo() {
   const { register, handleSubmit, state, handleReset } = useForm();
   const { errors, touched } = state;
 
@@ -25,7 +25,7 @@ export function FormDemo() {
       onSubmit={handleSubmit((e) => {
         console.log(e, state);
       })}
-      onReset={handleReset(() => {})}
+      onReset={handleReset(() => { })}
       className="border dark:border-gray-800 p-5 rounded"
     >
       <div className="mb-6">
