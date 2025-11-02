@@ -34,7 +34,7 @@
     "react-router-devtools": "5.0.6",
     "tailwindcss": "4.1.11",
     "typescript": "5.8.3",
-    "vite": "7.0.4",
+    "vite": "5.4.21",
     "vite-tsconfig-paths": "5.1.4"
   },
   "version": "3.0.2"
