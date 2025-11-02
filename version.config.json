@@ -1,7 +1,11 @@
 {
-    "$schema": "./node_modules/@turbo-version/version/turbov.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "tagPrefix": "v",
+    "versionStrategy": "commitMessage",
     "preset": "angular",
-    "synced": true,
-    "updateInternalDependencies": "patch"
+    "prereleaseIdentifier": "beta",
+    "baseBranch": "main",
+    "updateInternalDependencies": "patch",
+    "sync": true,
+    "commitMessage": "chore(v): release version ${version} [skip-ci]"
 }
