@@ -23,8 +23,7 @@
     "shiki": "3.8.0",
     "@createform/react": "workspace:*",
     "zod": "4.1.12",
-    "react-select": "5.10.2",
-    "react-datepicker": "8.8.0"
+    "react-select": "5.10.2"
   },
   "devDependencies": {
     "@react-router/dev": "7.6.3",

@@ -1,7 +1,5 @@
 import { createForm } from "@createform/react";
 import Select from "react-select";
-import ReactDatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 const useForm = createForm({
   initialValues: {
@@ -24,14 +22,6 @@ export function CustomFormDemo() {
       onReset={handleReset(() => { })}
       className="border dark:border-gray-800 p-5 rounded"
     >
-      <div className="mb-6">
-        <ReactDatePicker
-          placeholder="Select a date..."
-          className="border border-gray-200 dark:border-gray-600 p-1 rounded w-full"
-          onChange={(e) => setFieldValue("date", e)}
-          value={values.date.toString()}
-        />
-      </div>
       <div className="mb-6">
         <Select
           className=""
