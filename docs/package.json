@@ -1,5 +1,5 @@
 {
-  "name": "docs",
+  "name": "@createform/docs",
   "private": true,
   "type": "module",
   "scripts": {
