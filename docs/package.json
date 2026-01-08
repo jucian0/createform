@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fumadocs/mdx-remote": "1.3.4",
-    "@react-router/node": "7.6.3",
+    "@react-router/node": "7.9.4",
     "@react-router/serve": "7.6.3",
     "framer-motion": "12.23.6",
     "fumadocs-core": "15.6.4",
