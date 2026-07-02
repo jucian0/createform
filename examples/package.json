@@ -22,7 +22,7 @@
     "vite": "6.4.3",
     "vite-plugin-eslint": "^1.8.1",
     "vite-tsconfig-paths": "4.0.5",
-    "vitest": "0.25.8",
+    "vitest": "4.1.0",
     "yup": "^0.27.0",
     "zod": "^3.22.3",
     "@chakra-ui/react": "2.5.5",
